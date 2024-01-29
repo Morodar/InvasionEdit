@@ -1,0 +1,7 @@
+.main-menu-bar {
+    margin-top:16px;
+    margin-left:16px;
+    position: absolute;
+    top:0;
+    z-index: 100;
+}
