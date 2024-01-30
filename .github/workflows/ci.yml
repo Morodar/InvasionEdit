@@ -1,4 +1,4 @@
-name: Build static files from src
+name: CI
 
 on: [push]
 
@@ -7,7 +7,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-app:
+  test-app:
     runs-on: ubuntu-latest
     steps:
       - name: git-checkout
@@ -25,5 +25,24 @@ jobs:
       - name: Run Unit Tests
         run: pnpm run test
 
+  build-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: true
+
       - name: Build App
         run: pnpm run build
+
+      - name: Upload built files
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build result
+          path: dist
+          retention-days: 7
