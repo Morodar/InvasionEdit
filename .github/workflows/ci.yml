@@ -1,6 +1,8 @@
 name: CI
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -10,7 +12,7 @@ jobs:
   test-app:
     runs-on: ubuntu-latest
     steps:
-      - name: git-checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install pnpm
@@ -28,7 +30,7 @@ jobs:
   build-app:
     runs-on: ubuntu-latest
     steps:
-      - name: git-checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install pnpm
@@ -43,6 +45,24 @@ jobs:
       - name: Upload built files
         uses: actions/upload-artifact@v4
         with:
-          name: Build result
+          name: package
           path: dist
           retention-days: 7
+
+  deploy:
+    needs: [build-app, test-app]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: package
+          path: package
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: package
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
