@@ -1,7 +1,7 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 import { MapView } from "./map-view/MapView";
 import { MainMenuBar } from "./main-menu/MainMenuBar";
-import { FldMapContextProvider } from "../context/fld/FldMapContext";
+import { FldMapContextProvider } from "../context/fld/FldMapContextProvider";
 
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 

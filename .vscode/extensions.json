@@ -1,3 +1,8 @@
 {
-    "recommendations": ["sonarsource.sonarlint-vscode", "esbenp.prettier-vscode", "zixuanchen.vitest-explorer"]
+    "recommendations": [
+        "sonarsource.sonarlint-vscode",
+        "esbenp.prettier-vscode",
+        "zixuanchen.vitest-explorer",
+        "dbaeumer.vscode-eslint"
+    ]
 }

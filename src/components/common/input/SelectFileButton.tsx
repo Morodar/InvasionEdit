@@ -3,17 +3,17 @@ import { PropsWithChildren } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 export interface SelectFileButtonProps extends PropsWithChildren {
-    onFileChanged: (file?: File) => void;
+    onFileChanged: (file?: File) => Promise<void>;
 }
 
 export const SelectFileButton = (props: SelectFileButtonProps) => {
     const { onFileChanged, children } = props;
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const fileList = event.target.files ?? [];
         if (fileList.length === 1) {
             const file = fileList[0];
-            onFileChanged(file);
+            await onFileChanged(file);
         }
     };
 

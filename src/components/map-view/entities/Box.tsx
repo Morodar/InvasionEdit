@@ -8,9 +8,9 @@ export function Box(props: ThreeElements["mesh"]) {
         <mesh
             {...props}
             scale={active ? 1.5 : 1}
-            onClick={(_) => setActive(!active)}
-            onPointerOver={(_) => setHovered(true)}
-            onPointerOut={(_) => setHovered(false)}
+            onClick={() => setActive(!active)}
+            onPointerOver={() => setHovered(true)}
+            onPointerOut={() => setHovered(false)}
         >
             <boxGeometry args={[1, 1, 1]} />
             <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />

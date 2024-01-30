@@ -1,9 +1,9 @@
 import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
 import { SelectFileButton } from "../common/input/SelectFileButton";
 import { useEffect, useState } from "react";
-import { useFldMapContext } from "../../context/fld/FldMapContext";
 import { FldFile } from "../../domain/FldFile";
 import { parseFldFile } from "../../domain/parseFldFile";
+import { useFldMapContext } from "../../context/fld/useFldMapContext";
 
 export interface ChooseFldDialogProps {
     open: boolean;
@@ -12,13 +12,11 @@ export interface ChooseFldDialogProps {
 
 export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
     const { onClose, open } = props;
-    const [_, setFile] = useState<File>();
     const { setFldFile } = useFldMapContext();
     const [tmpFldFile, setTmpFldFile] = useState<FldFile>();
 
     useEffect(() => {
         if (open) {
-            setFile(undefined);
             setTmpFldFile(undefined);
         }
     }, [open]);

@@ -1,0 +1,28 @@
+name: Build static files from src
+
+on: [push]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git-checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          run_install: true
+
+      - name: Check Code Quality
+        run: pnpm run lint
+
+      - name: Run Unit Tests
+        run: pnpm run test
+
+      - name: Build App
+        run: pnpm run build

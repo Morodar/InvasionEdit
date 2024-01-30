@@ -1,11 +1,9 @@
-import { screen } from "@testing-library/react";
-import ReactThreeTestRenderer from "@react-three/test-renderer";
-import { MapView } from "../../src/components/map-view/MapView";
+import { App } from "../../src/components/App";
+import { render, screen } from "@testing-library/react";
 
 describe("App", () => {
-    it.skip("renders hello", async () => {
-        await ReactThreeTestRenderer.create(<MapView />);
-        screen.debug();
+    test("renders hello", () => {
+        render(<App />);
         expect(screen.getByRole("heading", { name: "Invasion Edit" })).toBeInTheDocument();
     });
 });
