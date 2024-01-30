@@ -1,6 +1,6 @@
 import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
 import { SelectFileButton } from "../common/input/SelectFileButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFldMapContext } from "../../context/fld/FldMapContext";
 import { FldFile } from "../../domain/FldFile";
 import { parseFldFile } from "../../domain/parseFldFile";
@@ -12,9 +12,16 @@ export interface ChooseFldDialogProps {
 
 export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
     const { onClose, open } = props;
-    const [file, setFile] = useState<File>();
-    const { setFldFile, fldFile } = useFldMapContext();
+    const [_, setFile] = useState<File>();
+    const { setFldFile } = useFldMapContext();
     const [tmpFldFile, setTmpFldFile] = useState<FldFile>();
+
+    useEffect(() => {
+        if (open) {
+            setFile(undefined);
+            setTmpFldFile(undefined);
+        }
+    }, [open]);
 
     const handleFileChanged = async (file?: File) => {
         if (file) {
@@ -26,24 +33,19 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
     const applyFldFile = () => {
         if (tmpFldFile) {
             setFldFile(tmpFldFile);
+            onClose();
         }
     };
 
-    const handleClose = () => {
-        onClose();
-        setFile(undefined);
-        setTmpFldFile(undefined);
-    };
-
     return (
-        <Dialog onClose={handleClose} open={open}>
+        <Dialog onClose={onClose} open={open}>
             <DialogTitle>Choose Fld File</DialogTitle>
             <DialogContent>
                 <ShowFileInfo fldFile={tmpFldFile} />
             </DialogContent>
             <DialogActions>
                 <SelectFileButton onFileChanged={handleFileChanged}>Select File</SelectFileButton>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={onClose}>Cancel</Button>
                 <Button disabled={!tmpFldFile} onClick={applyFldFile}>
                     Confirm
                 </Button>
