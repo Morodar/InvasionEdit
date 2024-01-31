@@ -15,16 +15,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - run: corepack enable
+
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "pnpm"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: true
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Check Code Quality
         run: pnpm run lint
@@ -38,16 +38,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - run: corepack enable
+
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "pnpm"
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          run_install: true
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Build App
         run: pnpm run build
@@ -55,30 +55,45 @@ jobs:
       - name: Upload built files
         uses: actions/upload-artifact@v4
         with:
-          name: package
+          name: dist
           path: dist
           retention-days: 7
 
   deploy:
     needs: [build-app, test-app]
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pages: write
       id-token: write
+
+    env:
+      TAG: ${{ github.event.ref }}
 
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: package
-          path: package
+          name: dist
+          path: dist
 
       - name: Upload build artifact to pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: package
+          path: dist
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Zip dist directory
+        run: |
+          cd dist
+          TAG_NO_PREFIX=$(echo "$TAG" | sed 's/refs\/tags\///')
+          zip -r "invasion-edit-$TAG_NO_PREFIX.zip" .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/invasion-edit-*.zip
