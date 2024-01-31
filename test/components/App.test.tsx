@@ -4,6 +4,6 @@ import { render, screen } from "@testing-library/react";
 describe("App", () => {
     test("renders hello", () => {
         render(<App />);
-        expect(screen.getByRole("heading", { name: "Invasion Edit" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "app_name" })).toBeInTheDocument();
     });
 });

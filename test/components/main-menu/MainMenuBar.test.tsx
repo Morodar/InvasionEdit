@@ -9,6 +9,6 @@ describe("MainMenuBar", () => {
                 <MainMenuBar />
             </FldMapContextProvider>,
         );
-        expect(screen.getByRole("heading", { name: "Invasion Edit" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "app_name" })).toBeInTheDocument();
     });
 });
