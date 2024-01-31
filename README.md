@@ -1,6 +1,8 @@
 # Invasion-Edit
 
-Map Editor for the game "Thandor: The Invasion"
+Online Map Editor for the game "Thandor: The Invasion"
+
+-   <https://morodar.github.io/InvasionEdit/>
 
 ## Community
 
@@ -10,10 +12,8 @@ Discussions about Thandor and reverse engineering progess happens on our [Discor
 
 -   🏗️ This project is under heavy construction!
 -   Features:
-    -   ⌛ Load `*.fld` map and show height map
+    -   ✅ Load `*.fld` map and show height map
 
 ## Roadmap
 
--   Modify height map layer
--   Save modifications
--   Modify resource deposits
+See [Milestones](https://github.com/Morodar/InvasionEdit/milestones).

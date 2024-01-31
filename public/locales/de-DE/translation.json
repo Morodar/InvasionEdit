@@ -1,0 +1,13 @@
+{
+    "app_name": "Invasion Edit",
+    "btn": {
+        "load": {
+            "fld": "Fld laden"
+        }
+    },
+    "cancel": "Abbrechen",
+    "choose-fld-file": "Fld Dateiauswahl",
+    "confirm": "Bestätigen",
+    "please-select-a-fld-file": "Bitte wählen Sie eine FLD-Datei aus.",
+    "select-file": "Datei auswählen"
+}

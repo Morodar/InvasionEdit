@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FldFile } from "../../domain/FldFile";
 import { parseFldFile } from "../../domain/parseFldFile";
 import { useFldMapContext } from "../../context/fld/useFldMapContext";
+import { useTranslation } from "react-i18next";
 
 export interface ChooseFldDialogProps {
     open: boolean;
@@ -11,10 +12,10 @@ export interface ChooseFldDialogProps {
 }
 
 export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
+    const { t } = useTranslation();
     const { onClose, open } = props;
     const { setFldFile } = useFldMapContext();
     const [tmpFldFile, setTmpFldFile] = useState<FldFile>();
-
     useEffect(() => {
         if (open) {
             setTmpFldFile(undefined);
@@ -37,15 +38,15 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
 
     return (
         <Dialog onClose={onClose} open={open}>
-            <DialogTitle>Choose Fld File</DialogTitle>
+            <DialogTitle>{t("choose-fld-file")}</DialogTitle>
             <DialogContent>
                 <ShowFileInfo fldFile={tmpFldFile} />
             </DialogContent>
             <DialogActions>
-                <SelectFileButton onFileChanged={handleFileChanged}>Select File</SelectFileButton>
-                <Button onClick={onClose}>Cancel</Button>
+                <SelectFileButton onFileChanged={handleFileChanged}>{t("select-file")}</SelectFileButton>
+                <Button onClick={onClose}>{t("cancel")}</Button>
                 <Button disabled={!tmpFldFile} onClick={applyFldFile}>
-                    Confirm
+                    {t("confirm")}{" "}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -57,11 +58,12 @@ interface ShowFileInfo {
 }
 
 const ShowFileInfo = (props: ShowFileInfo) => {
+    const { t } = useTranslation();
     const { fldFile } = props;
     if (!fldFile) {
         return (
             <Typography variant="body1" display="block" gutterBottom>
-                Please select a fld file.
+                {t("please-select-a-fld-file")}
             </Typography>
         );
     }

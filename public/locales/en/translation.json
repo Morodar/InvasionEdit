@@ -1,0 +1,13 @@
+{
+  "app_name": "Invasion Edit",
+  "btn": {
+    "load": {
+      "fld": "Load Fld"
+    }
+  },
+  "please-select-a-fld-file": "Please select a fld file.",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "select-file": "Select File",
+  "choose-fld-file": "Choose Fld File"
+}

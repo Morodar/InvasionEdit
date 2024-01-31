@@ -3,6 +3,7 @@
         "sonarsource.sonarlint-vscode",
         "esbenp.prettier-vscode",
         "zixuanchen.vitest-explorer",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "lokalise.i18n-ally"
     ]
 }
