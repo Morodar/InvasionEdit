@@ -27,7 +27,7 @@ export const AppRoutes = () => (
 
 const LoadingBar = () => {
     return (
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%" }} component="div">
             <LinearProgress />
         </Box>
     );
