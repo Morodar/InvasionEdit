@@ -1,4 +1,4 @@
-import { MapLayer } from "../../../domain/MapLayer";
+import { MapLayer } from "../../../../../../domain/MapLayer";
 
 export function create128x128(): MapLayer {
     const points = [];

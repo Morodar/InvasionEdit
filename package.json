@@ -8,6 +8,7 @@
         "build": "tsc && vite build",
         "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "test": "vitest run",
+        "qs": "pnpm build && pnpm test && pnpm lint",
         "preview": "vite preview"
     },
     "dependencies": {
@@ -24,6 +25,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-i18next": "^14.0.1",
+        "react-router-dom": "^6.21.3",
         "three": "^0.160.1"
     },
     "devDependencies": {

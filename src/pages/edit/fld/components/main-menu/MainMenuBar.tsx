@@ -1,6 +1,6 @@
 import { Button, Stack, Typography } from "@mui/material";
 import "./MainMenuBar.css";
-import { ChooseFldDialog } from "../dialogs/ChooseFldDialog";
+import { ChooseFldDialog } from "../ChooseFldDialog";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 

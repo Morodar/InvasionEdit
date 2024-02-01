@@ -1,9 +1,9 @@
 import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
-import { SelectFileButton } from "../common/input/SelectFileButton";
+import { SelectFileButton } from "../../../../common/input/SelectFileButton";
 import { useEffect, useState } from "react";
-import { FldFile } from "../../domain/FldFile";
-import { parseFldFile } from "../../domain/parseFldFile";
-import { useFldMapContext } from "../../context/fld/useFldMapContext";
+import { FldFile } from "../../../../domain/FldFile";
+import { parseFldFile } from "../../../../domain/parseFldFile";
+import { useFldMapContext } from "../../../../context/fld/useFldMapContext";
 import { useTranslation } from "react-i18next";
 
 export interface ChooseFldDialogProps {

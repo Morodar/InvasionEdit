@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { MapLayer } from "../../../domain/MapLayer";
+import { MapLayer } from "../../../../../../domain/MapLayer";
 import * as THREE from "three";
 
 interface MapHeightLayerRenderProps {

@@ -3,9 +3,9 @@ import { Canvas } from "@react-three/fiber";
 import "./MapView.css";
 import { OrbitControls } from "@react-three/drei";
 import { Reference } from "./entities/Reference";
-import { create128x128 } from "./fun/ExamplePoints";
+import { create128x128 } from "./entities/ExamplePoints";
 import { MapHeightLayerRender } from "./entities/MapHeightLayerRender";
-import { useFldMapContext } from "../../context/fld/useFldMapContext";
+import { useFldMapContext } from "../../../../../context/fld/useFldMapContext";
 
 const layer = create128x128();
 

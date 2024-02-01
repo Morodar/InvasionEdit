@@ -9,5 +9,7 @@
   "confirm": "Confirm",
   "cancel": "Cancel",
   "select-file": "Select File",
-  "choose-fld-file": "Choose Fld File"
+  "choose-fld-file": "Choose Fld File",
+  "home": "Home",
+  "fld-editor": "Fld Editor"
 }
