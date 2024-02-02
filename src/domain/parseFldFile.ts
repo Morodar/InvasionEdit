@@ -11,7 +11,7 @@ export async function parseFldFile(file: File): Promise<FldFile> {
 
     const points: Point3D[] = [];
 
-    let x = 0;
+    let x = height;
     let z = 0;
     for (let i = 585; i < content.byteLength; i += 128) {
         const value = view.getUint8(i);
@@ -19,7 +19,7 @@ export async function parseFldFile(file: File): Promise<FldFile> {
         z++;
         if (z >= width) {
             z = 0;
-            x++;
+            x--;
         }
     }
 
