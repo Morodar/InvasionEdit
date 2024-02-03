@@ -1,12 +1,14 @@
-import { MainMenuBar } from "./components/main-menu/MainMenuBar";
 import { MapView } from "./components/map-view/MapView";
 import { FldMapContextProvider } from "../../../context/fld/FldMapContextProvider";
+import { MainLayout } from "../../../layout/MainLayout";
+import { ChooseFldButton } from "./components/choose-fld/ChooseFldButton";
 
 const PageEditFld = (): React.JSX.Element => {
     return (
         <FldMapContextProvider>
-            <MainMenuBar />
-            <MapView />
+            <MainLayout withPadding={false} rightSideElements={<ChooseFldButton />}>
+                <MapView />
+            </MainLayout>
         </FldMapContextProvider>
     );
 };

@@ -1,25 +1,27 @@
 import { Button, styled } from "@mui/material";
 import { PropsWithChildren } from "react";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import FileUploadIcon from "@mui/icons-material/fileUpload";
 
 export interface SelectFileButtonProps extends PropsWithChildren {
-    onFileChanged: (file?: File) => Promise<void>;
+    onFileChanged: (file?: File) => void;
+    disabled?: boolean;
+    accept: string;
 }
 
 export const SelectFileButton = (props: SelectFileButtonProps) => {
-    const { onFileChanged, children } = props;
+    const { onFileChanged, children, accept, disabled } = props;
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const fileList = event.target.files ?? [];
         if (fileList.length === 1) {
             const file = fileList[0];
-            await onFileChanged(file);
+            onFileChanged(file);
         }
     };
 
     return (
-        <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-            <VisuallyHiddenInput multiple={false} type="file" accept=".fld" onChange={handleFileChange} />
+        <Button component="label" variant="contained" startIcon={<FileUploadIcon />} disabled={disabled}>
+            <VisuallyHiddenInput multiple={false} type="file" accept={accept} onChange={handleFileChange} />
             {children}
         </Button>
     );

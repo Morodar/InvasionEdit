@@ -4,26 +4,31 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import PageHome from "../pages/home/PageHome";
 
 const PageEditFld = lazy(() => import("../pages/edit/fld/PageEditFld"));
+const PagePckExtractor = lazy(() => import("../pages/extract-pck/PagePckExtractor"));
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 const baseDir = import.meta.env.BASE_DIR as string;
 
 export const PROJECT_URL = "https://github.com/Morodar/InvasionEdit";
 export const HOME = "/home";
 export const EDIT_FLD = "/edit/fld";
+export const EXTRACT_PCK = "/extract/pck";
 
-export const AppRoutes = () => (
-    <ThemeProvider theme={darkTheme}>
-        <Router basename={baseDir}>
-            <Suspense fallback={<LoadingBar />}>
-                <Routes>
-                    <Route path={EDIT_FLD} element={<PageEditFld />} />
-                    <Route path={HOME} element={<PageHome />} />
-                    <Route path="*" element={<Navigate to={HOME} />} />
-                </Routes>
-            </Suspense>
-        </Router>
-    </ThemeProvider>
-);
+export const AppRoutes = () => {
+    return (
+        <ThemeProvider theme={darkTheme}>
+            <Router basename={baseDir}>
+                <Suspense fallback={<LoadingBar />}>
+                    <Routes>
+                        <Route path={EXTRACT_PCK} element={<PagePckExtractor />} />
+                        <Route path={EDIT_FLD} element={<PageEditFld />} />
+                        <Route path={HOME} element={<PageHome />} />
+                        <Route path="*" element={<Navigate to={HOME} />} />
+                    </Routes>
+                </Suspense>
+            </Router>
+        </ThemeProvider>
+    );
+};
 
 const LoadingBar = () => {
     return (

@@ -1,24 +1,22 @@
-import { Button, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
-import { EDIT_FLD } from "../../conf/AppRoutes";
+import { Stack, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import "./PageHome.css";
+import { MainLayout } from "../../layout/MainLayout";
+import { PckExtractorCard } from "./components/PckExtractorCard";
+import { FldEditorCard } from "./components/FldEditorCard";
 
 const PageHome = () => {
     const { t } = useTranslation();
     return (
-        <section className="page-home">
-            <Typography variant="h4" component="h1" display="block" gutterBottom>
-                {t("app_name")}
-            </Typography>
-            <Typography variant="h5" component="h2" display="block" gutterBottom>
+        <MainLayout>
+            <Typography variant="h3" component="h2" gutterBottom>
                 {t("home")}
             </Typography>
-            <Button disabled={true}>Pck Extractor</Button>
-            <Button component={Link} to={EDIT_FLD}>
-                {t("fld-editor")}
-            </Button>
-        </section>
+            <Stack gap="32px" direction="row" flexWrap="wrap">
+                <PckExtractorCard />
+                <FldEditorCard />
+            </Stack>
+        </MainLayout>
     );
 };
 

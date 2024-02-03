@@ -1,9 +1,9 @@
 import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
-import { SelectFileButton } from "../../../../common/input/SelectFileButton";
+import { SelectFileButton } from "../../../../../common/input/SelectFileButton";
 import { useEffect, useState } from "react";
-import { FldFile } from "../../../../domain/FldFile";
-import { parseFldFile } from "../../../../domain/parseFldFile";
-import { useFldMapContext } from "../../../../context/fld/useFldMapContext";
+import { FldFile } from "../../../../../domain/FldFile";
+import { parseFldFile } from "../../../../../domain/parseFldFile";
+import { useFldMapContext } from "../../../../../context/fld/useFldMapContext";
 import { useTranslation } from "react-i18next";
 
 export interface ChooseFldDialogProps {
@@ -43,7 +43,9 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
                 <ShowFileInfo fldFile={tmpFldFile} />
             </DialogContent>
             <DialogActions>
-                <SelectFileButton onFileChanged={handleFileChanged}>{t("select-file")}</SelectFileButton>
+                <SelectFileButton onFileChanged={handleFileChanged} accept=".fld">
+                    {t("select-file")}
+                </SelectFileButton>
                 <Button onClick={onClose}>{t("cancel")}</Button>
                 <Button disabled={!tmpFldFile} onClick={applyFldFile}>
                     {t("confirm")}{" "}

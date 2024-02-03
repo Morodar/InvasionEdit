@@ -1,6 +1,6 @@
 import { IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import "./MainMenuBar.css";
-import { ChooseFldDialog } from "../ChooseFldDialog";
+import { ChooseFldDialog } from "../choose-fld/ChooseFldDialog";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import UploadIcon from "@mui/icons-material/Upload";

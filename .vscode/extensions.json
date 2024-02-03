@@ -2,8 +2,8 @@
     "recommendations": [
         "sonarsource.sonarlint-vscode",
         "esbenp.prettier-vscode",
-        "zixuanchen.vitest-explorer",
         "dbaeumer.vscode-eslint",
-        "lokalise.i18n-ally"
+        "lokalise.i18n-ally",
+        "zixuanchen.vitest-explorer"
     ]
 }

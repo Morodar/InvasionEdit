@@ -1,0 +1,33 @@
+.main-layout {
+    height:100%;
+    background:url("/img/thandor-menu.jpg")no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-color: gray;
+    background-blend-mode: multiply;
+    overflow-y: hidden;
+}
+
+.main-layout main.with-padding {
+    max-height: calc(100vh - 128px);
+}
+
+.main-layout main {
+    overflow-y:auto;
+}
+
+.main-layout h1 a{
+    text-decoration: none;
+    box-shadow: none;
+    color:inherit;
+}
+
+.main-layout .with-padding {
+    padding:32px;
+}
+
+.main-layout .version {
+    vertical-align: middle;
+}

@@ -1,4 +1,4 @@
-.map-view canvas {
+.map-view div {
     min-width:100vw;
-    min-height:100vh;
+    min-height:calc( 100vh - 64px);
 }
