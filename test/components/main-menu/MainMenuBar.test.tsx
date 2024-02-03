@@ -1,6 +1,6 @@
 import { MainMenuBar } from "../../../src/pages/edit/fld/components/main-menu/MainMenuBar";
 import { screen } from "@testing-library/react";
-import { FldMapContextProvider } from "../../../src/context/fld/FldMapContextProvider";
+import { FldMapContextProvider } from "../../../src/pages/edit/fld/context/FldMapContextProvider";
 import { renderSut } from "../../testUtils";
 
 describe("MainMenuBar", () => {

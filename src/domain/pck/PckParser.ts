@@ -1,4 +1,4 @@
-import { PckUtils } from "../utils/PckUtils";
+import { PckUtils } from "./PckUtils";
 import { PckDecompressor } from "./PckDecompressor";
 import { PckFile } from "./PckFile";
 import { PckFileEntry, PckFileEntryHeader } from "./PckFileEntry";

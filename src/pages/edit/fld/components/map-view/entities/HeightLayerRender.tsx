@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { MapLayer } from "../../../../../../domain/MapLayer";
+import { MapLayer } from "../../../../../../domain/fld/MapLayer";
 import * as THREE from "three";
 
-interface MapHeightLayerRenderProps {
+interface HeightLayerRenderProps {
     layer: MapLayer;
 }
-export const MapHeightLayerRender = (props: MapHeightLayerRenderProps): React.JSX.Element => {
+export const HeightLayerRender = (props: HeightLayerRenderProps): React.JSX.Element => {
     const size = props.layer.height * props.layer.width;
     const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
 

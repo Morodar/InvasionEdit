@@ -1,5 +1,5 @@
 import { MapView } from "./components/map-view/MapView";
-import { FldMapContextProvider } from "../../../context/fld/FldMapContextProvider";
+import { FldMapContextProvider } from "./context/FldMapContextProvider";
 import { MainLayout } from "../../../layout/MainLayout";
 import { ChooseFldButton } from "./components/choose-fld/ChooseFldButton";
 
