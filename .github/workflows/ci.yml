@@ -30,7 +30,7 @@ jobs:
         run: pnpm run lint
 
       - name: Run Unit Tests
-        run: pnpm run test
+        run: pnpm run test-cli
 
   build-app:
     runs-on: ubuntu-latest
