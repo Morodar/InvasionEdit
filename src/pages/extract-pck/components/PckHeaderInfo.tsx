@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, CircularProgress, Stack } from "@mui/material";
 import { PckFile, downloadPckFileAsZip } from "../../../domain/pck/PckFile";
 import { H3 } from "../../../common/header/Headers";
-import SaveIcon from "@mui/icons-material/save";
+import SaveIcon from "@mui/icons-material/Save";
 
 interface PckHeaderInfoProps {
     file?: PckFile;

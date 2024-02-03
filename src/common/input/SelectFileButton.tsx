@@ -1,6 +1,6 @@
 import { Button, styled } from "@mui/material";
 import { PropsWithChildren } from "react";
-import FileUploadIcon from "@mui/icons-material/fileUpload";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export interface SelectFileButtonProps extends PropsWithChildren {
     onFileChanged: (file?: File) => void;
