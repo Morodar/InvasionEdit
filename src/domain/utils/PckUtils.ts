@@ -39,7 +39,7 @@ export class PckUtils {
         const dayOfMonth = this.view.getUint8(index++);
         const month = this.view.getUint8(index++);
         const year = this.view.getUint16(index, true);
-        return new Date(year, month, dayOfMonth, hour, minute, second);
+        return new Date(Date.UTC(year, month, dayOfMonth, hour, minute, second));
     }
 
     getUint32 = (index: number) => this.view.getUint32(index, true);

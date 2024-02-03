@@ -12,7 +12,7 @@ describe("PckParser", () => {
             expect(result.header.fileSize).toBe(234272);
             expect(result.header.fileCount).toBe(5);
             expect(result.header.pcName1).toBe("MARS");
-            expect(result.header.date1.toISOString()).toBe("2000-07-25T15:50:08.000Z");
+            expect(result.header.date1.toISOString()).toBe("2000-07-25T16:50:08.000Z");
             expect(result.pckFileEntries).toHaveLength(5);
         });
 
