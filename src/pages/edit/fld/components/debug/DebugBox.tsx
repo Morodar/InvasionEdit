@@ -6,5 +6,5 @@ export const DebugBox = () => {
     if (!hoveredPoint) {
         return;
     }
-    return <Box position={[hoveredPoint.x + 0.5, hoveredPoint.value / 8, hoveredPoint.z + 0.5]} />;
+    return <Box position={[hoveredPoint.x, hoveredPoint.value / 8, hoveredPoint.z]} />;
 };

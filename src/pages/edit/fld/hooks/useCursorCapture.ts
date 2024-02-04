@@ -17,9 +17,9 @@ export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
             const intersects = raycaster.intersectObject(meshRef.current);
             if (intersects.length > 0) {
                 const point = intersects[0].point;
-                const x = point.x >>> 0;
-                const z = point.z >>> 0;
-                setMeshPoint({ x, z, value: point.y >>> 0 });
+                const x = Math.round(point.x);
+                const z = Math.round(point.z);
+                setMeshPoint({ x, z, value: Math.round(point.y) });
                 const index = (height - x) * width + z - width;
                 if (index < points.length) {
                     setHoveredPoint(points[index]);
