@@ -3,8 +3,8 @@ import { SelectFileButton } from "../../../../../common/input/SelectFileButton";
 import { useEffect, useState } from "react";
 import { FldFile } from "../../../../../domain/fld/FldFile";
 import { parseFldFile } from "../../../../../domain/fld/parseFldFile";
-import { useFldMapContext } from "../../context/useFldMapContext";
 import { useTranslation } from "react-i18next";
+import { useFldMapContext } from "../../context/FldMapContext";
 
 export interface ChooseFldDialogProps {
     open: boolean;

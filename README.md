@@ -2,7 +2,7 @@
 
 Online Map Editor for the game "Thandor: The Invasion"
 
--   <https://morodar.github.io/InvasionEdit/>
+-   Live Demo: <https://morodar.github.io/InvasionEdit/>
 
 ## Community
 
@@ -11,8 +11,11 @@ Discussions about Thandor and reverse engineering progess happens on our [Discor
 ## Current State
 
 -   🏗️ This project is under heavy construction!
--   Features:
-    -   ✅ Load `*.fld` map and show height map
+-   **Features:**
+    -   Extract Game Assets from Thandor PCK files
+    -   ✅ Load `*.fld` map and show...
+        -   height map
+        -   resource fields
 
 ## Roadmap
 

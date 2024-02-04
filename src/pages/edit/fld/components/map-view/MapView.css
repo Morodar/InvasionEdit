@@ -2,3 +2,9 @@
     min-width:100vw;
     min-height:calc( 100vh - 64px);
 }
+
+.fps-counter {
+    top:64px !important;
+    left: auto  !important;
+    right:0px !important;
+}

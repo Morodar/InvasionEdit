@@ -12,7 +12,8 @@ export const HeightLayerRender = (props: HeightLayerRenderProps): React.JSX.Elem
     useEffect(() => {
         const temp = new THREE.Object3D();
         props.layer.points.forEach((p, i) => {
-            temp.position.set(p.x, p.value / 8, p.z);
+            const height = p.value > 127 ? p.value - 255 : p.value;
+            temp.position.set(p.x, height / 8, p.z);
             temp.updateMatrix();
             instancedMeshRef.current.setMatrixAt(i, temp.matrix);
         });

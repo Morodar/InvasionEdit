@@ -56,6 +56,9 @@ dependencies:
   three:
     specifier: ^0.160.1
     version: 0.160.1
+  three-stdlib:
+    specifier: ^2.29.4
+    version: 2.29.4(three@0.160.1)
 
 devDependencies:
   '@react-three/test-renderer':
