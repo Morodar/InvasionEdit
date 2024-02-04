@@ -12,6 +12,7 @@ import { useCenterCamera } from "../../hooks/useCenterCamera";
 import * as DREI from "@react-three/drei";
 import { OrbitControls } from "three-stdlib";
 import { Stats } from "@react-three/drei";
+import { HeightLayerMesh } from "./layers/HeightLayerMesh";
 const layer = create128x128();
 
 export const MapView = (): React.JSX.Element => {
@@ -28,14 +29,19 @@ export const MapView = (): React.JSX.Element => {
     return (
         <div className="map-view">
             <Canvas>
+                <ambientLight intensity={3} />
+                <directionalLight position={[5, 5, 5]} intensity={0.5} />
+
                 <DREI.OrbitControls target={[60, 0, 60]} ref={orbitControlsRef} />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />
-                <ambientLight intensity={Math.PI / 2} />
-                <pointLight position={[50, 30, 50]} decay={0.1} intensity={Math.PI * 2} />
-                <Reference x={referenceX} y={-0.05} z={referenceY} depth={height} height={0.1} width={width} />
-                <HeightLayerRender layer={fldFile ?? layer} />
+
+                {false && (
+                    <Reference x={referenceX} y={-0.05} z={referenceY} depth={height} height={0.1} width={width} />
+                )}
+                {false && <HeightLayerRender layer={fldFile ?? layer} />}
                 <ResourceView />
                 <Stats className="fps-counter" />
+                <HeightLayerMesh layer={fldFile ?? layer} />
             </Canvas>
         </div>
     );

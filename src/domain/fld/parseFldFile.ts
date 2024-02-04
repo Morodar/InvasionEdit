@@ -45,7 +45,7 @@ function extractLayer(data: DataView, height: number, width: number, offset: num
     const mapSize = height * width;
     const points: Point3D[] = new Array<Point3D>(mapSize);
 
-    let x = height;
+    let x = height - 1;
     let z = 0;
     let counter = 0;
     for (let i = offset; i < data.byteLength; i += 128) {

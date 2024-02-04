@@ -29,7 +29,7 @@ const ResourceRender = (props: ResourceRenderProps) => {
     useEffect(() => {
         const temp = new THREE.Object3D();
         points.forEach((p, i) => {
-            const y = p.y / 8 + 4.05;
+            const y = p.y / 8;
             temp.position.set(p.x, y, p.z);
             temp.updateMatrix();
             instancedMeshRef.current.setMatrixAt(i, temp.matrix);
