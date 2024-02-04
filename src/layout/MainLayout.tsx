@@ -9,12 +9,14 @@ import packageJson from "../../package.json";
 
 interface MainLayoutProps extends PropsWithChildren {
     withPadding?: boolean;
+    centerElements?: JSX.Element;
     rightSideElements?: JSX.Element;
 }
 
 export const MainLayout = (props: MainLayoutProps) => {
+    const { withPadding, centerElements, rightSideElements } = props;
     const { t } = useTranslation();
-    const withPadding = props.withPadding ? "with-padding" : "";
+    const withPaddingClass = withPadding ? "with-padding" : "";
     const version = packageJson.version;
 
     return (
@@ -27,14 +29,16 @@ export const MainLayout = (props: MainLayoutProps) => {
                         </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} component="div" />
+                    <div>{centerElements}</div>
+                    <Box sx={{ flexGrow: 1 }} component="div" />
                     <div>
-                        {props.rightSideElements}
+                        {rightSideElements}
                         <ProjectIconButton />
                         <small className="version">{version}</small>
                     </div>
                 </Toolbar>
             </AppBar>
-            <main className={withPadding}>
+            <main className={withPaddingClass}>
                 <div>{props.children}</div>
             </main>
         </Typography>
