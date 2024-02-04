@@ -1,4 +1,5 @@
-.map-view div {
+.map-view .map, 
+    .map-view .map div {
     min-width:100vw;
     min-height:calc( 100vh - 64px);
 }

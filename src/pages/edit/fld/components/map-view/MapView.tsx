@@ -13,6 +13,8 @@ import * as DREI from "@react-three/drei";
 import { OrbitControls } from "three-stdlib";
 import { Stats } from "@react-three/drei";
 import { HeightLayerMesh } from "./layers/HeightLayerMesh";
+import { DebugSidebar } from "../debug/DebugSidebar";
+import { DebugBox } from "../debug/DebugBox";
 const layer = create128x128();
 
 export const MapView = (): React.JSX.Element => {
@@ -28,7 +30,7 @@ export const MapView = (): React.JSX.Element => {
 
     return (
         <div className="map-view">
-            <Canvas>
+            <Canvas className="map">
                 <ambientLight intensity={3} />
                 <directionalLight position={[5, 5, 5]} intensity={0.5} />
 
@@ -42,7 +44,9 @@ export const MapView = (): React.JSX.Element => {
                 <ResourceView />
                 <Stats className="fps-counter" />
                 <HeightLayerMesh layer={fldFile ?? layer} />
+                <DebugBox />
             </Canvas>
+            <DebugSidebar />
         </div>
     );
 };

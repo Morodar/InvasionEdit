@@ -1,0 +1,16 @@
+.map-view .debug-sidebar {
+    position: absolute;
+    top:64px;
+    left:16px;
+    z-index: 100;
+    margin-top: 16px;
+    padding: 12px 16px 16px 16px;
+    width:150px;
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.map-view .debug-sidebar p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}

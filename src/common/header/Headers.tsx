@@ -26,31 +26,31 @@ export const H1 = (props: SpecificHeaderProps) => (
 );
 
 export const H2 = (props: SpecificHeaderProps) => (
-    <Header component="h1" variant={props.variant}>
+    <Header component="h2" variant={props.variant}>
         {props.children}
     </Header>
 );
 
 export const H3 = (props: SpecificHeaderProps) => (
-    <Header component="h1" variant={props.variant}>
+    <Header component="h3" variant={props.variant}>
         {props.children}
     </Header>
 );
 
 export const H4 = (props: SpecificHeaderProps) => (
-    <Header component="h1" variant={props.variant}>
+    <Header component="h4" variant={props.variant}>
         {props.children}
     </Header>
 );
 
 export const H5 = (props: SpecificHeaderProps) => (
-    <Header component="h1" variant={props.variant}>
+    <Header component="h5" variant={props.variant}>
         {props.children}
     </Header>
 );
 
 export const H6 = (props: SpecificHeaderProps) => (
-    <Header component="h1" variant={props.variant}>
+    <Header component="h6" variant={props.variant}>
         {props.children}
     </Header>
 );

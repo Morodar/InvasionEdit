@@ -5,6 +5,7 @@ import { FldName } from "./components/app-bar/FldName";
 import { usePageTitle } from "../../../common/utils/usePageTitle";
 import { useTranslation } from "react-i18next";
 import { FldMapContextProvider } from "./context/FldMapContext";
+import { CursorContexProvider } from "./context/CursorContext";
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
@@ -13,9 +14,11 @@ const PageEditFld = (): React.JSX.Element => {
 
     return (
         <FldMapContextProvider>
-            <MainLayout withPadding={false} centerElements={<FldName />} rightSideElements={<ChooseFldButton />}>
-                <MapView />
-            </MainLayout>
+            <CursorContexProvider>
+                <MainLayout withPadding={false} centerElements={<FldName />} rightSideElements={<ChooseFldButton />}>
+                    <MapView />
+                </MainLayout>
+            </CursorContexProvider>
         </FldMapContextProvider>
     );
 };

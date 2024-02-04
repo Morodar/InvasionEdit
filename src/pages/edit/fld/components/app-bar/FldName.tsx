@@ -7,5 +7,9 @@ export const FldName = () => {
         return <></>;
     }
 
-    return <small>{fldFile.name}</small>;
+    return (
+        <small>
+            {fldFile.name} ({fldFile.height}x{fldFile.width})
+        </small>
+    );
 };

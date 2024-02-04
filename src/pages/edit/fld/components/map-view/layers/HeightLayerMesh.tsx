@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { MapLayer } from "../../../../../../domain/fld/MapLayer";
 import * as THREE from "three";
+import { useCursorCapture } from "../../../hooks/useCursorCapture";
 
 interface HeightLayerMeshProps {
     layer: MapLayer;
@@ -13,6 +14,8 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
 
     const planeMesh = useRef<THREE.Mesh>(null);
     const planeGeo = useRef<THREE.PlaneGeometry>(null);
+
+    useCursorCapture(planeMesh);
 
     const texture = useMemo(() => {
         return createHeightTexture(layer);
@@ -35,7 +38,13 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true}>
             <planeGeometry args={[width, height, width - 1, height - 1]} ref={planeGeo} />
-            <meshStandardMaterial map={texture} color="#e0e0e0" roughness={0.1} side={THREE.DoubleSide} />
+            <meshStandardMaterial
+                color="#e0e0e0"
+                map={texture}
+                roughness={0.1}
+                side={THREE.DoubleSide}
+                wireframe={false}
+            />
         </mesh>
     );
 };
