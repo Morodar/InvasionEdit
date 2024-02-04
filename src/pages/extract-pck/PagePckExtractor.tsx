@@ -9,9 +9,13 @@ import { PckEntryList } from "./components/PckEntryList";
 import { AboutCard } from "./components/AboutCard";
 import { delay } from "../../common/utils/delay";
 import { ParseFailedError } from "./components/ParseFailedError";
+import { usePageTitle } from "../../common/utils/usePageTitle";
 
 const PagePckExtractor = () => {
     const { t } = useTranslation();
+    const pckExtractor = t("pck-extractor");
+    usePageTitle(pckExtractor);
+
     const [selectedFile, setSelectedFile] = useState<File>();
     const [pckFile, setPckFile] = useState<PckFile>();
     const [parseFailed, setParseFailed] = useState(false);
@@ -41,7 +45,7 @@ const PagePckExtractor = () => {
     return (
         <MainLayout>
             <Typography variant="h3" component="h2" display="block" gutterBottom>
-                {t("pck-extractor")}
+                {pckExtractor}
             </Typography>
             <Stack gap="16px">
                 <ParseFailedError failed={parseFailed} />
