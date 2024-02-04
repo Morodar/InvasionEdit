@@ -23,5 +23,6 @@ export const useInitHetraFld = () => {
         // can't use await in useEffect
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         fetchFld();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 };
