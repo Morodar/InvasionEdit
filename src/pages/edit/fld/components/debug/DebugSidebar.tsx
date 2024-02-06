@@ -2,9 +2,15 @@ import { Card } from "@mui/material";
 import "./DebugSidebar.css";
 import { useCursorContext } from "../../context/CursorContext";
 import { Point3D } from "../../../../../domain/fld/MapLayer";
+import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 
 export const DebugSidebar = () => {
     const { hoveredPoint, selectedPoint, meshPoint } = useCursorContext();
+    const { debugSettings } = useDebugSettingsContext();
+
+    if (!debugSettings.showDebugCursorPosition) {
+        return <></>;
+    }
 
     return (
         <Card className="debug-sidebar">
