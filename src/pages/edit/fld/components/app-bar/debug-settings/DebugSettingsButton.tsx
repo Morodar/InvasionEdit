@@ -13,7 +13,7 @@ export const DebugSettingsButton = () => {
 
     return (
         <>
-            <Tooltip title={"Debug Settings"}>
+            <Tooltip title={t("fld-editor.debug.settings")}>
                 <IconButton onClick={onShowDialog}>
                     <CodeIcon />
                 </IconButton>

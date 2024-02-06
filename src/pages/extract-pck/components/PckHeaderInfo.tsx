@@ -2,6 +2,7 @@ import { Box, Button, Card, CardContent, CircularProgress, Stack } from "@mui/ma
 import { PckFile, downloadPckFileAsZip } from "../../../domain/pck/PckFile";
 import { H3 } from "../../../common/header/Headers";
 import SaveIcon from "@mui/icons-material/Save";
+import { useTranslation } from "react-i18next";
 
 interface PckHeaderInfoProps {
     file?: PckFile;
@@ -11,6 +12,7 @@ interface PckHeaderInfoProps {
 
 export const PckHeaderInfo = (props: PckHeaderInfoProps) => {
     const { file, selectedFile, isLoading } = props;
+    const { t } = useTranslation();
 
     if (!file && !selectedFile) {
         return <></>;
@@ -28,11 +30,11 @@ export const PckHeaderInfo = (props: PckHeaderInfoProps) => {
         <Card>
             <CardContent>
                 <Stack direction="row">
-                    <H3 variant="h5">PCK Header</H3>
+                    <H3 variant="h5">{t("pck-extractor.pck-header")}</H3>
                     <Box sx={{ flexGrow: 1 }} component="div" />
                     {hasAnyEntry && (
                         <Button variant="contained" startIcon={<SaveIcon />} onClick={downloadPckZip}>
-                            Save ZIP
+                            {t("pck-extractor.save-zip")}{" "}
                         </Button>
                     )}
                 </Stack>
@@ -40,10 +42,18 @@ export const PckHeaderInfo = (props: PckHeaderInfoProps) => {
                     {selectedFile && <li>Name: {selectedFile.name}</li>}
                     {header && (
                         <>
-                            <li>Date: {header.date1.toISOString()}</li>
-                            <li>PC Name: {header.pcName1}</li>
-                            <li>File count: {header.fileCount}</li>
-                            <li>File size: {header.fileSize} bytes</li>
+                            <li>
+                                {t("common.date")}: {header.date1.toISOString()}
+                            </li>
+                            <li>
+                                {t("common.pc-name")}: {header.pcName1}
+                            </li>
+                            <li>
+                                {t("common.file-count")}: {header.fileCount}
+                            </li>
+                            <li>
+                                {t("common.file-size")}: {header.fileSize} bytes
+                            </li>
                         </>
                     )}
                 </ul>

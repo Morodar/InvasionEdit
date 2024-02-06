@@ -11,7 +11,7 @@ import { DebugSettingsButton } from "./components/app-bar/debug-settings/DebugSe
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
-    const fldEditor = t("fld-editor");
+    const fldEditor = t("fld-editor.title");
     usePageTitle(fldEditor);
 
     return (

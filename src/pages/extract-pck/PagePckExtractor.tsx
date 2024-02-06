@@ -13,7 +13,7 @@ import { usePageTitle } from "../../common/utils/usePageTitle";
 
 const PagePckExtractor = () => {
     const { t } = useTranslation();
-    const pckExtractor = t("pck-extractor");
+    const pckExtractor = t("pck-extractor.title");
     usePageTitle(pckExtractor);
 
     const [selectedFile, setSelectedFile] = useState<File>();

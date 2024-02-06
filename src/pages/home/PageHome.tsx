@@ -8,7 +8,7 @@ import { usePageTitle } from "../../common/utils/usePageTitle";
 
 const PageHome = () => {
     const { t } = useTranslation();
-    const home = t("home");
+    const home = t("common.home");
     usePageTitle(home);
     return (
         <MainLayout>

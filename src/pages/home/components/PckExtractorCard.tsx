@@ -10,15 +10,15 @@ export const PckExtractorCard = () => {
             <CardMedia component="img" height="140" image="img/extract-pck.png" />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="h3">
-                    {t("pck-extractor")}
+                    {t("pck-extractor.title")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {t("pck-extractor-short-description")}
+                    {t("pck-extractor.short-description")}
                 </Typography>
             </CardContent>
             <CardActions>
                 <Button size="small" component={Link} to={EXTRACT_PCK}>
-                    {t("start-extractor")}
+                    {t("pck-extractor.start-extractor")}
                 </Button>
             </CardActions>
         </Card>

@@ -10,15 +10,15 @@ export const FldEditorCard = () => {
             <CardMedia component="img" height="140" image="img/fld-editor.png" />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="h3">
-                    {t("fld-editor")}
+                    {t("fld-editor.title")}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {t("fld-editor-short-description")}
+                    {t("fld-editor.short-description")}
                 </Typography>
             </CardContent>
             <CardActions>
                 <Button size="small" component={Link} to={EDIT_FLD}>
-                    {t("start-editor")}
+                    {t("fld-editor.start-editor")}
                 </Button>
             </CardActions>
         </Card>

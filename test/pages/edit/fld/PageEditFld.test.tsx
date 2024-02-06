@@ -5,6 +5,6 @@ import { renderSut } from "../../../testUtils";
 describe("MainPageEditFld", () => {
     it("renders app name", () => {
         renderSut(<PageEditFld />);
-        expect(screen.getByRole("heading", { name: "app_name" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "common.app_name" })).toBeInTheDocument();
     });
 });

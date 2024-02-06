@@ -38,17 +38,17 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
 
     return (
         <Dialog onClose={onClose} open={open}>
-            <DialogTitle>{t("choose-fld-file")}</DialogTitle>
+            <DialogTitle>{t("fld-editor.choose-fld-file")}</DialogTitle>
             <DialogContent>
                 <ShowFileInfo fldFile={tmpFldFile} />
             </DialogContent>
             <DialogActions>
                 <SelectFileButton onFileChanged={handleFileChanged} accept=".fld">
-                    {t("select-file")}
+                    {t("common.select-file")}
                 </SelectFileButton>
-                <Button onClick={onClose}>{t("cancel")}</Button>
+                <Button onClick={onClose}>{t("common.cancel")}</Button>
                 <Button disabled={!tmpFldFile} onClick={applyFldFile}>
-                    {t("confirm")}{" "}
+                    {t("common.confirm")}{" "}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -65,7 +65,7 @@ const ShowFileInfo = (props: ShowFileInfo) => {
     if (!fldFile) {
         return (
             <Typography variant="body1" display="block" gutterBottom>
-                {t("please-select-a-fld-file")}
+                {t("fld-editor.select-fld-file")}
             </Typography>
         );
     }

@@ -3,22 +3,23 @@ import "./DebugSidebar.css";
 import { useCursorContext } from "../../context/CursorContext";
 import { Point3D } from "../../../../../domain/fld/MapLayer";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
+import { useTranslation } from "react-i18next";
 
 export const DebugSidebar = () => {
     const { hoveredPoint, selectedPoint, meshPoint } = useCursorContext();
     const { debugSettings } = useDebugSettingsContext();
-
+    const { t } = useTranslation();
     if (!debugSettings.showDebugCursorPosition) {
         return <></>;
     }
 
     return (
         <Card className="debug-sidebar">
-            <p>Mesh Point</p>
+            <p>{t("fld-editor.debug.mesh-point")}</p>
             <FormatCoordinate point={meshPoint} />
-            <p>Hovered Point</p>
+            <p>{t("fld-editor.debug.hovered-point")}</p>
             <FormatCoordinate point={hoveredPoint} />
-            <p>Selected Point</p>
+            <p>{t("fld-editor.debug.selected-point")}</p>
             <FormatCoordinate point={selectedPoint} />
         </Card>
     );

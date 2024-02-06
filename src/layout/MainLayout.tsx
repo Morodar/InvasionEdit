@@ -25,7 +25,7 @@ export const MainLayout = (props: MainLayoutProps) => {
                 <Toolbar>
                     <Typography variant="h6" component="h1" mr={2}>
                         <Link to={HOME} className="link-no-decoration">
-                            {t("app_name")}
+                            {t("common.app_name")}
                         </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} component="div" />

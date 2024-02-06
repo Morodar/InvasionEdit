@@ -1,21 +1,40 @@
 {
-  "app_name": "Invasion Edit",
-  "btn": {
-    "load": {
-      "fld": "Load Fld"
-    }
+  "fld-editor": {
+    "title": "FLD Editor",
+    "short-description": "3D Editor for FLD Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
+    "start-editor": "Start Editor",
+    "debug": {
+      "mesh-point": "Mesh Point",
+      "hovered-point": "Hovered Point",
+      "selected-point": "Selected Point",
+      "cube": "Debug Cube",
+      "cursor-position": "Debug Cursor Position",
+      "settings": "Debug Settings"
+    },
+    "select-fld-file": "Please select a FLD file.",
+    "choose-fld-file": "Choose FLD File",
+    "load-fld": "Load FLD"
   },
-  "please-select-a-fld-file": "Please select a fld file.",
-  "confirm": "Confirm",
-  "cancel": "Cancel",
-  "select-file": "Select File",
-  "choose-fld-file": "Choose Fld File",
-  "home": "Home",
-  "fld-editor": "FLD Editor",
-  "start-editor": "Start Editor",
-  "fld-editor-short-description": "3D Editor for FLD Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
-  "start-extractor": "Start Extractor",
-  "thandors-game-assets-including-levels-reside-in-so-called-pck-files-pck-extractor-can-decompress-and-extract-all-game-assets": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
-  "pck-extractor-short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
-  "pck-extractor": "PCK Extractor"
+  "pck-extractor": {
+    "short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
+    "title": "PCK Extractor",
+    "unknown-error": "An unknown error occured while reading the PCK file.",
+    "extract-pck-file": "Extract PCK file",
+    "start-extractor": "Start Extractor",
+    "pck-files": "PCK Files",
+    "pck-header": "PCK Header",
+    "save-zip": "Save ZIP"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "app_name": "Invasion Edit",
+    "home": "Home",
+    "close": "Close",
+    "select-file": "Select File",
+    "confirm": "Confirm",
+    "date": "Date",
+    "pc-name": "PC Name",
+    "file-count": "File count",
+    "file-size": "File size"
+  }
 }

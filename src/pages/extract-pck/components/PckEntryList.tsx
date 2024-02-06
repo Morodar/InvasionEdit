@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@mui/material";
 import { PckFileEntry } from "../../../domain/pck/PckFileEntry";
 import { H3 } from "../../../common/header/Headers";
+import { useTranslation } from "react-i18next";
 
 interface PckEntryListProps {
     entries?: PckFileEntry[];
@@ -8,6 +9,7 @@ interface PckEntryListProps {
 
 export const PckEntryList = (props: PckEntryListProps) => {
     const { entries } = props;
+    const { t } = useTranslation();
 
     if (!entries || entries.length === 0) {
         return <></>;
@@ -20,7 +22,7 @@ export const PckEntryList = (props: PckEntryListProps) => {
     return (
         <Card>
             <CardContent>
-                <H3 variant="h5">PCK Files</H3>
+                <H3 variant="h5">{t("pck-extractor.pck-files")}</H3>
                 <ul>{listItems}</ul>
             </CardContent>
         </Card>

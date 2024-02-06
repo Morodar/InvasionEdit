@@ -30,12 +30,12 @@ export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
 
     return (
         <Dialog onClose={onClose} open={open}>
-            <DialogTitle>Debug Settings</DialogTitle>
+            <DialogTitle>{t("fld-editor.debug.settings")}</DialogTitle>
             <DialogContent>
                 <FormGroup>
                     <FormControlLabel
                         control={<Switch checked={debugSettings.showDebugCube} onChange={handleDebugCubeChange} />}
-                        label="Debug Cube"
+                        label={t("fld-editor.debug.cube")}
                     />
                     <FormControlLabel
                         control={
@@ -44,12 +44,12 @@ export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
                                 onChange={handleDebugCursorPositionChange}
                             />
                         }
-                        label="Debug Cursor Position"
+                        label={t("fld-editor.debug.cursor-position")}
                     />
                 </FormGroup>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Close</Button>
+                <Button onClick={onClose}>{t("common.close")}</Button>
             </DialogActions>
         </Dialog>
     );
