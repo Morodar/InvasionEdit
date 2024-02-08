@@ -32,7 +32,7 @@ export const MapView = (): React.JSX.Element => {
         <div className="map-view">
             <Canvas className="map">
                 <ambientLight intensity={3} />
-                <directionalLight position={[5, 5, 5]} intensity={0.5} />
+                <directionalLight position={[0, 100, 0]} intensity={2} />
 
                 <DREI.OrbitControls target={[60, 0, 60]} ref={orbitControlsRef} />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />

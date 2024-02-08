@@ -17,8 +17,8 @@ export interface DebugSettingsDialogProps {
 }
 
 export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
-    const { t } = useTranslation();
     const { onClose, open } = props;
+    const { t } = useTranslation();
     const { debugSettings, setShowDebugCube, showDebugCursorPosition } = useDebugSettingsContext();
 
     const handleDebugCubeChange = (event: React.ChangeEvent<HTMLInputElement>) => {

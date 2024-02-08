@@ -1,4 +1,5 @@
-import { useFldMapContext } from "../../context/FldMapContext";
+import { useFldMapContext } from "../../../context/FldMapContext";
+import { FldHeaderInfoIcon } from "./FldHeaderInfoIcon";
 
 export const FldName = () => {
     const { fldFile } = useFldMapContext();
@@ -10,6 +11,7 @@ export const FldName = () => {
     return (
         <small>
             {fldFile.name} ({fldFile.height}x{fldFile.width})
+            <FldHeaderInfoIcon fldFile={fldFile} />
         </small>
     );
 };

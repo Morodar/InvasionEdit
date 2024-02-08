@@ -1,24 +1,32 @@
 import { FldFile } from "./FldFile";
+import { FldUtils } from "./FldUtils";
 import { Point3D } from "./MapLayer";
 
 export async function parseFldFile(file: File): Promise<FldFile> {
     const content: ArrayBuffer = await file.arrayBuffer();
     const view = new DataView(content);
-
+    const util = new FldUtils(view);
     const size = view.getUint32(0x04, true);
-    const width = view.getUint32(0x0b8, true);
-    const height = view.getUint32(0x0bc, true);
+    const width = util.readWidth();
+    const height = util.readHeight();
     const mapSize = width * height;
+
     const resourceArray = new Uint8Array(mapSize);
     const resourceView = new DataView(resourceArray.buffer);
+
+    const points = extractLayer(view, height, width, OFFSET_HEIGHT_LAYER);
+
     extractLayerUintArray(view, resourceView, height, width, OFFSET_RESSOURCES_LAYER);
     return {
         name: file.name,
         fileSize: size,
         width,
         height,
-        points: extractLayer(view, height, width, OFFSET_HEIGHT_LAYER),
+        points,
         resourceLayer: resourceView,
+        devSaveLocation: util.readDevSaveLocation(),
+        unknown0xB0: util.readUnknown0xB0(),
+        unknown0xB4: util.readUnknown0xB4(),
     };
 }
 

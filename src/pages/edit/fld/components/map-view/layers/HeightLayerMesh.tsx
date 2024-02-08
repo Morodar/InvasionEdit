@@ -32,6 +32,7 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
                 geo.setZ(i, p.z);
             }
             planeGeo.current.attributes.position.needsUpdate = true;
+            planeGeo.current.computeVertexNormals();
         }
     }, [layer.points]);
 
@@ -41,7 +42,7 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
             <meshStandardMaterial
                 color="#e0e0e0"
                 map={texture}
-                roughness={0.1}
+                roughness={0.5}
                 side={THREE.DoubleSide}
                 wireframe={false}
             />
