@@ -4,12 +4,12 @@ import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext,
 
 export interface CursorContextProps {
     // state
-    selectedPoint?: Point3D;
-    hoveredPoint?: Point3D;
+    selectedPoint?: number;
+    hoveredPoint?: number;
     meshPoint?: Point3D;
     // functions
-    setSelectedPoint: Dispatch<SetStateAction<Point3D | undefined>>;
-    setHoveredPoint: Dispatch<SetStateAction<Point3D | undefined>>;
+    setSelectedPoint: Dispatch<SetStateAction<number | undefined>>;
+    setHoveredPoint: Dispatch<SetStateAction<number | undefined>>;
     setMeshPoint: Dispatch<SetStateAction<Point3D | undefined>>;
 }
 
@@ -23,9 +23,9 @@ export const useCursorContext = (): CursorContextProps => {
     return context;
 };
 
-export const CursorContexProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-    const [selectedPoint, setSelectedPoint] = useState<Point3D>();
-    const [hoveredPoint, setHoveredPoint] = useState<Point3D>();
+export const CursorContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
+    const [selectedPoint, setSelectedPoint] = useState<number>();
+    const [hoveredPoint, setHoveredPoint] = useState<number>();
     const [meshPoint, setMeshPoint] = useState<Point3D>();
 
     const contextValue: CursorContextProps = useMemo(() => {

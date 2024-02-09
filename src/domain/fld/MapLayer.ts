@@ -4,6 +4,10 @@ export interface Point3D {
     value: number;
 }
 
+export interface IndexPoint3D extends Point3D {
+    index: number;
+}
+
 export interface MapLayer {
     height: number;
     width: number;

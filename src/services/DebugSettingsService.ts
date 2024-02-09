@@ -2,6 +2,7 @@ import { StorageItems } from "./StorageItems";
 
 export interface DebugSettings {
     showDebugCube: boolean;
+    showDebugCube3x3: boolean;
     showDebugCursorPosition: boolean;
 }
 
@@ -23,6 +24,7 @@ export class DebugSettingsService {
 
             return {
                 showDebugCube: this.readBooleanOrDefault(json, "showDebugCube"),
+                showDebugCube3x3: this.readBooleanOrDefault(json, "showDebugCube3x3"),
                 showDebugCursorPosition: this.readBooleanOrDefault(json, "showDebugCursorPosition"),
             };
         } catch (Error) {
@@ -38,5 +40,9 @@ export class DebugSettingsService {
         return false;
     }
 
-    createDefault = (): DebugSettings => ({ showDebugCube: false, showDebugCursorPosition: false });
+    createDefault = (): DebugSettings => ({
+        showDebugCube: false,
+        showDebugCursorPosition: false,
+        showDebugCube3x3: false,
+    });
 }

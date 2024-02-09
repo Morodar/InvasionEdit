@@ -22,7 +22,7 @@ export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
                 setMeshPoint({ x, z, value: Math.round(point.y) });
                 const index = (height - x) * width + z - width;
                 if (index < points.length) {
-                    setHoveredPoint(points[index]);
+                    setHoveredPoint(index);
                 }
             }
         }

@@ -15,6 +15,10 @@ import { Stats } from "@react-three/drei";
 import { HeightLayerMesh } from "./layers/HeightLayerMesh";
 import { DebugSidebar } from "../debug/DebugSidebar";
 import { DebugBox } from "../debug/DebugBox";
+import { Debug3x3Box } from "../debug/Debug3x3Box";
+import { PirmaryActionBar } from "../bar-action/PrimaryActionBar";
+import { SecondaryActionBar } from "../bar-action/SecondaryActionBar";
+import { ResourceActionPreview } from "./previews/ResourceActionPreview";
 const layer = create128x128();
 
 export const MapView = (): React.JSX.Element => {
@@ -45,8 +49,12 @@ export const MapView = (): React.JSX.Element => {
                 <Stats className="fps-counter" />
                 <HeightLayerMesh layer={fldFile ?? layer} />
                 <DebugBox />
+                <Debug3x3Box />
+                <ResourceActionPreview />
             </Canvas>
             <DebugSidebar />
+            <PirmaryActionBar />
+            <SecondaryActionBar />
         </div>
     );
 };

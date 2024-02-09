@@ -5,9 +5,11 @@ import { FldName } from "./components/bar-app/fld-file/FldName";
 import { usePageTitle } from "../../../common/utils/usePageTitle";
 import { useTranslation } from "react-i18next";
 import { FldMapContextProvider } from "./context/FldMapContext";
-import { CursorContexProvider } from "./context/CursorContext";
+import { CursorContextProvider } from "./context/CursorContext";
 import { DebugSettingsContextProvider } from "./context/DebugSettingsContext";
 import { DebugSettingsButton } from "./components/bar-app/debug-settings/DebugSettingsButton";
+import { FldPrimaryActionContextProvider } from "./context/FldPrimaryActionContext";
+import { ResourceActionContextProvider } from "./context/ResourceActionContext";
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
@@ -17,15 +19,19 @@ const PageEditFld = (): React.JSX.Element => {
     return (
         <FldMapContextProvider>
             <DebugSettingsContextProvider>
-                <CursorContexProvider>
-                    <MainLayout
-                        withPadding={false}
-                        centerElements={<FldName />}
-                        rightSideElements={<RightSideElements />}
-                    >
-                        <MapView />
-                    </MainLayout>
-                </CursorContexProvider>
+                <CursorContextProvider>
+                    <FldPrimaryActionContextProvider>
+                        <ResourceActionContextProvider>
+                            <MainLayout
+                                withPadding={false}
+                                centerElements={<FldName />}
+                                rightSideElements={<RightSideElements />}
+                            >
+                                <MapView />
+                            </MainLayout>
+                        </ResourceActionContextProvider>
+                    </FldPrimaryActionContextProvider>
+                </CursorContextProvider>
             </DebugSettingsContextProvider>
         </FldMapContextProvider>
     );

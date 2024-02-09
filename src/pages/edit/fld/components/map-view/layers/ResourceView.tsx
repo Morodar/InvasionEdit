@@ -34,7 +34,6 @@ const ResourceRender = (props: ResourceRenderProps) => {
             temp.updateMatrix();
             instancedMeshRef.current.setMatrixAt(i, temp.matrix);
         });
-        // Update the instance
         instancedMeshRef.current.instanceMatrix.needsUpdate = true;
     }, [points]);
 

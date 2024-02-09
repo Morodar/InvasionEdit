@@ -1,0 +1,46 @@
+.map-view .primary-action-bar {
+    height:48px;
+    width:auto;
+    margin-bottom: 16px;
+
+    position: fixed;
+    top:auto;
+    bottom:0;
+    
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 100;
+    padding:0 16px;
+}
+
+.map-view .secondary-action-bar {
+    height:48px;
+    width:auto;
+    margin-bottom: 16px;
+
+    position: fixed;
+    top:auto;
+    bottom: 64px;
+    
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 100;
+    padding:0 16px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.map-view .hide-number-arrows input[type="number"]::-webkit-outer-spin-button,
+.map-view .hide-number-arrows input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  text-align: center;
+}
+
+/* Firefox */
+.map-view .hide-number-arrows input[type="number"] {
+  -moz-appearance: textfield;
+  appearance:textfield;
+  text-align: center;
+}

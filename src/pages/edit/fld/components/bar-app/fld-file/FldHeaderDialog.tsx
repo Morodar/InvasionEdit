@@ -16,7 +16,7 @@ export const FldHeaderDialog = (props: FldHeaderDialogProps) => {
         <Dialog onClose={onClose} open={open}>
             <DialogTitle>FLD Header</DialogTitle>
             <DialogContent>
-                <Typography>
+                <Typography component="div">
                     <List dense>
                         <ListItem>Name: {fldFile.name}</ListItem>
                         <ListItem>

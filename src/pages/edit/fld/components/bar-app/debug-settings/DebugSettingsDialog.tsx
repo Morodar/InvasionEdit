@@ -19,10 +19,13 @@ export interface DebugSettingsDialogProps {
 export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
     const { onClose, open } = props;
     const { t } = useTranslation();
-    const { debugSettings, setShowDebugCube, showDebugCursorPosition } = useDebugSettingsContext();
+    const { debugSettings, setShowDebugCube, showDebugCursorPosition, setShowDebugCube3x3 } = useDebugSettingsContext();
 
     const handleDebugCubeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setShowDebugCube(event.target.checked);
+    };
+    const handleDebugCubeChange3x3 = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setShowDebugCube3x3(event.target.checked);
     };
     const handleDebugCursorPositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         showDebugCursorPosition(event.target.checked);
@@ -36,6 +39,12 @@ export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
                     <FormControlLabel
                         control={<Switch checked={debugSettings.showDebugCube} onChange={handleDebugCubeChange} />}
                         label={t("fld-editor.debug.cube")}
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch checked={debugSettings.showDebugCube3x3} onChange={handleDebugCubeChange3x3} />
+                        }
+                        label={t("fld-editor.debug.cube") + "3x3"}
                     />
                     <FormControlLabel
                         control={
