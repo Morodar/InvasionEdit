@@ -1,18 +1,19 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useContext } from "react";
+import { Dispatch, useContext } from "react";
 import { useState, useCallback, useMemo, PropsWithChildren, useEffect } from "react";
 import { FldFile } from "../../../../domain/fld/FldFile";
 import { parseFldFile } from "../../../../domain/fld/parseFldFile";
 import { ResourceDefinition, ResourceLayerUtil } from "../../../../domain/fld/ResourceLayerUtil";
 
 import { createContext } from "react";
+import { FldAction, useFldReducer } from "../../../../domain/fld/useFldReducer";
 
 export interface FldMapContextProps {
     // state
     fldFile: FldFile | null;
     resourceLayer: ResourceDefinition | null;
     // functions
-    setFldFile: React.Dispatch<React.SetStateAction<FldFile | null>>;
+    dispatch: Dispatch<FldAction>;
     tryUseFldFile: (file: File) => void;
 }
 
@@ -27,15 +28,15 @@ export const useFldMapContext = (): FldMapContextProps => {
 };
 
 export const FldMapContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-    const [fldFile, setFldFile] = useState<FldFile | null>(null);
+    const [fldFile, dispatch] = useFldReducer();
     const [resourceLayer, setResourceLayer] = useState<ResourceDefinition | null>(null);
 
     const tryUseFldFile = useCallback(
         async (file: File) => {
             const result = await parseFldFile(file);
-            setFldFile(result);
+            dispatch({ type: "SET_FLD", fldFile: result });
         },
-        [setFldFile],
+        [dispatch],
     );
 
     useEffect(() => {
@@ -46,8 +47,8 @@ export const FldMapContextProvider: React.FC<PropsWithChildren> = ({ children }:
     }, [fldFile]);
 
     const contextValue = useMemo(() => {
-        return { fldFile, setFldFile, tryUseFldFile, resourceLayer };
-    }, [fldFile, setFldFile, tryUseFldFile, resourceLayer]);
+        return { fldFile, dispatch, tryUseFldFile, resourceLayer };
+    }, [fldFile, dispatch, tryUseFldFile, resourceLayer]);
 
     return <FldMapContext.Provider value={contextValue}>{children}</FldMapContext.Provider>;
 };

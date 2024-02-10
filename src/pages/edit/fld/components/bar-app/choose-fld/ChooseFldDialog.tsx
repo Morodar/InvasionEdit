@@ -14,7 +14,7 @@ export interface ChooseFldDialogProps {
 export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
     const { t } = useTranslation();
     const { onClose, open } = props;
-    const { setFldFile } = useFldMapContext();
+    const { dispatch } = useFldMapContext();
     const [tmpFldFile, setTmpFldFile] = useState<FldFile>();
     useEffect(() => {
         if (open) {
@@ -31,7 +31,7 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
 
     const applyFldFile = () => {
         if (tmpFldFile) {
-            setFldFile(tmpFldFile);
+            dispatch({ type: "SET_FLD", fldFile: tmpFldFile });
             onClose();
         }
     };

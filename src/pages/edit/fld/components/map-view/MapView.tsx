@@ -19,10 +19,14 @@ import { Debug3x3Box } from "../debug/Debug3x3Box";
 import { PirmaryActionBar } from "../bar-action/PrimaryActionBar";
 import { SecondaryActionBar } from "../bar-action/SecondaryActionBar";
 import { ResourceActionPreview } from "./previews/ResourceActionPreview";
+import * as THREE from "three";
+import { useKeyboardControls } from "../../hooks/useKeyboardControls";
+
 const layer = create128x128();
 
 export const MapView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
+
     useInitHetraFld();
     const { fldFile } = useFldMapContext();
 
@@ -38,7 +42,11 @@ export const MapView = (): React.JSX.Element => {
                 <ambientLight intensity={3} />
                 <directionalLight position={[0, 100, 0]} intensity={2} />
 
-                <DREI.OrbitControls target={[60, 0, 60]} ref={orbitControlsRef} />
+                <DREI.OrbitControls
+                    target={[60, 0, 60]}
+                    ref={orbitControlsRef}
+                    mouseButtons={{ RIGHT: THREE.MOUSE.RIGHT }}
+                />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />
 
                 {false && (
@@ -65,6 +73,7 @@ interface MapViewUtilProps {
 
 const MapViewUtil = (props: MapViewUtilProps) => {
     useCenterCamera(props.orbitControlsRef);
+    useKeyboardControls(props.orbitControlsRef);
     return <></>;
 };
 

@@ -1,3 +1,8 @@
+export interface IndexValue {
+    index: number;
+    value: number;
+}
+
 export interface Point3D {
     x: number;
     z: number;

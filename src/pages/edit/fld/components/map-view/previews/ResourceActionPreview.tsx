@@ -7,6 +7,7 @@ import { useCursorContext } from "../../../context/CursorContext";
 import { useRelativePoints } from "../../../hooks/useRelativePoints";
 import { FldFile } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
+import { Tritium, Xenit } from "../../../../../../domain/fld/ResourceLayerUtil";
 
 export const ResourceActionPreview = () => {
     const { fldFile } = useFldMapContext();
@@ -22,8 +23,8 @@ export const ResourceActionPreview = () => {
 
 const ACTION_COLOR: { [key in ActiveResource]: Color } = {
     DELETE: "#ff0000",
-    XENIT: "#00ff00",
-    TRITIUM: "#0000ff",
+    XENIT: Xenit.COLOR,
+    TRITIUM: Tritium.COLOR,
 };
 
 interface PreviewProps {
@@ -61,7 +62,14 @@ const Preview = (props: PreviewProps) => {
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true}>
             <planeGeometry args={[width, height, width - 1, height - 1]} ref={planeGeo} />
-            <meshStandardMaterial color={color} roughness={0.5} side={THREE.DoubleSide} wireframe={false} />
+            <meshStandardMaterial
+                color={color}
+                roughness={0.5}
+                side={THREE.DoubleSide}
+                transparent={true}
+                wireframe={false}
+                opacity={0.5}
+            />
         </mesh>
     );
 };
