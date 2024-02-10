@@ -1,16 +1,19 @@
 import { Color } from "@react-three/fiber";
 import { useFldPrimaryActionContext } from "../../../context/FldPrimaryActionContext";
 import { ActiveResource, useResourceActionContext } from "../../../context/ResourceActionContext";
-import { useEffect, useRef } from "react";
+import { Dispatch, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useCursorContext } from "../../../context/CursorContext";
-import { useRelativePoints } from "../../../hooks/useRelativePoints";
+import { getRelativePoints } from "../../../hooks/getRelativePoints";
 import { FldFile } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { Tritium, Xenit } from "../../../../../../domain/fld/ResourceLayerUtil";
+import { IndexPoint3D } from "../../../../../../domain/fld/MapLayer";
+import { useLeftClickHoldAction } from "../../../hooks/useLeftClickHoldAction";
+import { FldAction } from "../../../../../../domain/fld/useFldReducer";
 
 export const ResourceActionPreview = () => {
-    const { fldFile } = useFldMapContext();
+    const { fldFile, dispatch } = useFldMapContext();
     const { primaryAction } = useFldPrimaryActionContext();
     const { hoveredPoint } = useCursorContext();
 
@@ -18,7 +21,7 @@ export const ResourceActionPreview = () => {
         return <></>;
     }
 
-    return <Preview hoveredPoint={hoveredPoint} fldFile={fldFile} />;
+    return <Preview hoveredPoint={hoveredPoint} fldFile={fldFile} dispatch={dispatch} />;
 };
 
 const ACTION_COLOR: { [key in ActiveResource]: Color } = {
@@ -30,20 +33,30 @@ const ACTION_COLOR: { [key in ActiveResource]: Color } = {
 interface PreviewProps {
     hoveredPoint: number;
     fldFile: FldFile;
+    dispatch: Dispatch<FldAction>;
 }
 
 const Preview = (props: PreviewProps) => {
-    const { hoveredPoint, fldFile } = props;
+    const { hoveredPoint, fldFile, dispatch } = props;
     const { activeResource, size } = useResourceActionContext();
-    const points = useRelativePoints(fldFile, hoveredPoint, size, size);
-
-    const width = new Set(points.map((p) => p.z)).size;
-    const height = new Set(points.map((p) => p.x)).size;
-
-    const color = ACTION_COLOR[activeResource];
+    const [points, setPoints] = useState<IndexPoint3D[]>([]);
+    const [width, setWidth] = useState<number>(0);
+    const [height, setHeight] = useState<number>(0);
 
     const planeMesh = useRef<THREE.Mesh>(null);
     const planeGeo = useRef<THREE.PlaneGeometry>(null);
+
+    const color = ACTION_COLOR[activeResource];
+
+    useLeftClickHoldAction(() => dispatch({ type: "RESOURCE", points, resource: activeResource }), [points]);
+
+    useEffect(() => {
+        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size);
+        setPoints(relativePoints);
+        setWidth(new Set(relativePoints.map((p) => p.z)).size);
+        setHeight(new Set(relativePoints.map((p) => p.x)).size);
+    }, [fldFile, hoveredPoint, size]);
+
     useEffect(() => {
         if (planeGeo.current) {
             const geo = planeGeo.current.attributes.position;

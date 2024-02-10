@@ -47,9 +47,11 @@ function updateCameraPosition(timeMs: number, pressedKeys: Set<string>, camera: 
     const target = orbit.target;
     const moveBy = speed * timeMs;
     const rotateBy = rotateSpeed * timeMs;
+
     const direction = new THREE.Vector3().subVectors(camera.position, target).normalize();
-    const right = new THREE.Vector3().crossVectors(direction, up);
-    const forward = new THREE.Vector3().crossVectors(right, up);
+    const left = new THREE.Vector3().crossVectors(direction, up);
+    const forward = new THREE.Vector3().crossVectors(left, up);
+
     const moveVector = new THREE.Vector3();
 
     for (const key of pressedKeys) {
@@ -59,7 +61,7 @@ function updateCameraPosition(timeMs: number, pressedKeys: Set<string>, camera: 
                 break;
 
             case "a":
-                moveVector.addScaledVector(right, moveBy);
+                moveVector.addScaledVector(left, moveBy);
                 break;
 
             case "s":
@@ -67,7 +69,7 @@ function updateCameraPosition(timeMs: number, pressedKeys: Set<string>, camera: 
                 break;
 
             case "d":
-                moveVector.addScaledVector(right, -moveBy);
+                moveVector.addScaledVector(left, -moveBy);
                 break;
 
             case "e":

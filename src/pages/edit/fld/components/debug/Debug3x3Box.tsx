@@ -2,7 +2,7 @@ import { FldFile } from "../../../../../domain/fld/FldFile";
 import { useCursorContext } from "../../context/CursorContext";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useFldMapContext } from "../../context/FldMapContext";
-import { useRelativePoints } from "../../hooks/useRelativePoints";
+import { getRelativePoints } from "../../hooks/getRelativePoints";
 import { Box } from "../map-view/entities/Box";
 
 export const Debug3x3Box = () => {
@@ -24,7 +24,7 @@ interface RenderProps {
 
 const Render = (props: RenderProps) => {
     const { fldFile, hoveredPoint } = props;
-    const points = useRelativePoints(fldFile, hoveredPoint, 3, 3);
+    const points = getRelativePoints(fldFile, hoveredPoint, 3, 3);
     return (
         <>
             {points.map((p) => (

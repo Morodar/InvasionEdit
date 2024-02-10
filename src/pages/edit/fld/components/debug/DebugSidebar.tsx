@@ -11,6 +11,7 @@ export const DebugSidebar = () => {
     const { fldFile } = useFldMapContext();
     const { debugSettings } = useDebugSettingsContext();
     const { t } = useTranslation();
+
     if (!debugSettings.showDebugCursorPosition) {
         return <></>;
     }

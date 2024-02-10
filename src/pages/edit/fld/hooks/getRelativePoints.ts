@@ -1,7 +1,7 @@
 import { FldFile } from "../../../../domain/fld/FldFile";
 import { IndexPoint3D } from "../../../../domain/fld/MapLayer";
 
-export function useRelativePoints(
+export function getRelativePoints(
     fldFile: FldFile,
     fromIndex: number,
     brushWidth: number,
