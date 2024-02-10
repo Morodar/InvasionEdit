@@ -18,6 +18,7 @@ export async function parseFldFile(file: File): Promise<FldFile> {
 
     extractLayerUintArray(view, resourceView, height, width, OFFSET_RESSOURCES_LAYER);
     return {
+        originalFile: content,
         name: file.name,
         fileSize: size,
         width,
@@ -30,8 +31,8 @@ export async function parseFldFile(file: File): Promise<FldFile> {
     };
 }
 
-const OFFSET_HEIGHT_LAYER = 585;
-const OFFSET_RESSOURCES_LAYER = 593;
+export const OFFSET_HEIGHT_LAYER = 585;
+export const OFFSET_RESSOURCES_LAYER = 593;
 
 // (Layer  1) 512 + 69 = 580 = Layer XXX
 // (Layer  2) 512 + 70 = 581 = Layer XXX

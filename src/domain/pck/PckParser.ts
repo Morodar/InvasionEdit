@@ -25,7 +25,6 @@ export async function parsePckFile(file: File): Promise<PckFile> {
         pckFileEntries: readPckFileEntries(content, header),
     };
 
-    await Promise.resolve();
     return pck;
 }
 

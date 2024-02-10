@@ -7,4 +7,5 @@ export interface FldFile extends MapLayer {
     devSaveLocation: string;
     unknown0xB0: number;
     unknown0xB4: number;
+    originalFile?: ArrayBuffer;
 }

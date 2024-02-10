@@ -10,6 +10,7 @@ import { DebugSettingsContextProvider } from "./context/DebugSettingsContext";
 import { DebugSettingsButton } from "./components/bar-app/debug-settings/DebugSettingsButton";
 import { FldPrimaryActionContextProvider } from "./context/FldPrimaryActionContext";
 import { ResourceActionContextProvider } from "./context/ResourceActionContext";
+import { SaveFldButton } from "./components/bar-app/fld-file/SaveFldButton";
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
@@ -43,6 +44,7 @@ const RightSideElements = () => {
         <>
             <DebugSettingsButton />
             <ChooseFldButton />
+            <SaveFldButton />
         </>
     );
 };
