@@ -1,10 +1,10 @@
 import { Card } from "@mui/material";
 import "./DebugSidebar.css";
 import { useCursorContext } from "../../context/CursorContext";
-import { Point3D } from "../../../../../domain/fld/MapLayer";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useTranslation } from "react-i18next";
 import { useFldMapContext } from "../../context/FldMapContext";
+import { Point3D } from "../../../../../domain/fld/FldFile";
 
 export const DebugSidebar = () => {
     const { hoveredPoint, meshPoint } = useCursorContext();

@@ -1,5 +1,4 @@
-import { FldFile } from "./FldFile";
-import { Point3D } from "./MapLayer";
+import { FldFile, Point3D } from "./FldFile";
 
 export class Xenit {
     static LAYER_VALUE = 8;

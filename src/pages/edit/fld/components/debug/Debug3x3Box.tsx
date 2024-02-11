@@ -1,8 +1,7 @@
-import { FldFile } from "../../../../../domain/fld/FldFile";
+import { FldFile, getRelativePoints } from "../../../../../domain/fld/FldFile";
 import { useCursorContext } from "../../context/CursorContext";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useFldMapContext } from "../../context/FldMapContext";
-import { getRelativePoints } from "../../hooks/getRelativePoints";
 import { Box } from "../map-view/entities/Box";
 
 export const Debug3x3Box = () => {

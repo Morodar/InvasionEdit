@@ -1,6 +1,5 @@
 import { useReducer } from "react";
-import { FldFile } from "./FldFile";
-import { IndexPoint3D } from "./MapLayer";
+import { FldFile, IndexPoint3D } from "./FldFile";
 import { Tritium, Xenit } from "./ResourceLayerUtil";
 import { ActiveResource } from "../../pages/edit/fld/context/ResourceActionContext";
 

@@ -1,5 +1,4 @@
-import { FldFile } from "./FldFile";
-import { Point3D } from "./MapLayer";
+import { FldFile, Point3D } from "./FldFile";
 import { OFFSET_HEIGHT_LAYER, OFFSET_RESSOURCES_LAYER } from "./parseFldFile";
 
 export function saveFldFile(fldFile: FldFile): File {

@@ -1,6 +1,5 @@
-import { FldFile } from "./FldFile";
+import { FldFile, Point3D } from "./FldFile";
 import { FldUtils } from "./FldUtils";
-import { Point3D } from "./MapLayer";
 
 export async function parseFldFile(file: File): Promise<FldFile> {
     const content: ArrayBuffer = await file.arrayBuffer();

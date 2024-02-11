@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
-import { MapLayer } from "../../../../../../domain/fld/MapLayer";
 import * as THREE from "three";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
+import { MapLayer } from "../../../../../../domain/fld/FldFile";
 
 interface HeightLayerMeshProps {
     layer: MapLayer;
@@ -50,7 +50,7 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
     );
 };
 
-// Create a texture based on the height values
+/** Create a texture based on the height values */
 const createHeightTexture = (layer: MapLayer): THREE.DataTexture => {
     const heightData = new Uint8Array(layer.width * layer.height * 4);
     const { width, height, points } = layer;

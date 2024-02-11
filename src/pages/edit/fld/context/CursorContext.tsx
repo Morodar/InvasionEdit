@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Point3D } from "../../../../domain/fld/MapLayer";
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useMemo, useState } from "react";
+import { Point3D } from "../../../../domain/fld/FldFile";
 
 export interface CursorContextProps {
     // state

@@ -4,11 +4,9 @@ import { ActiveResource, useResourceActionContext } from "../../../context/Resou
 import { Dispatch, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useCursorContext } from "../../../context/CursorContext";
-import { getRelativePoints } from "../../../hooks/getRelativePoints";
-import { FldFile } from "../../../../../../domain/fld/FldFile";
+import { FldFile, IndexPoint3D, getRelativePoints } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { Tritium, Xenit } from "../../../../../../domain/fld/ResourceLayerUtil";
-import { IndexPoint3D } from "../../../../../../domain/fld/MapLayer";
 import { useLeftClickHoldAction } from "../../../hooks/useLeftClickHoldAction";
 import { FldAction } from "../../../../../../domain/fld/useFldReducer";
 
