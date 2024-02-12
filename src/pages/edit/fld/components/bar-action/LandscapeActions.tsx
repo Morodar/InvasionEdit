@@ -1,5 +1,5 @@
 import { Divider, IconButton, Stack, Tooltip } from "@mui/material";
-import { HeightmapAction, useHeightmapActionContext } from "../../context/HeigtmapActionContext";
+import { LandscapeAction, useLandscapeActionContext } from "../../context/LandscapeActionContext";
 import BalanceIcon from "@mui/icons-material/Balance";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -7,8 +7,8 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import { MinMaxNumberInput } from "../../../../../common/input/MinMaxNumberInput";
 
 export const LandscapeActions = () => {
-    const { activeAction, height, radius, stepsize, setActiveAction, setHeight, setRadius, setStepsize } =
-        useHeightmapActionContext();
+    const { activeAction, height, radius, speed, setActiveAction, setHeight, setRadius, setSpeed } =
+        useLandscapeActionContext();
 
     return (
         <Stack
@@ -60,13 +60,13 @@ export const LandscapeActions = () => {
                     <MinMaxNumberInput label="Height" min={0} max={255} onValueChanged={setHeight} value={height} />
                 )}
 
-                {(activeAction === "STEP-UP" || activeAction === "STEP-DOWN") && (
+                {activeAction !== "FIX" && (
                     <MinMaxNumberInput
-                        label="Stepsize"
+                        label="Speed"
                         min={1}
                         max={16}
-                        onValueChanged={setStepsize}
-                        value={stepsize}
+                        onValueChanged={setSpeed}
+                        value={speed}
                         maxWidth={80}
                     />
                 )}
@@ -77,5 +77,5 @@ export const LandscapeActions = () => {
     );
 };
 
-const getActionColor = (action: HeightmapAction, currentAction: HeightmapAction) =>
+const getActionColor = (action: LandscapeAction, currentAction: LandscapeAction) =>
     action === currentAction ? "primary" : "default";

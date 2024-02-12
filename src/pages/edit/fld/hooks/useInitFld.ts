@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useFldMapContext } from "../context/FldMapContext";
-export const useInitHetraFld = () => {
+export const useInitFld = () => {
     const { tryUseFldFile, fldFile } = useFldMapContext();
     useEffect(() => {
         if (fldFile) {
@@ -9,14 +9,14 @@ export const useInitHetraFld = () => {
 
         const fetchFld = async () => {
             try {
-                const response = await fetch("fld/hetra.fld");
+                const response = await fetch("fld/lucas03.fld");
                 if (response.ok) {
                     const blob = await response.blob();
-                    const file = new File([blob], "hetra.fld", { type: blob.type });
+                    const file = new File([blob], "lucas03.fld", { type: blob.type });
                     tryUseFldFile(file);
                 }
             } catch (Error) {
-                console.log("failed to load hetra.fld");
+                console.log("failed to load lucas03.fld");
             }
         };
 

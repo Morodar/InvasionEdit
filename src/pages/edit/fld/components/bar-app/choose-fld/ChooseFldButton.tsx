@@ -13,7 +13,7 @@ export const ChooseFldButton = () => {
 
     return (
         <>
-            <Tooltip title={t("fld-editor.btn.load.fld")}>
+            <Tooltip title={t("fld-editor.load-fld")}>
                 <IconButton onClick={onShowFldDialog}>
                     <UploadIcon />
                 </IconButton>

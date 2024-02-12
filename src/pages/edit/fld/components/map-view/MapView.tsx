@@ -5,7 +5,7 @@ import { Reference } from "./entities/Reference";
 import { create128x128 } from "./entities/ExamplePoints";
 import { HeightLayerRender } from "./layers/HeightLayerRender";
 import { ResourceView } from "./layers/ResourceView";
-import { useInitHetraFld } from "../../hooks/useInitHetraFld";
+import { useInitFld } from "../../hooks/useInitFld";
 import { FldFile } from "../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../context/FldMapContext";
 import { useCenterCamera } from "../../hooks/useCenterCamera";
@@ -21,13 +21,14 @@ import { SecondaryActionBar } from "../bar-action/SecondaryActionBar";
 import { ResourceActionPreview } from "./previews/ResourceActionPreview";
 import * as THREE from "three";
 import { useKeyboardControls } from "../../hooks/useKeyboardControls";
+import { LandscapeActionPreview } from "./previews/LandscapeActionPreview";
 
 const layer = create128x128();
 
 export const MapView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
 
-    useInitHetraFld();
+    useInitFld();
     const { fldFile } = useFldMapContext();
 
     const height = getHeightOrDefault(fldFile);
@@ -59,6 +60,7 @@ export const MapView = (): React.JSX.Element => {
                 <DebugBox />
                 <Debug3x3Box />
                 <ResourceActionPreview />
+                <LandscapeActionPreview />
             </Canvas>
             <DebugSidebar />
             <PirmaryActionBar />

@@ -3,9 +3,13 @@ import { FldFile, IndexPoint3D } from "./FldFile";
 import { Tritium, Xenit } from "./ResourceLayerUtil";
 import { ActiveResource } from "../../pages/edit/fld/context/ResourceActionContext";
 
-export type FldActionTypes = "LANDSACPE" | "RESOURCE" | "SET_FLD";
-
-export type FldAction = ResourcePayload | LandScapePayload | SetFldPayload;
+export type FldAction =
+    | SetFldPayload
+    | ResourcePayload
+    | LandscapeFixPayload
+    | LandscapeSmoothPayload
+    | LandscapeUpPayload
+    | LandscapeDownPayload;
 
 export interface SetFldPayload {
     type: "SET_FLD";
@@ -18,10 +22,28 @@ export interface ResourcePayload {
     points: IndexPoint3D[];
 }
 
-export interface LandScapePayload {
+export interface LandscapeFixPayload {
     type: "LANDSCAPE";
-    tool: "INCREASE" | "DECREASE";
-    amount: number;
+    action: "FIX";
+    points: IndexPoint3D[];
+    height: number;
+}
+
+export interface LandscapeSmoothPayload {
+    type: "LANDSCAPE";
+    action: "SMOOTH";
+    points: IndexPoint3D[];
+}
+
+export interface LandscapeUpPayload {
+    type: "LANDSCAPE";
+    action: "STEP-UP";
+    points: IndexPoint3D[];
+}
+
+export interface LandscapeDownPayload {
+    type: "LANDSCAPE";
+    action: "STEP-DOWN";
     points: IndexPoint3D[];
 }
 
@@ -31,7 +53,7 @@ export const useFldReducer = (): [FldFile | null, React.Dispatch<FldAction>] => 
 };
 
 const reducer = (state: FldFile | null, action: FldAction): FldFile | null => {
-    if (iSetFldAction(action)) {
+    if (isSetFldAction(action)) {
         return action.fldFile;
     }
 
@@ -43,11 +65,29 @@ const reducer = (state: FldFile | null, action: FldAction): FldFile | null => {
         return performResourceAction(state, action);
     }
 
+    if (isLandscapeAction(action)) {
+        return performLandscapeAction(state, action);
+    }
+
     return state;
 };
 
+const isSetFldAction = (action: FldAction): action is SetFldPayload => action.type === "SET_FLD" && !!action;
 const isResourceAction = (action: FldAction): action is ResourcePayload => action.type === "RESOURCE" && !!action;
-const iSetFldAction = (action: FldAction): action is SetFldPayload => action.type === "SET_FLD" && !!action;
+
+const isLandscapeAction = (action: FldAction) => action.type === "LANDSCAPE";
+
+const isLandscapeFixAction = (action: FldAction): action is LandscapeFixPayload =>
+    action.type === "LANDSCAPE" && action.action === "FIX" && !!action;
+
+const isLandscapeSmoothAction = (action: FldAction): action is LandscapeSmoothPayload =>
+    action.type === "LANDSCAPE" && action.action === "SMOOTH" && !!action;
+
+const isLandscapeUpAction = (action: FldAction): action is LandscapeUpPayload =>
+    action.type === "LANDSCAPE" && action.action === "STEP-UP" && !!action;
+
+const isLandscapeDownAction = (action: FldAction): action is LandscapeDownPayload =>
+    action.type === "LANDSCAPE" && action.action === "STEP-DOWN" && !!action;
 
 const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
     const newState = { ...state };
@@ -68,3 +108,40 @@ const RESOURCE_OPERATION: { [key in ActiveResource]: (oldValue: number) => numbe
     TRITIUM: addTritium,
     XENIT: addXenit,
 };
+function performLandscapeAction(
+    state: FldFile,
+    action: LandscapeFixPayload | LandscapeSmoothPayload | LandscapeUpPayload | LandscapeDownPayload,
+): FldFile | null {
+    const newState = { ...state, points: [...state.points] };
+
+    if (isLandscapeFixAction(action)) {
+        action.points.forEach((p) => {
+            newState.points[p.index].value = action.height;
+        });
+    } else if (isLandscapeUpAction(action)) {
+        action.points.forEach((p) => {
+            if (newState.points[p.index].value < 255) {
+                newState.points[p.index].value++;
+            }
+        });
+    } else if (isLandscapeDownAction(action)) {
+        action.points.forEach((p) => {
+            if (newState.points[p.index].value > 0) {
+                newState.points[p.index].value--;
+            }
+        });
+    } else if (isLandscapeSmoothAction(action)) {
+        const values = action.points.map((p) => p.value).sort((a, b) => a - b);
+        const middleIndex = Math.floor(values.length / 2);
+        const mid = values[middleIndex];
+        action.points.forEach((p) => {
+            if (newState.points[p.index].value > mid) {
+                newState.points[p.index].value--;
+            } else if (newState.points[p.index].value < mid) {
+                newState.points[p.index].value++;
+            }
+        });
+    }
+
+    return newState;
+}
