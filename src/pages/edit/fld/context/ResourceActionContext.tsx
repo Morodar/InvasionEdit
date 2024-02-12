@@ -1,20 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
-import { useSizeSelection } from "../hooks/useSizeSelection";
 
 export type ActiveResource = "DELETE" | "XENIT" | "TRITIUM";
 
 export interface ResourceActionContextProps {
     // state
     activeResource: ActiveResource;
-    size: number;
-    upperLimitReached: boolean;
-    lowerLimitReached: boolean;
+    radius: number;
 
     // functions
     setActiveResource: (value: ActiveResource) => void;
-    updateSize: (value: number) => void;
-    incrementBy: (delta: number) => void;
+    setRadius: (value: number) => void;
 }
 
 export const ResourceActionContext = createContext<ResourceActionContextProps | undefined>(undefined);
@@ -29,18 +25,16 @@ export const useResourceActionContext = (): ResourceActionContextProps => {
 
 export const ResourceActionContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [activeResource, setActiveResource] = useState<ActiveResource>("XENIT");
-    const { size, upperLimitReached, lowerLimitReached, updateSize, incrementBy } = useSizeSelection(1, 64);
+    const [radius, setRadius] = useState<number>(1);
+
     const contextValue = useMemo(() => {
         return {
             activeResource,
-            size,
-            upperLimitReached,
-            lowerLimitReached,
-            updateSize,
-            incrementBy,
+            radius,
+            setRadius,
             setActiveResource,
         };
-    }, [activeResource, incrementBy, lowerLimitReached, size, updateSize, upperLimitReached]);
+    }, [activeResource, radius]);
 
     return <ResourceActionContext.Provider value={contextValue}>{children}</ResourceActionContext.Provider>;
 };

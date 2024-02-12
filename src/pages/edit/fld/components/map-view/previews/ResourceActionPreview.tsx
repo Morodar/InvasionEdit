@@ -36,7 +36,7 @@ interface PreviewProps {
 
 const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
-    const { activeResource, size } = useResourceActionContext();
+    const { activeResource, radius } = useResourceActionContext();
     const [points, setPoints] = useState<IndexPoint3D[]>([]);
     const [width, setWidth] = useState<number>(0);
     const [height, setHeight] = useState<number>(0);
@@ -49,11 +49,11 @@ const Preview = (props: PreviewProps) => {
     useLeftClickHoldAction(() => dispatch({ type: "RESOURCE", points, resource: activeResource }), [points]);
 
     useEffect(() => {
-        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size);
+        const relativePoints = getRelativePoints(fldFile, hoveredPoint, radius, radius);
         setPoints(relativePoints);
         setWidth(new Set(relativePoints.map((p) => p.z)).size);
         setHeight(new Set(relativePoints.map((p) => p.x)).size);
-    }, [fldFile, hoveredPoint, size]);
+    }, [fldFile, hoveredPoint, radius]);
 
     useEffect(() => {
         if (planeGeo.current) {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-export const useSizeSelection = (min: number, max: number) => {
-    const [size, setSize] = useState(min);
+export const useLimitRange = (min: number, max: number, initialValue?: number) => {
+    const [size, setSize] = useState(initialValue ?? min);
 
     const updateSize = (value: number) => {
         setSize(() => {

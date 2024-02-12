@@ -11,6 +11,7 @@ import { DebugSettingsButton } from "./components/bar-app/debug-settings/DebugSe
 import { FldPrimaryActionContextProvider } from "./context/FldPrimaryActionContext";
 import { ResourceActionContextProvider } from "./context/ResourceActionContext";
 import { SaveFldButton } from "./components/bar-app/fld-file/SaveFldButton";
+import { HeightmapActionContextProvider } from "./context/HeigtmapActionContext";
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
@@ -22,15 +23,17 @@ const PageEditFld = (): React.JSX.Element => {
             <DebugSettingsContextProvider>
                 <CursorContextProvider>
                     <FldPrimaryActionContextProvider>
-                        <ResourceActionContextProvider>
-                            <MainLayout
-                                withPadding={false}
-                                centerElements={<FldName />}
-                                rightSideElements={<RightSideElements />}
-                            >
-                                <MapView />
-                            </MainLayout>
-                        </ResourceActionContextProvider>
+                        <HeightmapActionContextProvider>
+                            <ResourceActionContextProvider>
+                                <MainLayout
+                                    withPadding={false}
+                                    centerElements={<FldName />}
+                                    rightSideElements={<RightSideElements />}
+                                >
+                                    <MapView />
+                                </MainLayout>
+                            </ResourceActionContextProvider>
+                        </HeightmapActionContextProvider>
                     </FldPrimaryActionContextProvider>
                 </CursorContextProvider>
             </DebugSettingsContextProvider>
