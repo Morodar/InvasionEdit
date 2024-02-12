@@ -13,9 +13,12 @@ Discussions about Thandor and reverse engineering progess happens on our [Discor
 -   🏗️ This project is under heavy construction!
 -   **Features:**
     -   Extract Game Assets from Thandor PCK files
-    -   ✅ Load `*.fld` map and show...
+    -   ✅ Load `*.fld` map, show and edit...
         -   height map
         -   resource fields
+    -   Save changes and play them in Thandor
+
+<img src="./docs/img/edit.gif">
 
 ## Roadmap
 
