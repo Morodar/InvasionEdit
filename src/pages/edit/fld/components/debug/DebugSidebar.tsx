@@ -23,8 +23,6 @@ export const DebugSidebar = () => {
             <FormatCoordinate point={meshPoint} />
             <p>{t("fld-editor.debug.hovered-point")}</p>
             <FormatCoordinate point={point} />
-            <p>{t("fld-editor.debug.selected-point")}</p>
-            <FormatCoordinate point={undefined} />
         </Card>
     );
 };

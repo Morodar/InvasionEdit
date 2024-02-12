@@ -4,11 +4,9 @@ import { Point3D } from "../../../../domain/fld/FldFile";
 
 export interface CursorContextProps {
     // state
-    selectedPoint?: number;
     hoveredPoint?: number;
     meshPoint?: Point3D;
     // functions
-    setSelectedPoint: Dispatch<SetStateAction<number | undefined>>;
     setHoveredPoint: Dispatch<SetStateAction<number | undefined>>;
     setMeshPoint: Dispatch<SetStateAction<Point3D | undefined>>;
 }
@@ -24,13 +22,12 @@ export const useCursorContext = (): CursorContextProps => {
 };
 
 export const CursorContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-    const [selectedPoint, setSelectedPoint] = useState<number>();
     const [hoveredPoint, setHoveredPoint] = useState<number>();
     const [meshPoint, setMeshPoint] = useState<Point3D>();
 
     const contextValue: CursorContextProps = useMemo(() => {
-        return { selectedPoint, hoveredPoint, meshPoint, setSelectedPoint, setHoveredPoint, setMeshPoint };
-    }, [hoveredPoint, meshPoint, selectedPoint]);
+        return { hoveredPoint, meshPoint, setHoveredPoint, setMeshPoint };
+    }, [hoveredPoint, meshPoint]);
 
     return <CursorContext.Provider value={contextValue}>{children}</CursorContext.Provider>;
 };
