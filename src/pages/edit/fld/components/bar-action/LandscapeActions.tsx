@@ -5,8 +5,10 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { MinMaxNumberInput } from "../../../../../common/input/MinMaxNumberInput";
+import { useTranslation } from "react-i18next";
 
 export const LandscapeActions = () => {
+    const { t } = useTranslation();
     const { activeAction, height, radius, speed, setActiveAction, setHeight, setRadius, setSpeed } =
         useLandscapeActionContext();
 
@@ -20,13 +22,13 @@ export const LandscapeActions = () => {
             width="450px"
         >
             <Stack direction="row" gap="16px" alignItems="center">
-                <Tooltip title={"Fix"}>
+                <Tooltip title={t("landscape.fix")}>
                     <IconButton color={getActionColor("FIX", activeAction)} onClick={() => setActiveAction("FIX")}>
                         <GetAppIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
 
-                <Tooltip title={"Smooth"}>
+                <Tooltip title={t("landscape.smooth")}>
                     <IconButton
                         color={getActionColor("SMOOTH", activeAction)}
                         onClick={() => setActiveAction("SMOOTH")}
@@ -35,7 +37,7 @@ export const LandscapeActions = () => {
                     </IconButton>
                 </Tooltip>
 
-                <Tooltip title={"Up"}>
+                <Tooltip title={t("landscape.up")}>
                     <IconButton
                         color={getActionColor("STEP-UP", activeAction)}
                         onClick={() => setActiveAction("STEP-UP")}
@@ -44,7 +46,7 @@ export const LandscapeActions = () => {
                     </IconButton>
                 </Tooltip>
 
-                <Tooltip title={"Down"}>
+                <Tooltip title={t("landscape.down")}>
                     <IconButton
                         color={getActionColor("STEP-DOWN", activeAction)}
                         onClick={() => setActiveAction("STEP-DOWN")}
@@ -57,12 +59,18 @@ export const LandscapeActions = () => {
 
             <Stack direction="row" gap="16px" alignItems="center">
                 {activeAction === "FIX" && (
-                    <MinMaxNumberInput label="Height" min={0} max={255} onValueChanged={setHeight} value={height} />
+                    <MinMaxNumberInput
+                        label={t("landscape.height")}
+                        min={0}
+                        max={255}
+                        onValueChanged={setHeight}
+                        value={height}
+                    />
                 )}
 
                 {activeAction !== "FIX" && (
                     <MinMaxNumberInput
-                        label="Speed"
+                        label={t("landscape.speed")}
                         min={1}
                         max={16}
                         onValueChanged={setSpeed}
@@ -71,7 +79,13 @@ export const LandscapeActions = () => {
                     />
                 )}
 
-                <MinMaxNumberInput label="Radius" min={1} max={16} onValueChanged={setRadius} value={radius} />
+                <MinMaxNumberInput
+                    label={t("landscape.radius")}
+                    min={1}
+                    max={16}
+                    onValueChanged={setRadius}
+                    value={radius}
+                />
             </Stack>
         </Stack>
     );

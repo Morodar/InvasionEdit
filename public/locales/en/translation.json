@@ -13,7 +13,8 @@
     },
     "select-fld-file": "Please select a FLD file.",
     "choose-fld-file": "Choose FLD File",
-    "load-fld": "Load FLD"
+    "load-fld": "Load FLD",
+    "save-fld": "Save FLD"
   },
   "pck-extractor": {
     "short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
@@ -36,5 +37,29 @@
     "pc-name": "PC Name",
     "file-count": "File count",
     "file-size": "File size"
+  },
+  "landscape": {
+    "fix": "Fix",
+    "smooth": "Smooth",
+    "up": "Up",
+    "down": "Down",
+    "radius": "Radius",
+    "speed": "Speed",
+    "height": "Height"
+  },
+  "action": {
+    "primary": {
+      "clear-selection": "Clear selection",
+      "landscape": "Landscape",
+      "xenit-and-tritium": "Xenit & Tritium"
+    }
+  },
+  "actions": {
+    "resource": {
+      "remove": "Remove",
+      "xenit": "Xenit",
+      "tritium": "Tritium",
+      "radius": "Radius"
+    }
   }
 }

@@ -35,6 +35,31 @@
     },
     "short-description": "3D-Editor für FLD-Level-Dateien. \nWähle vorhandene Karten aus, um sie anzuzeigen und zu bearbeiten! \n(Der Editor befindet sich in der Entwicklung. Daher sind die Funktionen im Umfang begrenzt.)",
     "start-editor": "Editor starten",
-    "title": "FLD-Editor"
+    "title": "FLD-Editor",
+    "save-fld": "FLD speichern"
+  },
+  "action": {
+    "primary": {
+      "clear-selection": "Auswahl zurücksetzen",
+      "landscape": "Landschaft",
+      "xenit-and-tritium": "Xenit & Tritium"
+    }
+  },
+  "actions": {
+    "resource": {
+      "radius": "Radius",
+      "tritium": "Tritium",
+      "xenit": "Xenit",
+      "remove": "Entfernen"
+    }
+  },
+  "landscape": {
+    "down": "Runterziehen",
+    "height": "Höhe",
+    "smooth": "Glätten",
+    "up": "Hochziehen",
+    "speed": "Geschwindigkeit",
+    "radius": "Radius",
+    "fix": "Fixe Höhe"
   }
 }
