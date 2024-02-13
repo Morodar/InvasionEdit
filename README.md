@@ -3,6 +3,8 @@
 Online Map Editor for the game "Thandor: The Invasion"
 
 -   Live Demo: <https://morodar.github.io/InvasionEdit/>
+-   [Guide EN](./docs/en/Guide-Invasion-Edit.md)
+-   [Guide DE](./docs/de/Guide-Invasion-Edit.md)
 
 ## Community
 
