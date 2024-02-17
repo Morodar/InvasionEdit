@@ -4,15 +4,19 @@ import { RefObject, useEffect, useState } from "react";
 import * as THREE from "three";
 import { useFldMapContext } from "../context/FldMapContext";
 
+const raycaster = new THREE.Raycaster();
+
 export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
     const { camera, pointer, gl } = useThree();
     const { hoveredPoint, setHoveredPoint, setMeshPoint } = useCursorContext();
     const { fldFile } = useFldMapContext();
 
     const [lastIndex, setLastIndex] = useState<number>();
+    const [lastX, setLastX] = useState(0);
+    const [lastY, setLastY] = useState(0);
+    const [lastCamX, setLastCamX] = useState(0);
+    const [lastCamZ, setLastCamZ] = useState(0);
     const [isMouseOver, setIsMouseOver] = useState(false);
-
-    const raycaster = new THREE.Raycaster();
 
     useFrame(() => {
         if (!isMouseOver) {
@@ -22,6 +26,20 @@ export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
             }
             return;
         }
+
+        if (
+            lastX === pointer.x &&
+            lastY === pointer.y &&
+            camera.position.x === lastCamX &&
+            camera.position.z === lastCamZ
+        ) {
+            return;
+        }
+
+        setLastX(pointer.x);
+        setLastY(pointer.y);
+        setLastCamX(camera.position.x);
+        setLastCamZ(camera.position.z);
 
         if (meshRef.current && fldFile) {
             const { height, width, points } = fldFile;

@@ -67,6 +67,10 @@ const Preview = (props: PreviewProps) => {
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();
+            planeGeo.current.computeVertexNormals();
+            planeGeo.current.computeBoundingBox();
+            planeGeo.current.computeBoundingSphere();
+            planeGeo.current.computeTangents();
         }
     }, [points]);
 

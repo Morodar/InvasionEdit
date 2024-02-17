@@ -113,21 +113,26 @@ function performLandscapeAction(
     action: LandscapeFixPayload | LandscapeSmoothPayload | LandscapeUpPayload | LandscapeDownPayload,
 ): FldFile | null {
     const newState = { ...state, points: [...state.points] };
-
+    let isDirty = false;
     if (isLandscapeFixAction(action)) {
         action.points.forEach((p) => {
-            newState.points[p.index].value = action.height;
+            if (p.value !== action.height) {
+                newState.points[p.index].value = action.height;
+                isDirty = true;
+            }
         });
     } else if (isLandscapeUpAction(action)) {
         action.points.forEach((p) => {
             if (newState.points[p.index].value < 255) {
                 newState.points[p.index].value++;
+                isDirty = true;
             }
         });
     } else if (isLandscapeDownAction(action)) {
         action.points.forEach((p) => {
             if (newState.points[p.index].value > 0) {
                 newState.points[p.index].value--;
+                isDirty = true;
             }
         });
     } else if (isLandscapeSmoothAction(action)) {
@@ -137,11 +142,13 @@ function performLandscapeAction(
         action.points.forEach((p) => {
             if (newState.points[p.index].value > mid) {
                 newState.points[p.index].value--;
+                isDirty = true;
             } else if (newState.points[p.index].value < mid) {
                 newState.points[p.index].value++;
+                isDirty = true;
             }
         });
     }
 
-    return newState;
+    return isDirty ? newState : state;
 }

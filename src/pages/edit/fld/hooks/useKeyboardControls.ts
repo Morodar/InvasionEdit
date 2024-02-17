@@ -110,6 +110,5 @@ function updateCameraPosition(
 }
 
 const up = new THREE.Vector3(0, 1, 0);
-function isWithinBoundary(target: THREE.Vector3, width: number, height: number) {
-    return target.x >= 0 && target.x <= width && target.z >= 0 && target.z <= height;
-}
+const isWithinBoundary = (target: THREE.Vector3, width: number, height: number) =>
+    target.x >= 0 && target.x <= width && target.z >= 0 && target.z <= height;

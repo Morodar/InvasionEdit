@@ -12,6 +12,7 @@ import { FldPrimaryActionContextProvider } from "./context/FldPrimaryActionConte
 import { ResourceActionContextProvider } from "./context/ResourceActionContext";
 import { SaveFldButton } from "./components/bar-app/fld-file/SaveFldButton";
 import { LandscapeActionContextProvider } from "./context/LandscapeActionContext";
+import { LayerViewContextProvider } from "./context/LayerViewContext";
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
@@ -19,25 +20,27 @@ const PageEditFld = (): React.JSX.Element => {
     usePageTitle(fldEditor);
 
     return (
-        <FldMapContextProvider>
+        <LayerViewContextProvider>
             <DebugSettingsContextProvider>
                 <CursorContextProvider>
                     <FldPrimaryActionContextProvider>
                         <LandscapeActionContextProvider>
                             <ResourceActionContextProvider>
-                                <MainLayout
-                                    withPadding={false}
-                                    centerElements={<FldName />}
-                                    rightSideElements={<RightSideElements />}
-                                >
-                                    <MapView />
-                                </MainLayout>
+                                <FldMapContextProvider>
+                                    <MainLayout
+                                        withPadding={false}
+                                        centerElements={<FldName />}
+                                        rightSideElements={<RightSideElements />}
+                                    >
+                                        <MapView />
+                                    </MainLayout>
+                                </FldMapContextProvider>
                             </ResourceActionContextProvider>
                         </LandscapeActionContextProvider>
                     </FldPrimaryActionContextProvider>
                 </CursorContextProvider>
             </DebugSettingsContextProvider>
-        </FldMapContextProvider>
+        </LayerViewContextProvider>
     );
 };
 export default PageEditFld;

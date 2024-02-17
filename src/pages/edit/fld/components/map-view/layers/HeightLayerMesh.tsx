@@ -2,10 +2,20 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
 import { MapLayer } from "../../../../../../domain/fld/FldFile";
+import { useFldMapContext } from "../../../context/FldMapContext";
 
 interface HeightLayerMeshProps {
     layer: MapLayer;
 }
+
+export const FldHeightLayerMesh = () => {
+    const { fldFile } = useFldMapContext();
+    if (!fldFile) {
+        return <></>;
+    }
+
+    return <HeightLayerMesh layer={fldFile} />;
+};
 
 export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element => {
     const { layer } = props;
@@ -33,11 +43,14 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();
+            planeGeo.current.computeBoundingBox();
+            planeGeo.current.computeBoundingSphere();
+            planeGeo.current.computeTangents();
         }
     }, [layer.points]);
 
     return (
-        <mesh ref={planeMesh} castShadow={true} receiveShadow={true}>
+        <mesh ref={planeMesh} castShadow={true} receiveShadow={true} visible>
             <planeGeometry args={[width, height, width - 1, height - 1]} ref={planeGeo} />
             <meshStandardMaterial
                 color="#e0e0e0"

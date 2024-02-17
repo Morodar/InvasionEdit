@@ -3,12 +3,14 @@ import { PropsWithChildren } from "react";
 
 export type Headers = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
+export type Variants = Headers | "subtitle1" | "subtitle2";
+
 interface HeaderProps extends SpecificHeaderProps {
     component: Headers;
 }
 
 interface SpecificHeaderProps extends PropsWithChildren {
-    variant?: Headers;
+    variant?: Variants;
 }
 
 export const Header = (props: HeaderProps) => {

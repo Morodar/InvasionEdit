@@ -1,0 +1,19 @@
+.map-view .layer-settings {
+    position: absolute;
+    z-index: 100;
+
+    top: 50%;
+    transform: translateY(-50%);
+    right: 16px;
+
+    width: 200px;
+    height:auto;
+    max-width: 300px;
+    max-height: 75vh;
+
+}
+
+.map-view .layer-settings .list-container {
+    max-height: calc(75vh - 80px);
+    overflow-y: auto;
+}

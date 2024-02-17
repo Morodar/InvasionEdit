@@ -55,12 +55,15 @@ const Preview = (props: PreviewProps) => {
             for (let i = 0; i < points.length; i++) {
                 const p = points[i];
                 const height = p.value;
-                geo.setY(i, height / 8 + 0.1);
+                geo.setY(i, height / 8 + 0.26);
                 geo.setX(i, p.x);
                 geo.setZ(i, p.z);
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();
+            planeGeo.current.computeBoundingBox();
+            planeGeo.current.computeBoundingSphere();
+            planeGeo.current.computeTangents();
         }
     }, [points]);
 
