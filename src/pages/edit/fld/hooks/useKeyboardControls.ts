@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { Camera } from "three";
 import { OrbitControls } from "three-stdlib";
 import * as THREE from "three";
+import { useFldMapContext } from "../context/FldMapContext";
+import { centerCamera } from "./useCenterCamera";
 
 export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitControls>) => {
+    const { fldFile } = useFldMapContext();
     const [keys, setKeys] = useState(new Set<string>());
     const [lastUpdate, setLastUpdate] = useState(new Date());
     const { camera } = useThree();
@@ -35,7 +38,7 @@ export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitCont
             return;
         }
         if (orbitControlsRef?.current) {
-            updateCameraPosition(diff, keys, camera, orbitControlsRef.current);
+            updateCameraPosition(diff, keys, camera, orbitControlsRef.current, fldFile?.width, fldFile?.height);
         }
     });
 };
@@ -43,7 +46,14 @@ export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitCont
 const speed = 0.1;
 const rotateSpeed = 0.002;
 
-function updateCameraPosition(timeMs: number, pressedKeys: Set<string>, camera: Camera, orbit: OrbitControls) {
+function updateCameraPosition(
+    timeMs: number,
+    pressedKeys: Set<string>,
+    camera: Camera,
+    orbit: OrbitControls,
+    width = 60,
+    height = 60,
+) {
     const target = orbit.target;
     const moveBy = speed * timeMs;
     const rotateBy = rotateSpeed * timeMs;
@@ -86,9 +96,20 @@ function updateCameraPosition(timeMs: number, pressedKeys: Set<string>, camera: 
                 break;
         }
     }
-    camera.position.add(moveVector);
-    orbit.target.add(moveVector);
+    const newTarget = target.clone().add(moveVector);
+    newTarget.y = 0;
+    if (!isWithinBoundary(target, width, height)) {
+        centerCamera(camera.position, target, width, height);
+    } else if (isWithinBoundary(newTarget, width, height)) {
+        // ensure target looks at map
+        camera.position.add(moveVector);
+        target.set(newTarget.x, newTarget.y, newTarget.z);
+    }
+
     orbit.update();
 }
 
 const up = new THREE.Vector3(0, 1, 0);
+function isWithinBoundary(target: THREE.Vector3, width: number, height: number) {
+    return target.x >= 0 && target.x <= width && target.z >= 0 && target.z <= height;
+}
