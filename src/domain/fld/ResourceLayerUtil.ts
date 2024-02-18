@@ -1,4 +1,5 @@
-import { FldFile, Point3D } from "./FldFile";
+import { FldFile, IndexValue } from "./FldFile";
+import { Layer } from "./Layer";
 
 export class Xenit {
     static LAYER_VALUE = 8;
@@ -15,42 +16,34 @@ export class XenitTritium {
     static COLOR = "#800080";
 }
 
-export interface ResourcePoint {
-    x: number;
-    y: number;
-    z: number;
-}
-
 export interface ResourceDefinition {
-    xenit: ResourcePoint[];
-    tritium: ResourcePoint[];
-    xenitTritium: ResourcePoint[];
-    unknown: Point3D[];
+    xenit: IndexValue[];
+    tritium: IndexValue[];
+    xenitTritium: IndexValue[];
+    unknown: IndexValue[];
 }
 
 export class ResourceLayerUtil {
     static fromFldFile(fldFile: FldFile): ResourceDefinition {
-        let i = 0;
-        const resourceLayer = fldFile.resourceLayer;
-        const xenit: ResourcePoint[] = [];
-        const tritium: ResourcePoint[] = [];
-        const xenitTritium: ResourcePoint[] = [];
-        const unknown: Point3D[] = [];
+        const resourceLayer = fldFile.layers[Layer.Resources];
+        const xenit: IndexValue[] = [];
+        const tritium: IndexValue[] = [];
+        const xenitTritium: IndexValue[] = [];
+        const unknown: IndexValue[] = [];
 
-        for (const p of fldFile.points) {
-            const resource = resourceLayer.getUint8(i);
-            if (resource !== 0) {
-                if (resource === Xenit.LAYER_VALUE) {
-                    xenit.push({ x: p.x, y: p.value, z: p.z });
-                } else if (resource === Tritium.LAYER_VALUE) {
-                    tritium.push({ x: p.x, y: p.value, z: p.z });
-                } else if (resource === XenitTritium.LAYER_VALUE) {
-                    xenitTritium.push({ x: p.x, y: p.value, z: p.z });
+        for (let index = 0; index < resourceLayer.byteLength; index++) {
+            const value = resourceLayer.getUint8(index);
+            if (value !== 0) {
+                if (value === Xenit.LAYER_VALUE) {
+                    xenit.push({ index, value });
+                } else if (value === Tritium.LAYER_VALUE) {
+                    tritium.push({ index, value });
+                } else if (value === XenitTritium.LAYER_VALUE) {
+                    xenitTritium.push({ index, value });
                 } else {
-                    unknown.push({ x: p.x, z: p.z, value: resource });
+                    unknown.push({ index, value });
                 }
             }
-            i++;
         }
         return { xenit, tritium, xenitTritium, unknown };
     }

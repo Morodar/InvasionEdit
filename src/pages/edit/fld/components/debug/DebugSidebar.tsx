@@ -1,13 +1,13 @@
-import { Card } from "@mui/material";
+import { Card, List, ListItem, ListItemText } from "@mui/material";
 import "./DebugSidebar.css";
 import { useCursorContext } from "../../context/CursorContext";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useTranslation } from "react-i18next";
 import { useFldMapContext } from "../../context/FldMapContext";
-import { Point3D } from "../../../../../domain/fld/FldFile";
+import { Layers, LayerIndexes, LayerIndex } from "../../../../../domain/fld/Layer";
 
 export const DebugSidebar = () => {
-    const { hoveredPoint, meshPoint } = useCursorContext();
+    const { hoveredPoint } = useCursorContext();
     const { fldFile } = useFldMapContext();
     const { debugSettings } = useDebugSettingsContext();
     const { t } = useTranslation();
@@ -15,30 +15,35 @@ export const DebugSidebar = () => {
     if (!debugSettings.showDebugCursorPosition) {
         return <></>;
     }
-    const point = fldFile && hoveredPoint ? fldFile.points[hoveredPoint] : undefined;
 
+    if (!fldFile || !hoveredPoint) {
+        return <></>;
+    }
+
+    const { width, height } = fldFile;
+    const z = hoveredPoint % width;
+    const x = height - 1 - Math.floor(hoveredPoint / width);
+    const items = LayerIndexes.map((layer: LayerIndex) => (
+        <ListItem key={layer}>
+            <ListItemText>
+                {t(Layers[layer].label)}: {fldFile.layers[layer].getUint8(hoveredPoint)}
+            </ListItemText>
+        </ListItem>
+    ));
     return (
         <Card className="debug-sidebar">
-            <p>{t("fld-editor.debug.mesh-point")}</p>
-            <FormatCoordinate point={meshPoint} />
             <p>{t("fld-editor.debug.hovered-point")}</p>
-            <FormatCoordinate point={point} />
+            <List disablePadding dense>
+                <ListItem>
+                    <ListItemText>Index: {hoveredPoint}</ListItemText>
+                </ListItem>
+                <ListItem>
+                    <ListItemText>
+                        X: {x} Z: {z}
+                    </ListItemText>
+                </ListItem>
+                {items}
+            </List>
         </Card>
-    );
-};
-
-interface FormatCoordinateProps {
-    point?: Point3D;
-}
-
-const FormatCoordinate = (props: FormatCoordinateProps) => {
-    const { point } = props;
-    const x = point?.x ?? "-";
-    const z = point?.z ?? "-";
-    const value = point?.value ?? "-";
-    return (
-        <small>
-            x:{x ?? "-"} z:{z ?? "-"} value:{value ?? "-"}
-        </small>
     );
 };

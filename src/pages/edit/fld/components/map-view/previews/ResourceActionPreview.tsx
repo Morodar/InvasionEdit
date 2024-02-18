@@ -4,7 +4,7 @@ import { ActiveResource, useResourceActionContext } from "../../../context/Resou
 import { Dispatch, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useCursorContext } from "../../../context/CursorContext";
-import { FldFile, IndexPoint3D, getRelativePoints } from "../../../../../../domain/fld/FldFile";
+import { FldFile, IndexValue, getRelativePoints } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { Tritium, Xenit } from "../../../../../../domain/fld/ResourceLayerUtil";
 import { useLeftClickHoldAction } from "../../../hooks/useLeftClickHoldAction";
@@ -36,8 +36,9 @@ interface PreviewProps {
 
 const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
+    const { width, height } = fldFile;
     const { activeResource, size } = useResourceActionContext();
-    const [points, setPoints] = useState<IndexPoint3D[]>([]);
+    const [points, setPoints] = useState<IndexValue[]>([]);
     const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
 
     const color = ACTION_COLOR[activeResource];
@@ -51,7 +52,9 @@ const Preview = (props: PreviewProps) => {
 
     useEffect(() => {
         points.forEach((p, i) => {
-            temp.position.set(p.x, p.value / 8, p.z);
+            const z = p.index % width;
+            const x = height - 1 - Math.floor(p.index / width);
+            temp.position.set(x, p.value / 8, z);
             temp.updateMatrix();
             instancedMeshRef.current.setMatrixAt(i, temp.matrix);
         });
@@ -60,7 +63,7 @@ const Preview = (props: PreviewProps) => {
         instancedMeshRef.current.instanceMatrix.needsUpdate = true;
         instancedMeshRef.current.computeBoundingBox();
         instancedMeshRef.current.computeBoundingSphere();
-    }, [points]);
+    }, [height, points, width]);
 
     return (
         <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, size * size]}>

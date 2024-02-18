@@ -1,7 +1,7 @@
+import { Layer } from "../../../../../domain/fld/Layer";
 import { useCursorContext } from "../../context/CursorContext";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useFldMapContext } from "../../context/FldMapContext";
-import { Box } from "../map-view/entities/Box";
 
 export const DebugBox = () => {
     const { hoveredPoint } = useCursorContext();
@@ -11,6 +11,15 @@ export const DebugBox = () => {
     if (!debugSettings.showDebugCube || !hoveredPoint || !fldFile) {
         return;
     }
-    const point = fldFile.points[hoveredPoint];
-    return <Box position={[point.x, point.value / 8, point.z]} />;
+    const { width, height, layers } = fldFile;
+
+    const z = hoveredPoint % width;
+    const x = height - 1 - Math.floor(hoveredPoint / width);
+    const point = layers[Layer.Landscape].getUint8(hoveredPoint);
+    return (
+        <mesh position={[x, point / 8, z]}>
+            <sphereGeometry args={[0.5, 8, 8]} />
+            <meshStandardMaterial color="hotpink" />
+        </mesh>
+    );
 };

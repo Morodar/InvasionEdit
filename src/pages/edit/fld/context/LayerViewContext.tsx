@@ -58,11 +58,13 @@ export const LayerViewContextProvider: React.FC<PropsWithChildren> = ({ children
 
 const initLayerSettings = (): LayerSettings => {
     const settings: LayerSettings = LayerIndexes.reduce((acc, layer) => {
-        acc[layer] = { layer, hide: true, showWireframe: false };
+        acc[layer] = { layer, hide: true, showWireframe: true };
         return acc;
     }, {} as LayerSettings);
 
     settings[Layer.Landscape].hide = false;
+    settings[Layer.Landscape].showWireframe = false;
     settings[Layer.Resources].hide = false;
+    settings[Layer.Resources].showWireframe = false;
     return settings;
 };

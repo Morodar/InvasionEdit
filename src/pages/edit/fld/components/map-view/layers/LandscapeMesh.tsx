@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
-import { MapLayer } from "../../../../../../domain/fld/FldFile";
+import { FldMap } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { Layer } from "../../../../../../domain/fld/Layer";
 import { useLayerViewContext } from "../../../context/LayerViewContext";
 
-export const FldHeightLayerMesh = () => {
+export const LandscapeMesh = () => {
     const { fldFile } = useFldMapContext();
     const { layerSettings } = useLayerViewContext();
     const { showWireframe, hide } = layerSettings[Layer.Landscape];
@@ -15,18 +15,19 @@ export const FldHeightLayerMesh = () => {
         return <></>;
     }
 
-    return <HeightLayerMesh layer={fldFile} showWireframe={showWireframe} />;
+    return <LandscapeLayerMesh map={fldFile} showWireframe={showWireframe} />;
 };
 
-interface HeightLayerMeshProps {
-    layer: MapLayer;
+interface LandscapeLayerMeshProps {
+    map: FldMap;
     showWireframe: boolean;
 }
 
-export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element => {
-    const { layer, showWireframe } = props;
-    const width = layer.width;
-    const height = layer.height;
+export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.Element => {
+    const { map, showWireframe } = props;
+    const landscape = map.layers[Layer.Landscape];
+    const width = map.width;
+    const height = map.height;
 
     const planeMesh = useRef<THREE.Mesh>(null);
     const planeGeo = useRef<THREE.PlaneGeometry>(null);
@@ -34,18 +35,19 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
     useCursorCapture(planeMesh);
 
     const texture = useMemo(() => {
-        return createHeightTexture(layer);
-    }, [layer]);
+        return createHeightTexture(map);
+    }, [map]);
 
     useEffect(() => {
         if (planeGeo.current) {
             const geo = planeGeo.current.attributes.position;
-            for (let i = 0; i < layer.points.length; i++) {
-                const p = layer.points[i];
-                const height = p.value;
-                geo.setY(i, height / 8);
-                geo.setX(i, p.x);
-                geo.setZ(i, p.z);
+            for (let i = 0; i < landscape.byteLength; i++) {
+                const value = landscape.getUint8(i);
+                const z = i % width;
+                const x = height - 1 - (i - z) / width;
+                geo.setY(i, value / 8);
+                geo.setX(i, x);
+                geo.setZ(i, z);
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();
@@ -53,7 +55,7 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
             planeGeo.current.computeBoundingSphere();
             planeGeo.current.computeTangents();
         }
-    }, [layer.points]);
+    }, [height, landscape, width]);
 
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true} visible>
@@ -70,16 +72,16 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
 };
 
 /** Create a texture based on the height values */
-const createHeightTexture = (layer: MapLayer): THREE.DataTexture => {
+const createHeightTexture = (layer: FldMap): THREE.DataTexture => {
     const heightData = new Uint8Array(layer.width * layer.height * 4);
-    const { width, height, points } = layer;
-
+    const { width, height, layers } = layer;
+    const landscape = layers[Layer.Landscape];
     let x = height;
     let z = 0;
 
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < landscape.byteLength; i++) {
         const rotated = x * width + z - width;
-        const p = points[rotated];
+        const p = landscape.getUint8(rotated);
 
         z++;
         if (z >= width) {
@@ -87,7 +89,7 @@ const createHeightTexture = (layer: MapLayer): THREE.DataTexture => {
             x--;
         }
 
-        const heightValue = p.value;
+        const heightValue = p;
         const normalizedHeight = (heightValue + 100) / 355;
         const color = normalizedHeight * 255; // Scale to the range [0, 255]
         const index = i * 4;

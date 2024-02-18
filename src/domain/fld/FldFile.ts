@@ -1,7 +1,8 @@
-export interface FldFile extends MapLayer {
+import { Layer, LayerIndex } from "./Layer";
+
+export interface FldFile extends FldMap {
     name: string;
     fileSize: number;
-    resourceLayer: DataView;
     devSaveLocation: string;
     unknown0xB0: number;
     unknown0xB4: number;
@@ -23,10 +24,12 @@ export interface IndexPoint3D extends Point3D {
     index: number;
 }
 
-export interface MapLayer {
+export type MapLayers = Record<LayerIndex, DataView>;
+
+export interface FldMap {
     height: number;
     width: number;
-    points: Point3D[];
+    layers: MapLayers;
 }
 
 export function getRelativePoints(
@@ -34,7 +37,7 @@ export function getRelativePoints(
     fromIndex: number,
     brushWidth: number,
     brushHeight: number,
-): IndexPoint3D[] {
+): IndexValue[] {
     const { width, height } = fldFile;
 
     const offsetH = fromIndex % width;
@@ -42,14 +45,15 @@ export function getRelativePoints(
 
     if (brushWidth === 1 && brushHeight === 1) {
         const index = offsetW * width + offsetH;
-        return [{ index, ...fldFile.points[index] }];
+        return [{ index, value: fldFile.layers[Layer.Landscape].getUint8(index) }];
     }
 
     const brushWidthStart = Math.floor(brushWidth / 2);
     const brushWidthEnd = Math.ceil(brushWidth / 2);
     const brushHeightStart = Math.floor(brushHeight / 2);
     const brushHeightEnd = Math.ceil(brushHeight / 2);
-    const points: IndexPoint3D[] = [];
+
+    const points: IndexValue[] = [];
     for (let w = -brushWidthStart; w < brushWidthEnd; w++) {
         for (let h = -brushHeightStart; h < brushHeightEnd; h++) {
             const brushOffsetW = offsetW + w;
@@ -59,9 +63,8 @@ export function getRelativePoints(
             }
 
             const index = brushOffsetW * width + brushOffsetH;
-            if (index >= 0 && index < fldFile.points.length) {
-                const point = fldFile.points[index];
-                points.push({ index, ...point });
+            if (index >= 0 && index < fldFile.layers[Layer.Landscape].byteLength) {
+                points.push({ index, value: fldFile.layers[Layer.Landscape].getUint8(index) });
             }
         }
     }

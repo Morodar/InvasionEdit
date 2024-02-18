@@ -3,6 +3,7 @@ import { useCursorContext } from "../context/CursorContext";
 import { RefObject, useEffect, useState } from "react";
 import * as THREE from "three";
 import { useFldMapContext } from "../context/FldMapContext";
+import { Layer } from "../../../../domain/fld/Layer";
 
 const raycaster = new THREE.Raycaster();
 
@@ -42,7 +43,8 @@ export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
         setLastCamZ(camera.position.z);
 
         if (meshRef.current && fldFile) {
-            const { height, width, points } = fldFile;
+            const { height, width, layers } = fldFile;
+            const points = layers[Layer.Landscape];
             raycaster.setFromCamera(pointer, camera);
             const intersects = raycaster.intersectObject(meshRef.current);
             if (intersects.length > 0) {
@@ -50,7 +52,7 @@ export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
                 const x = Math.round(point.x);
                 const z = Math.round(point.z);
                 const index = (height - x) * width + z - width;
-                if (index !== lastIndex && index < points.length) {
+                if (index !== lastIndex && index < points.byteLength) {
                     setMeshPoint({ x, z, value: Math.round(point.y) });
                     setHoveredPoint(index);
                     setLastIndex(index);

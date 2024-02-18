@@ -16,7 +16,7 @@ export const LayerSettings = () => {
             <Card className="layer-settings">
                 <CardContent className="layer-content">
                     <H3 variant="subtitle1">Layers</H3>
-                    <List className="list-container" disablePadding dense={true}>
+                    <List className="list-container" disablePadding dense>
                         {LayerIndexes.map((layer) => (
                             <LayerSettingItem key={layer} layerSettings={layerSettings[layer]} />
                         ))}

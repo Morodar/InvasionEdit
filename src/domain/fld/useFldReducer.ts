@@ -1,7 +1,8 @@
 import { useReducer } from "react";
-import { FldFile, IndexPoint3D } from "./FldFile";
+import { FldFile, IndexValue } from "./FldFile";
 import { Tritium, Xenit } from "./ResourceLayerUtil";
 import { ActiveResource } from "../../pages/edit/fld/context/ResourceActionContext";
+import { Layer } from "./Layer";
 
 export type FldAction =
     | SetFldPayload
@@ -19,32 +20,32 @@ export interface SetFldPayload {
 export interface ResourcePayload {
     type: "RESOURCE";
     resource: ActiveResource;
-    points: IndexPoint3D[];
+    points: IndexValue[];
 }
 
 export interface LandscapeFixPayload {
     type: "LANDSCAPE";
     action: "FIX";
-    points: IndexPoint3D[];
+    points: IndexValue[];
     height: number;
 }
 
 export interface LandscapeSmoothPayload {
     type: "LANDSCAPE";
     action: "SMOOTH";
-    points: IndexPoint3D[];
+    points: IndexValue[];
 }
 
 export interface LandscapeUpPayload {
     type: "LANDSCAPE";
     action: "STEP-UP";
-    points: IndexPoint3D[];
+    points: IndexValue[];
 }
 
 export interface LandscapeDownPayload {
     type: "LANDSCAPE";
     action: "STEP-DOWN";
-    points: IndexPoint3D[];
+    points: IndexValue[];
 }
 
 export const useFldReducer = (): [FldFile | null, React.Dispatch<FldAction>] => {
@@ -90,12 +91,12 @@ const isLandscapeDownAction = (action: FldAction): action is LandscapeDownPayloa
     action.type === "LANDSCAPE" && action.action === "STEP-DOWN" && !!action;
 
 const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
-    const newState = { ...state };
+    const newState: FldFile = { ...state };
     const resourceOperation = RESOURCE_OPERATION[action.resource];
     action.points.forEach((p) => {
-        const oldValue = newState.resourceLayer.getUint8(p.index);
+        const oldValue = newState.layers[Layer.Resources].getUint8(p.index);
         const newValue = resourceOperation(oldValue);
-        newState.resourceLayer.setUint8(p.index, newValue);
+        newState.layers[Layer.Resources].setUint8(p.index, newValue);
     });
     return newState;
 };
@@ -112,26 +113,31 @@ function performLandscapeAction(
     state: FldFile,
     action: LandscapeFixPayload | LandscapeSmoothPayload | LandscapeUpPayload | LandscapeDownPayload,
 ): FldFile | null {
-    const newState = { ...state, points: [...state.points] };
+    const newState: FldFile = { ...state };
+    const oldLandscape = newState.layers[Layer.Landscape];
+    const landscape = new DataView(oldLandscape.buffer);
+    newState.layers[Layer.Landscape] = landscape;
     let isDirty = false;
     if (isLandscapeFixAction(action)) {
         action.points.forEach((p) => {
             if (p.value !== action.height) {
-                newState.points[p.index].value = action.height;
+                landscape.setUint8(p.index, action.height);
                 isDirty = true;
             }
         });
     } else if (isLandscapeUpAction(action)) {
         action.points.forEach((p) => {
-            if (newState.points[p.index].value < 255) {
-                newState.points[p.index].value++;
+            const value = landscape.getUint8(p.index);
+            if (value < 255) {
+                landscape.setUint8(p.index, value + 1);
                 isDirty = true;
             }
         });
     } else if (isLandscapeDownAction(action)) {
         action.points.forEach((p) => {
-            if (newState.points[p.index].value > 0) {
-                newState.points[p.index].value--;
+            const value = landscape.getUint8(p.index);
+            if (value > 0) {
+                landscape.setUint8(p.index, value - 1);
                 isDirty = true;
             }
         });
@@ -140,11 +146,12 @@ function performLandscapeAction(
         const middleIndex = Math.floor(values.length / 2);
         const mid = values[middleIndex];
         action.points.forEach((p) => {
-            if (newState.points[p.index].value > mid) {
-                newState.points[p.index].value--;
+            const value = landscape.getUint8(p.index);
+            if (value > mid) {
+                landscape.setUint8(p.index, value - 1);
                 isDirty = true;
-            } else if (newState.points[p.index].value < mid) {
-                newState.points[p.index].value++;
+            } else if (value < mid) {
+                landscape.setUint8(p.index, value + 1);
                 isDirty = true;
             }
         });
