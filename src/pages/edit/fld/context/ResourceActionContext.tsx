@@ -6,11 +6,11 @@ export type ActiveResource = "DELETE" | "XENIT" | "TRITIUM";
 export interface ResourceActionContextProps {
     // state
     activeResource: ActiveResource;
-    radius: number;
+    size: number;
 
     // functions
     setActiveResource: (value: ActiveResource) => void;
-    setRadius: (value: number) => void;
+    setSize: (value: number) => void;
 }
 
 export const ResourceActionContext = createContext<ResourceActionContextProps | undefined>(undefined);
@@ -25,16 +25,16 @@ export const useResourceActionContext = (): ResourceActionContextProps => {
 
 export const ResourceActionContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [activeResource, setActiveResource] = useState<ActiveResource>("XENIT");
-    const [radius, setRadius] = useState<number>(1);
+    const [size, setSize] = useState<number>(1);
 
     const contextValue = useMemo(() => {
         return {
             activeResource,
-            radius,
-            setRadius,
+            size,
+            setSize,
             setActiveResource,
         };
-    }, [activeResource, radius]);
+    }, [activeResource, size]);
 
     return <ResourceActionContext.Provider value={contextValue}>{children}</ResourceActionContext.Provider>;
 };

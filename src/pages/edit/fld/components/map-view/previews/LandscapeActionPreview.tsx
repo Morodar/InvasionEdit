@@ -28,7 +28,7 @@ interface PreviewProps {
 
 const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
-    const { activeAction, radius, height: absoluteHeight, speed: stepsize } = useLandscapeActionContext();
+    const { activeAction, size, height: absoluteHeight, speed: stepsize } = useLandscapeActionContext();
     const [points, setPoints] = useState<IndexPoint3D[]>([]);
     const [width, setWidth] = useState<number>(0);
     const [height, setHeight] = useState<number>(0);
@@ -36,6 +36,7 @@ const Preview = (props: PreviewProps) => {
     const planeMesh = useRef<THREE.Mesh>(null);
     const planeGeo = useRef<THREE.PlaneGeometry>(null);
     const speed = activeAction === "FIX" ? 8 : 1000 / stepsize;
+
     useLeftClickHoldDelayAction(
         () => dispatch({ type: "LANDSCAPE", action: activeAction, points, height: absoluteHeight }),
         speed,
@@ -43,11 +44,11 @@ const Preview = (props: PreviewProps) => {
     );
 
     useEffect(() => {
-        const relativePoints = getRelativePoints(fldFile, hoveredPoint, radius, radius);
+        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size);
         setPoints(relativePoints);
         setWidth(new Set(relativePoints.map((p) => p.z)).size);
         setHeight(new Set(relativePoints.map((p) => p.x)).size);
-    }, [fldFile, hoveredPoint, radius]);
+    }, [fldFile, hoveredPoint, size]);
 
     useEffect(() => {
         if (planeGeo.current) {
@@ -66,6 +67,23 @@ const Preview = (props: PreviewProps) => {
             planeGeo.current.computeTangents();
         }
     }, [points]);
+
+    if (points.length === 1) {
+        const point = points[0];
+        return (
+            <mesh castShadow={true} receiveShadow={true} position={[point.x, point.value / 8, point.z]}>
+                <sphereGeometry args={[0.25, 8, 8]} />
+                <meshStandardMaterial
+                    color="#ffffff"
+                    roughness={0.5}
+                    side={THREE.DoubleSide}
+                    transparent={true}
+                    wireframe={false}
+                    opacity={0.7}
+                />
+            </mesh>
+        );
+    }
 
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true}>

@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 export const LandscapeActions = () => {
     const { t } = useTranslation();
-    const { activeAction, height, radius, speed, setActiveAction, setHeight, setRadius, setSpeed } =
+    const { activeAction, height, size, speed, setActiveAction, setHeight, setSize, setSpeed } =
         useLandscapeActionContext();
 
     return (
@@ -79,13 +79,7 @@ export const LandscapeActions = () => {
                     />
                 )}
 
-                <MinMaxNumberInput
-                    label={t("landscape.radius")}
-                    min={1}
-                    max={16}
-                    onValueChanged={setRadius}
-                    value={radius}
-                />
+                <MinMaxNumberInput label={t("landscape.size")} min={1} max={32} onValueChanged={setSize} value={size} />
             </Stack>
         </Stack>
     );

@@ -45,7 +45,8 @@
     "down": "Down",
     "radius": "Radius",
     "speed": "Speed",
-    "height": "Height"
+    "height": "Height",
+    "size": "Size"
   },
   "action": {
     "primary": {
@@ -59,7 +60,13 @@
       "remove": "Remove",
       "xenit": "Xenit",
       "tritium": "Tritium",
-      "radius": "Radius"
+      "radius": "Radius",
+      "size": "Size"
     }
+  },
+  "LAYER": {
+    "UNKNOWN": "Unknown",
+    "RESOURCES": "Resources",
+    "LANDSCAPE": "Landscape"
   }
 }

@@ -40,9 +40,18 @@ export function getRelativePoints(
     const offsetH = fromIndex % width;
     const offsetW = (fromIndex - offsetH) / width;
 
+    if (brushWidth === 1 && brushHeight === 1) {
+        const index = offsetW * width + offsetH;
+        return [{ index, ...fldFile.points[index] }];
+    }
+
+    const brushWidthStart = Math.floor(brushWidth / 2);
+    const brushWidthEnd = Math.ceil(brushWidth / 2);
+    const brushHeightStart = Math.floor(brushHeight / 2);
+    const brushHeightEnd = Math.ceil(brushHeight / 2);
     const points: IndexPoint3D[] = [];
-    for (let w = -brushWidth; w < brushWidth; w++) {
-        for (let h = -brushHeight; h < brushHeight; h++) {
+    for (let w = -brushWidthStart; w < brushWidthEnd; w++) {
+        for (let h = -brushHeightStart; h < brushHeightEnd; h++) {
             const brushOffsetW = offsetW + w;
             const brushOffsetH = offsetH + h;
             if (brushOffsetH < 0 || brushOffsetH < 0 || brushOffsetH >= height || brushOffsetH >= width) {

@@ -17,6 +17,7 @@ import { ResourceActionPreview } from "./previews/ResourceActionPreview";
 import * as THREE from "three";
 import { useKeyboardControls } from "../../hooks/useKeyboardControls";
 import { LandscapeActionPreview } from "./previews/LandscapeActionPreview";
+import { LayerSettings } from "../layer-settings/LayerSettings";
 export const MapView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
     return (
@@ -43,6 +44,7 @@ export const MapView = (): React.JSX.Element => {
             <DebugSidebar />
             <PirmaryActionBar />
             <SecondaryActionBar />
+            <LayerSettings />
         </div>
     );
 };

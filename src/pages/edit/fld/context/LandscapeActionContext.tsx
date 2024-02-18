@@ -7,11 +7,11 @@ export interface LandscapeActionContextProps {
     // state
     activeAction: LandscapeAction;
     height: number;
-    radius: number;
+    size: number;
     speed: number;
     // functions
     setActiveAction: (value: LandscapeAction) => void;
-    setRadius: (value: number) => void;
+    setSize: (value: number) => void;
     setHeight: (value: number) => void;
     setSpeed: (value: number) => void;
 }
@@ -28,7 +28,7 @@ export const useLandscapeActionContext = (): LandscapeActionContextProps => {
 
 export const LandscapeActionContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [activeAction, setActiveAction] = useState<LandscapeAction>("SMOOTH");
-    const [radius, setRadius] = useState<number>(3);
+    const [size, setSize] = useState<number>(3);
     const [height, setHeight] = useState<number>(16);
     const [speed, setSpeed] = useState<number>(8);
 
@@ -36,14 +36,14 @@ export const LandscapeActionContextProvider: React.FC<PropsWithChildren> = ({ ch
         return {
             activeAction,
             height,
-            radius,
+            size,
             speed,
             setActiveAction,
             setHeight,
-            setRadius,
+            setSize,
             setSpeed,
         };
-    }, [activeAction, height, radius, speed]);
+    }, [activeAction, height, size, speed]);
 
     return <LandscapeActionContext.Provider value={contextValue}>{children}</LandscapeActionContext.Provider>;
 };

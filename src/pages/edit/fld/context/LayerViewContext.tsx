@@ -12,6 +12,8 @@ export type LayerSettings = Record<LayerIndex, LayerSetting>;
 
 export interface LayerViewContextProps {
     layerSettings: LayerSettings;
+    toggleHide: (layer: LayerIndex) => void;
+    toggleWireframe: (layer: LayerIndex) => void;
 }
 
 export const LayerViewContext = createContext<LayerViewContextProps | undefined>(undefined);
@@ -26,8 +28,30 @@ export const useLayerViewContext = (): LayerViewContextProps => {
 
 export const LayerViewContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [layerSettings, setLayerSettings] = useState<LayerSettings>(initLayerSettings());
+    const toggleHide = (layer: LayerIndex) => {
+        setLayerSettings((old) => {
+            const updated = { ...old };
+            const updatedSetting = { ...old[layer] };
+            updatedSetting.hide = !updatedSetting.hide;
+            updated[layer] = updatedSetting;
+            return updated;
+        });
+    };
 
-    const contextValue: LayerViewContextProps = useMemo(() => ({ layerSettings, setLayerSettings }), [layerSettings]);
+    const toggleWireframe = (layer: LayerIndex) => {
+        setLayerSettings((old) => {
+            const updated = { ...old };
+            const updatedSetting = { ...old[layer] };
+            updatedSetting.showWireframe = !updatedSetting.showWireframe;
+            updated[layer] = updatedSetting;
+            return updated;
+        });
+    };
+
+    const contextValue: LayerViewContextProps = useMemo(
+        () => ({ layerSettings, setLayerSettings, toggleHide, toggleWireframe }),
+        [layerSettings],
+    );
 
     return <LayerViewContext.Provider value={contextValue}>{children}</LayerViewContext.Provider>;
 };

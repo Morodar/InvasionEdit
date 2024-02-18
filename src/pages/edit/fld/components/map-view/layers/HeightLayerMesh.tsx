@@ -3,22 +3,28 @@ import * as THREE from "three";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
 import { MapLayer } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
-
-interface HeightLayerMeshProps {
-    layer: MapLayer;
-}
+import { Layer } from "../../../../../../domain/fld/Layer";
+import { useLayerViewContext } from "../../../context/LayerViewContext";
 
 export const FldHeightLayerMesh = () => {
     const { fldFile } = useFldMapContext();
-    if (!fldFile) {
+    const { layerSettings } = useLayerViewContext();
+    const { showWireframe, hide } = layerSettings[Layer.Landscape];
+
+    if (!fldFile || hide) {
         return <></>;
     }
 
-    return <HeightLayerMesh layer={fldFile} />;
+    return <HeightLayerMesh layer={fldFile} showWireframe={showWireframe} />;
 };
 
+interface HeightLayerMeshProps {
+    layer: MapLayer;
+    showWireframe: boolean;
+}
+
 export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element => {
-    const { layer } = props;
+    const { layer, showWireframe } = props;
     const width = layer.width;
     const height = layer.height;
 
@@ -57,7 +63,7 @@ export const HeightLayerMesh = (props: HeightLayerMeshProps): React.JSX.Element 
                 map={texture}
                 roughness={0.5}
                 side={THREE.DoubleSide}
-                wireframe={false}
+                wireframe={showWireframe}
             />
         </mesh>
     );

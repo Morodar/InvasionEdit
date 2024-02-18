@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 export const ResourceActions = () => {
     const { t } = useTranslation();
-    const { activeResource, setActiveResource, radius, setRadius } = useResourceActionContext();
+    const { activeResource, setActiveResource, size, setSize } = useResourceActionContext();
 
     return (
         <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
@@ -36,11 +36,11 @@ export const ResourceActions = () => {
 
             <Divider orientation="vertical" flexItem />
             <MinMaxNumberInput
-                label={t("actions.resource.radius")}
+                label={t("actions.resource.size")}
                 min={1}
-                max={16}
-                onValueChanged={setRadius}
-                value={radius}
+                max={32}
+                onValueChanged={setSize}
+                value={size}
             />
         </Stack>
     );

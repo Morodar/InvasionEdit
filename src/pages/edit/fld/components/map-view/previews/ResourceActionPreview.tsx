@@ -36,55 +36,45 @@ interface PreviewProps {
 
 const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
-    const { activeResource, radius } = useResourceActionContext();
+    const { activeResource, size } = useResourceActionContext();
     const [points, setPoints] = useState<IndexPoint3D[]>([]);
-    const [width, setWidth] = useState<number>(0);
-    const [height, setHeight] = useState<number>(0);
-
-    const planeMesh = useRef<THREE.Mesh>(null);
-    const planeGeo = useRef<THREE.PlaneGeometry>(null);
+    const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
 
     const color = ACTION_COLOR[activeResource];
 
     useLeftClickHoldAction(() => dispatch({ type: "RESOURCE", points, resource: activeResource }), [points]);
 
     useEffect(() => {
-        const relativePoints = getRelativePoints(fldFile, hoveredPoint, radius, radius);
+        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size);
         setPoints(relativePoints);
-        setWidth(new Set(relativePoints.map((p) => p.z)).size);
-        setHeight(new Set(relativePoints.map((p) => p.x)).size);
-    }, [fldFile, hoveredPoint, radius]);
+    }, [fldFile, hoveredPoint, size]);
 
     useEffect(() => {
-        if (planeGeo.current) {
-            const geo = planeGeo.current.attributes.position;
-            for (let i = 0; i < points.length; i++) {
-                const p = points[i];
-                const height = p.value;
-                geo.setY(i, height / 8 + 0.1);
-                geo.setX(i, p.x);
-                geo.setZ(i, p.z);
-            }
-            planeGeo.current.attributes.position.needsUpdate = true;
-            planeGeo.current.computeVertexNormals();
-            planeGeo.current.computeVertexNormals();
-            planeGeo.current.computeBoundingBox();
-            planeGeo.current.computeBoundingSphere();
-            planeGeo.current.computeTangents();
-        }
+        points.forEach((p, i) => {
+            temp.position.set(p.x, p.value / 8, p.z);
+            temp.updateMatrix();
+            instancedMeshRef.current.setMatrixAt(i, temp.matrix);
+        });
+
+        // Update the instance
+        instancedMeshRef.current.instanceMatrix.needsUpdate = true;
+        instancedMeshRef.current.computeBoundingBox();
+        instancedMeshRef.current.computeBoundingSphere();
     }, [points]);
 
     return (
-        <mesh ref={planeMesh} castShadow={true} receiveShadow={true}>
-            <planeGeometry args={[width, height, width - 1, height - 1]} ref={planeGeo} />
+        <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, size * size]}>
+            <sphereGeometry args={[0.25, 8, 8]} />
             <meshStandardMaterial
                 color={color}
                 roughness={0.5}
                 side={THREE.DoubleSide}
                 transparent={true}
                 wireframe={false}
-                opacity={0.5}
+                opacity={0.7}
             />
-        </mesh>
+        </instancedMesh>
     );
 };
+
+const temp = new THREE.Object3D();
