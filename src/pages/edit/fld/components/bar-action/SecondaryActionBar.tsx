@@ -4,6 +4,7 @@ import "./PrimaryActionBar.css";
 import { useFldPrimaryActionContext } from "../../context/FldPrimaryActionContext";
 import { ResourceActions } from "./ResourceActions";
 import { LandscapeActions } from "./LandscapeActions";
+import { GenericActions } from "./GenericActions";
 
 export const SecondaryActionBar = () => {
     const { primaryAction } = useFldPrimaryActionContext();
@@ -26,6 +27,8 @@ const Action = () => {
             return <LandscapeActions />;
         case "RESOURCES":
             return <ResourceActions />;
+        case "GENERIC":
+            return <GenericActions />;
         default:
             return <></>;
     }

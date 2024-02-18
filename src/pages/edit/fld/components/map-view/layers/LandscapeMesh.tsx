@@ -26,6 +26,7 @@ interface LandscapeLayerMeshProps {
 export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.Element => {
     const { map, showWireframe } = props;
     const landscape = map.layers[Layer.Landscape];
+    const mountains1 = map.layers[Layer.Unknown3];
     const width = map.width;
     const height = map.height;
 
@@ -34,18 +35,17 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
 
     useCursorCapture(planeMesh);
 
-    const texture = useMemo(() => {
-        return createHeightTexture(map);
-    }, [map]);
+    const texture = useMemo(() => createHeightTexture(map), [map]);
 
     useEffect(() => {
         if (planeGeo.current) {
             const geo = planeGeo.current.attributes.position;
             for (let i = 0; i < landscape.byteLength; i++) {
                 const value = landscape.getUint8(i);
+                const m = mountains1.getUint8(i);
                 const z = i % width;
                 const x = height - 1 - (i - z) / width;
-                geo.setY(i, value / 8);
+                geo.setY(i, (value - m) / 8);
                 geo.setX(i, x);
                 geo.setZ(i, z);
             }
@@ -55,7 +55,7 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
             planeGeo.current.computeBoundingSphere();
             planeGeo.current.computeTangents();
         }
-    }, [height, landscape, width]);
+    }, [height, landscape, mountains1, width]);
 
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true} visible>

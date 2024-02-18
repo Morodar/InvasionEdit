@@ -1,5 +1,5 @@
 import { FldFile } from "./FldFile";
-import { Layer, Layers } from "./Layer";
+import { LayerIndexes, Layers } from "./Layer";
 
 export function saveFldFile(fldFile: FldFile): File {
     if (!fldFile.originalFile) {
@@ -8,8 +8,9 @@ export function saveFldFile(fldFile: FldFile): File {
     const dest = clone(fldFile.originalFile);
     const destView = new DataView(dest);
 
-    saveLayer(fldFile.layers[Layer.Resources], destView, Layers[Layer.Resources].fileOffset);
-    saveLayer(fldFile.layers[Layer.Landscape], destView, Layers[Layer.Landscape].fileOffset);
+    LayerIndexes.forEach((layer) => {
+        saveLayer(fldFile.layers[layer], destView, Layers[layer].fileOffset);
+    });
 
     const blob = new Blob([dest]);
     return new File([blob], fldFile.name);

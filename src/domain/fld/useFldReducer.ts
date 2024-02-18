@@ -2,15 +2,9 @@ import { useReducer } from "react";
 import { FldFile, IndexValue } from "./FldFile";
 import { Tritium, Xenit } from "./ResourceLayerUtil";
 import { ActiveResource } from "../../pages/edit/fld/context/ResourceActionContext";
-import { Layer } from "./Layer";
+import { Layer, LayerIndex } from "./Layer";
 
-export type FldAction =
-    | SetFldPayload
-    | ResourcePayload
-    | LandscapeFixPayload
-    | LandscapeSmoothPayload
-    | LandscapeUpPayload
-    | LandscapeDownPayload;
+export type FldAction = SetFldPayload | ResourcePayload | LandscapePayload | GenericPayload;
 
 export interface SetFldPayload {
     type: "SET_FLD";
@@ -23,29 +17,19 @@ export interface ResourcePayload {
     points: IndexValue[];
 }
 
-export interface LandscapeFixPayload {
+export interface LandscapePayload {
     type: "LANDSCAPE";
-    action: "FIX";
+    action: "FIX" | "SMOOTH" | "STEP-UP" | "STEP-DOWN";
     points: IndexValue[];
     height: number;
 }
 
-export interface LandscapeSmoothPayload {
-    type: "LANDSCAPE";
-    action: "SMOOTH";
+export interface GenericPayload {
+    type: "GENERIC";
+    action: "FIX" | "SMOOTH" | "STEP-UP" | "STEP-DOWN";
+    layer: LayerIndex;
     points: IndexValue[];
-}
-
-export interface LandscapeUpPayload {
-    type: "LANDSCAPE";
-    action: "STEP-UP";
-    points: IndexValue[];
-}
-
-export interface LandscapeDownPayload {
-    type: "LANDSCAPE";
-    action: "STEP-DOWN";
-    points: IndexValue[];
+    height: number;
 }
 
 export const useFldReducer = (): [FldFile | null, React.Dispatch<FldAction>] => {
@@ -70,25 +54,17 @@ const reducer = (state: FldFile | null, action: FldAction): FldFile | null => {
         return performLandscapeAction(state, action);
     }
 
+    if (isGenericAction(action)) {
+        return performGenericAction(state, action);
+    }
+
     return state;
 };
 
 const isSetFldAction = (action: FldAction): action is SetFldPayload => action.type === "SET_FLD" && !!action;
 const isResourceAction = (action: FldAction): action is ResourcePayload => action.type === "RESOURCE" && !!action;
-
-const isLandscapeAction = (action: FldAction) => action.type === "LANDSCAPE";
-
-const isLandscapeFixAction = (action: FldAction): action is LandscapeFixPayload =>
-    action.type === "LANDSCAPE" && action.action === "FIX" && !!action;
-
-const isLandscapeSmoothAction = (action: FldAction): action is LandscapeSmoothPayload =>
-    action.type === "LANDSCAPE" && action.action === "SMOOTH" && !!action;
-
-const isLandscapeUpAction = (action: FldAction): action is LandscapeUpPayload =>
-    action.type === "LANDSCAPE" && action.action === "STEP-UP" && !!action;
-
-const isLandscapeDownAction = (action: FldAction): action is LandscapeDownPayload =>
-    action.type === "LANDSCAPE" && action.action === "STEP-DOWN" && !!action;
+const isLandscapeAction = (action: FldAction): action is LandscapePayload => action.type === "LANDSCAPE" && !!action;
+const isGenericAction = (action: FldAction): action is GenericPayload => action.type === "GENERIC" && !!action;
 
 const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
     const newState: FldFile = { ...state };
@@ -109,49 +85,52 @@ const RESOURCE_OPERATION: { [key in ActiveResource]: (oldValue: number) => numbe
     TRITIUM: addTritium,
     XENIT: addXenit,
 };
-function performLandscapeAction(
-    state: FldFile,
-    action: LandscapeFixPayload | LandscapeSmoothPayload | LandscapeUpPayload | LandscapeDownPayload,
-): FldFile | null {
+
+function performLandscapeAction(state: FldFile, action: LandscapePayload): FldFile | null {
+    const genericAction: GenericPayload = { ...action, layer: Layer.Landscape, type: "GENERIC" };
+    return performGenericAction(state, genericAction);
+}
+
+function performGenericAction(state: FldFile, payload: GenericPayload): FldFile | null {
     const newState: FldFile = { ...state };
-    const oldLandscape = newState.layers[Layer.Landscape];
-    const landscape = new DataView(oldLandscape.buffer);
-    newState.layers[Layer.Landscape] = landscape;
+    const oldLayerView = newState.layers[payload.layer];
+    const layerView = new DataView(oldLayerView.buffer);
+    newState.layers[payload.layer] = layerView;
     let isDirty = false;
-    if (isLandscapeFixAction(action)) {
-        action.points.forEach((p) => {
-            if (p.value !== action.height) {
-                landscape.setUint8(p.index, action.height);
+    if (payload.action === "FIX") {
+        payload.points.forEach((p) => {
+            if (p.value !== payload.height) {
+                layerView.setUint8(p.index, payload.height);
                 isDirty = true;
             }
         });
-    } else if (isLandscapeUpAction(action)) {
-        action.points.forEach((p) => {
-            const value = landscape.getUint8(p.index);
+    } else if (payload.action === "STEP-UP") {
+        payload.points.forEach((p) => {
+            const value = layerView.getUint8(p.index);
             if (value < 255) {
-                landscape.setUint8(p.index, value + 1);
+                layerView.setUint8(p.index, value + 1);
                 isDirty = true;
             }
         });
-    } else if (isLandscapeDownAction(action)) {
-        action.points.forEach((p) => {
-            const value = landscape.getUint8(p.index);
+    } else if (payload.action === "STEP-DOWN") {
+        payload.points.forEach((p) => {
+            const value = layerView.getUint8(p.index);
             if (value > 0) {
-                landscape.setUint8(p.index, value - 1);
+                layerView.setUint8(p.index, value - 1);
                 isDirty = true;
             }
         });
-    } else if (isLandscapeSmoothAction(action)) {
-        const values = action.points.map((p) => p.value).sort((a, b) => a - b);
+    } else if (payload.action === "SMOOTH") {
+        const values = payload.points.map((p) => p.value).sort((a, b) => a - b);
         const middleIndex = Math.floor(values.length / 2);
         const mid = values[middleIndex];
-        action.points.forEach((p) => {
-            const value = landscape.getUint8(p.index);
+        payload.points.forEach((p) => {
+            const value = layerView.getUint8(p.index);
             if (value > mid) {
-                landscape.setUint8(p.index, value - 1);
+                layerView.setUint8(p.index, value - 1);
                 isDirty = true;
             } else if (value < mid) {
-                landscape.setUint8(p.index, value + 1);
+                layerView.setUint8(p.index, value + 1);
                 isDirty = true;
             }
         });

@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
 
-export type FldPrimaryAction = "CLEAR" | "LANDSCAPE" | "RESOURCES";
+export type FldPrimaryAction = "CLEAR" | "LANDSCAPE" | "RESOURCES" | "GENERIC";
 
 export interface FldPrimaryActionContextProps {
     // state

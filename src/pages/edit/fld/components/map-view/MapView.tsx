@@ -19,6 +19,7 @@ import { useKeyboardControls } from "../../hooks/useKeyboardControls";
 import { LandscapeActionPreview } from "./previews/LandscapeActionPreview";
 import { LayerSettings } from "../layer-settings/LayerSettings";
 import { UnknownMeshes } from "./layers/UnknownMeshes";
+import { GenericActionPreview } from "./previews/GenericActionPreview";
 
 export const MapView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
@@ -28,6 +29,7 @@ export const MapView = (): React.JSX.Element => {
             <Canvas className="map">
                 <ambientLight intensity={3} />
                 <directionalLight position={[0, 100, 0]} intensity={2} />
+
                 <DREI.OrbitControls
                     target={[60, 0, 60]}
                     ref={orbitControlsRef}
@@ -36,13 +38,17 @@ export const MapView = (): React.JSX.Element => {
                     maxDistance={120}
                 />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />
-                <ResourceMeshes />
+
                 <Stats className="fps-counter" />
-                <LandscapeMesh />
                 <DebugBox />
                 <Debug3x3Box />
+
                 <ResourceActionPreview />
                 <LandscapeActionPreview />
+                <GenericActionPreview />
+
+                <ResourceMeshes />
+                <LandscapeMesh />
                 <UnknownMeshes />
             </Canvas>
             <DebugSidebar />

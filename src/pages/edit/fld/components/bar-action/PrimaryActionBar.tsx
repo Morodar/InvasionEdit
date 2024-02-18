@@ -5,6 +5,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import { FldPrimaryAction, useFldPrimaryActionContext } from "../../context/FldPrimaryActionContext";
 import { useTranslation } from "react-i18next";
+import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 
 export const PirmaryActionBar = () => {
     const { t } = useTranslation();
@@ -17,6 +18,7 @@ export const PirmaryActionBar = () => {
                         <ClearIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
+
                 <Tooltip title={t("action.primary.landscape")}>
                     <IconButton
                         color={getColor("LANDSCAPE", primaryAction)}
@@ -25,12 +27,19 @@ export const PirmaryActionBar = () => {
                         <LandscapeIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
+
                 <Tooltip title={t("action.primary.xenit-and-tritium")}>
                     <IconButton
                         color={getColor("RESOURCES", primaryAction)}
                         onClick={() => setPrimaryAction("RESOURCES")}
                     >
                         <DiamondIcon sx={{ fontSize: 32 }} />
+                    </IconButton>
+                </Tooltip>
+
+                <Tooltip title={t("action.primary.generic")}>
+                    <IconButton color={getColor("GENERIC", primaryAction)} onClick={() => setPrimaryAction("GENERIC")}>
+                        <MiscellaneousServicesIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
             </Stack>

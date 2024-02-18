@@ -37,6 +37,7 @@ export function getRelativePoints(
     fromIndex: number,
     brushWidth: number,
     brushHeight: number,
+    layer: LayerIndex = Layer.Landscape,
 ): IndexValue[] {
     const { width, height } = fldFile;
 
@@ -45,7 +46,7 @@ export function getRelativePoints(
 
     if (brushWidth === 1 && brushHeight === 1) {
         const index = offsetW * width + offsetH;
-        return [{ index, value: fldFile.layers[Layer.Landscape].getUint8(index) }];
+        return [{ index, value: fldFile.layers[layer].getUint8(index) }];
     }
 
     const brushWidthStart = Math.floor(brushWidth / 2);
@@ -63,8 +64,8 @@ export function getRelativePoints(
             }
 
             const index = brushOffsetW * width + brushOffsetH;
-            if (index >= 0 && index < fldFile.layers[Layer.Landscape].byteLength) {
-                points.push({ index, value: fldFile.layers[Layer.Landscape].getUint8(index) });
+            if (index >= 0 && index < fldFile.layers[layer].byteLength) {
+                points.push({ index, value: fldFile.layers[layer].getUint8(index) });
             }
         }
     }

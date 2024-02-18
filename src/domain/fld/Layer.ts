@@ -29,15 +29,15 @@ export class Layer {
 }
 
 export const Layers: Layers = {
-    0: { label: "LAYER.TEXTURES", fileOffset: 584 },
+    0: { label: "LAYER.NOISE_1", fileOffset: 584 },
     1: { label: "LAYER.LANDSCAPE", fileOffset: 585 },
-    2: { label: "LAYER.EMPTY_3", fileOffset: 586 },
-    3: { label: "LAYER.EMPTY_4", fileOffset: 587 },
-    4: { label: "LAYER.TEXTURES_2", fileOffset: 588 },
+    2: { label: "LAYER.MOUNTAINS_1", fileOffset: 586 },
+    3: { label: "LAYER.MOUNTAINS_2", fileOffset: 587 },
+    4: { label: "LAYER.NOISE_2", fileOffset: 588 },
     5: { label: "LAYER.UNKNOWN_6", fileOffset: 589 },
-    6: { label: "LAYER.UNKNOWN_7", fileOffset: 590 },
-    7: { label: "LAYER.UNKNOWN_8", fileOffset: 591 },
-    8: { label: "LAYER.UNKNOWN_9", fileOffset: 592 },
+    6: { label: "LAYER.WATER_1", fileOffset: 590 },
+    7: { label: "LAYER.WATER_2", fileOffset: 591 },
+    8: { label: "LAYER.TEXTURES", fileOffset: 592 },
     9: { label: "LAYER.RESOURCES", fileOffset: 593 },
     10: { label: "LAYER.EMPTY_11", fileOffset: 594 },
     11: { label: "LAYER.UNKNOWN_12", fileOffset: 595 },
