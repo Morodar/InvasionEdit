@@ -2,13 +2,13 @@ import { Color } from "@react-three/fiber";
 import { useFldPrimaryActionContext } from "../../../context/FldPrimaryActionContext";
 import { ActiveResource, useResourceActionContext } from "../../../context/ResourceActionContext";
 import { Dispatch, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 import { useCursorContext } from "../../../context/CursorContext";
 import { FldFile, IndexValue, getRelativePoints } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { Tritium, Xenit } from "../../../../../../domain/fld/ResourceLayerUtil";
 import { useLeftClickHoldAction } from "../../../hooks/useLeftClickHoldAction";
 import { FldAction } from "../../../../../../domain/fld/useFldReducer";
+import { DoubleSide, InstancedMesh, Object3D } from "three";
 
 export const ResourceActionPreview = () => {
     const { fldFile, dispatch } = useFldMapContext();
@@ -39,7 +39,7 @@ const Preview = (props: PreviewProps) => {
     const { width, height } = fldFile;
     const { activeResource, size } = useResourceActionContext();
     const [points, setPoints] = useState<IndexValue[]>([]);
-    const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
+    const instancedMeshRef = useRef<InstancedMesh>(null!);
 
     const color = ACTION_COLOR[activeResource];
 
@@ -71,7 +71,7 @@ const Preview = (props: PreviewProps) => {
             <meshStandardMaterial
                 color={color}
                 roughness={0.5}
-                side={THREE.DoubleSide}
+                side={DoubleSide}
                 transparent={true}
                 wireframe={false}
                 opacity={0.7}
@@ -80,4 +80,4 @@ const Preview = (props: PreviewProps) => {
     );
 };
 
-const temp = new THREE.Object3D();
+const temp = new Object3D();

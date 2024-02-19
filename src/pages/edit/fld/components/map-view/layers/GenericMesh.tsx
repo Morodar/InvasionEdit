@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
-import * as THREE from "three";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
 import { FldMap } from "../../../../../../domain/fld/FldFile";
 import { LayerSetting } from "../../../context/LayerViewContext";
 import { Layer } from "../../../../../../domain/fld/Layer";
+import { DoubleSide, Mesh, PlaneGeometry } from "three";
 
 interface GenericMeshProps {
     map: FldMap;
@@ -32,8 +32,8 @@ export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Elemen
     const width = map.width;
     const height = map.height;
 
-    const planeMesh = useRef<THREE.Mesh>(null);
-    const planeGeo = useRef<THREE.PlaneGeometry>(null);
+    const planeMesh = useRef<Mesh>(null);
+    const planeGeo = useRef<PlaneGeometry>(null);
     const landscape = map.layers[Layer.Landscape];
 
     useCursorCapture(planeMesh);
@@ -64,7 +64,7 @@ export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Elemen
                 color="#e0e0e0"
                 roughness={0.5}
                 opacity={0.5}
-                side={THREE.DoubleSide}
+                side={DoubleSide}
                 wireframe={showWireframe}
             />
         </mesh>

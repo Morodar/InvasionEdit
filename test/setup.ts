@@ -11,6 +11,17 @@ beforeAll(() => {
         unobserve: vi.fn(),
         disconnect: vi.fn(),
     }));
+    vi.mock("react-i18next", () => ({
+        // this mock makes sure any components using the translate hook can use it without a warning being shown
+        useTranslation: () => {
+            return {
+                t: (str: string) => str,
+                i18n: { changeLanguage: () => Promise.resolve() },
+            };
+        },
+        initReactI18next: { type: "3rdParty", init: vi.fn() },
+    }));
+    vi.spyOn(console, "debug").mockReturnValue();
 });
 
 afterEach(() => {

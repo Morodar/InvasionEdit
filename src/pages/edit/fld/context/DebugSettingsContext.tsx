@@ -54,6 +54,6 @@ export const DebugSettingsContextProvider: React.FC<PropsWithChildren> = ({ chil
 };
 
 const initSettings = () => {
-    console.log("init settings");
+    console.debug("init settings");
     return service.loadSettings();
 };

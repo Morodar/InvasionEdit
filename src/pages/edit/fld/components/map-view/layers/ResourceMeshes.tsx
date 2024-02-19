@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Tritium, Xenit, XenitTritium } from "../../../../../../domain/fld/ResourceLayerUtil";
-import * as THREE from "three";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { useLayerViewContext } from "../../../context/LayerViewContext";
 import { Layer } from "../../../../../../domain/fld/Layer";
 import { IndexValue } from "../../../../../../domain/fld/FldFile";
+import { InstancedMesh, Object3D } from "three";
 
 export const ResourceMeshes = () => {
     const { resourceLayer, fldFile } = useFldMapContext();
@@ -57,11 +57,11 @@ interface ResourceRenderProps {
 }
 const ResourceRender = (props: ResourceRenderProps) => {
     const { landscape, width, height, resources, color, showWireframe } = props;
-    const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
+    const instancedMeshRef = useRef<InstancedMesh>(null!);
 
     useEffect(() => {
         const mesh = instancedMeshRef.current;
-        const temp = new THREE.Object3D();
+        const temp = new Object3D();
         resources.forEach((resource, i) => {
             const p = landscape.getUint8(resource.index);
             const y = p / 8 + 0.01;

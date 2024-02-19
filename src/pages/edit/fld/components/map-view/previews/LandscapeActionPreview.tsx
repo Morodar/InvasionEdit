@@ -4,9 +4,9 @@ import { useFldMapContext } from "../../../context/FldMapContext";
 import { useFldPrimaryActionContext } from "../../../context/FldPrimaryActionContext";
 import { FldFile, IndexValue, getRelativePoints } from "../../../../../../domain/fld/FldFile";
 import { FldAction } from "../../../../../../domain/fld/useFldReducer";
-import * as THREE from "three";
 import { useLandscapeActionContext } from "../../../context/LandscapeActionContext";
 import { useLeftClickHoldDelayAction } from "../../../hooks/useLeftClickHoldDelayAction";
+import { DoubleSide, Mesh, PlaneGeometry } from "three";
 
 export const LandscapeActionPreview = () => {
     const { fldFile, dispatch } = useFldMapContext();
@@ -33,8 +33,8 @@ const Preview = (props: PreviewProps) => {
     const [width, setWidth] = useState<number>(0);
     const [height, setHeight] = useState<number>(0);
 
-    const planeMesh = useRef<THREE.Mesh>(null);
-    const planeGeo = useRef<THREE.PlaneGeometry>(null);
+    const planeMesh = useRef<Mesh>(null);
+    const planeGeo = useRef<PlaneGeometry>(null);
     const speed = activeAction === "FIX" ? 8 : 1000 / stepsize;
 
     useLeftClickHoldDelayAction(
@@ -80,7 +80,7 @@ const Preview = (props: PreviewProps) => {
                 <meshStandardMaterial
                     color="#ffffff"
                     roughness={0.5}
-                    side={THREE.DoubleSide}
+                    side={DoubleSide}
                     transparent={true}
                     wireframe={false}
                     opacity={0.7}
@@ -95,7 +95,7 @@ const Preview = (props: PreviewProps) => {
             <meshStandardMaterial
                 color="#ffffff"
                 roughness={0.5}
-                side={THREE.DoubleSide}
+                side={DoubleSide}
                 transparent={true}
                 wireframe={false}
                 opacity={0.5}

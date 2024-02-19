@@ -1,13 +1,13 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useCursorContext } from "../context/CursorContext";
 import { RefObject, useEffect, useState } from "react";
-import * as THREE from "three";
 import { useFldMapContext } from "../context/FldMapContext";
 import { Layer } from "../../../../domain/fld/Layer";
+import { Mesh, Raycaster } from "three";
 
-const raycaster = new THREE.Raycaster();
+const raycaster = new Raycaster();
 
-export const useCursorCapture = (meshRef: RefObject<THREE.Mesh>) => {
+export const useCursorCapture = (meshRef: RefObject<Mesh>) => {
     const { camera, pointer, gl } = useThree();
     const { hoveredPoint, setHoveredPoint, setMeshPoint } = useCursorContext();
     const { fldFile } = useFldMapContext();

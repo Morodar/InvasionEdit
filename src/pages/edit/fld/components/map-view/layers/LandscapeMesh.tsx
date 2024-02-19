@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef } from "react";
-import * as THREE from "three";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
 import { FldMap } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { Layer } from "../../../../../../domain/fld/Layer";
 import { useLayerViewContext } from "../../../context/LayerViewContext";
+import { DataTexture, DoubleSide, Mesh, PlaneGeometry, RGBAFormat } from "three";
 
 export const LandscapeMesh = () => {
     const { fldFile } = useFldMapContext();
@@ -30,8 +30,8 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
     const width = map.width;
     const height = map.height;
 
-    const planeMesh = useRef<THREE.Mesh>(null);
-    const planeGeo = useRef<THREE.PlaneGeometry>(null);
+    const planeMesh = useRef<Mesh>(null);
+    const planeGeo = useRef<PlaneGeometry>(null);
 
     useCursorCapture(planeMesh);
 
@@ -64,7 +64,7 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
                 color="#e0e0e0"
                 map={texture}
                 roughness={0.5}
-                side={THREE.DoubleSide}
+                side={DoubleSide}
                 wireframe={showWireframe}
             />
         </mesh>
@@ -72,7 +72,7 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
 };
 
 /** Create a texture based on the height values */
-const createHeightTexture = (layer: FldMap): THREE.DataTexture => {
+const createHeightTexture = (layer: FldMap): DataTexture => {
     const heightData = new Uint8Array(layer.width * layer.height * 4);
     const { width, height, layers } = layer;
     const landscape = layers[Layer.Landscape];
@@ -99,7 +99,7 @@ const createHeightTexture = (layer: FldMap): THREE.DataTexture => {
         heightData[index + 3] = 255; // Alpha channel
     }
 
-    const heightTexture = new THREE.DataTexture(heightData, layer.width, layer.height, THREE.RGBAFormat);
+    const heightTexture = new DataTexture(heightData, layer.width, layer.height, RGBAFormat);
     heightTexture.needsUpdate = true;
     return heightTexture;
 };

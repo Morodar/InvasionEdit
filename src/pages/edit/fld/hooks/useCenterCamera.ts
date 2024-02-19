@@ -1,8 +1,8 @@
 import { useThree } from "@react-three/fiber";
 import { useFldMapContext } from "../context/FldMapContext";
 import { useEffect, useState } from "react";
-import { OrbitControls } from "three-stdlib";
 import { Vector3 } from "three";
+import { OrbitControls } from "../../../../common/utils/OrbitControls";
 
 export const useCenterCamera = (orbitControlsRef: React.RefObject<OrbitControls>) => {
     const [prevName, setPrevName] = useState("");

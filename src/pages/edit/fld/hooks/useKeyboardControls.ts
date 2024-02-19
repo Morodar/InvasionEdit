@@ -1,10 +1,9 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useState } from "react";
-import { Camera } from "three";
-import { OrbitControls } from "three-stdlib";
-import * as THREE from "three";
+import { Camera, Vector3 } from "three";
 import { useFldMapContext } from "../context/FldMapContext";
 import { centerCamera } from "./useCenterCamera";
+import { OrbitControls } from "../../../../common/utils/OrbitControls";
 
 export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitControls>) => {
     const { fldFile } = useFldMapContext();
@@ -58,11 +57,11 @@ function updateCameraPosition(
     const moveBy = speed * timeMs;
     const rotateBy = rotateSpeed * timeMs;
 
-    const direction = new THREE.Vector3().subVectors(camera.position, target).normalize();
-    const left = new THREE.Vector3().crossVectors(direction, up);
-    const forward = new THREE.Vector3().crossVectors(left, up);
+    const direction = new Vector3().subVectors(camera.position, target).normalize();
+    const left = new Vector3().crossVectors(direction, up);
+    const forward = new Vector3().crossVectors(left, up);
 
-    const moveVector = new THREE.Vector3();
+    const moveVector = new Vector3();
 
     for (const key of pressedKeys) {
         switch (key) {
@@ -109,6 +108,6 @@ function updateCameraPosition(
     orbit.update();
 }
 
-const up = new THREE.Vector3(0, 1, 0);
-const isWithinBoundary = (target: THREE.Vector3, width: number, height: number) =>
+const up = new Vector3(0, 1, 0);
+const isWithinBoundary = (target: Vector3, width: number, height: number) =>
     target.x >= 0 && target.x <= width && target.z >= 0 && target.z <= height;

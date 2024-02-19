@@ -4,7 +4,7 @@ import { useCursorContext } from "../../context/CursorContext";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useFldMapContext } from "../../context/FldMapContext";
 import { Layer } from "../../../../../domain/fld/Layer";
-import { Object3D } from "three";
+import { InstancedMesh, Object3D } from "three";
 
 export const Debug3x3Box = () => {
     const { hoveredPoint } = useCursorContext();
@@ -29,7 +29,7 @@ const Render = (props: RenderProps) => {
     const { fldFile, hoveredPoint } = props;
     const { height, width } = fldFile;
     const landscape = fldFile.layers[Layer.Landscape];
-    const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
+    const instancedMeshRef = useRef<InstancedMesh>(null!);
 
     useEffect(() => {
         setPoints(getRelativePoints(fldFile, hoveredPoint, 3, 3));

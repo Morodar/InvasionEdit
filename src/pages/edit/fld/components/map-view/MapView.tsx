@@ -4,9 +4,7 @@ import "./MapView.css";
 import { ResourceMeshes } from "./layers/ResourceMeshes";
 import { useInitFld } from "../../hooks/useInitFld";
 import { useCenterCamera } from "../../hooks/useCenterCamera";
-import * as DREI from "@react-three/drei";
-import { OrbitControls } from "three-stdlib";
-import { Stats } from "@react-three/drei";
+import { OrbitControls as DreiObitControls, Stats } from "@react-three/drei";
 import { LandscapeMesh } from "./layers/LandscapeMesh";
 import { DebugSidebar } from "../debug/DebugSidebar";
 import { DebugBox } from "../debug/DebugBox";
@@ -14,12 +12,13 @@ import { Debug3x3Box } from "../debug/Debug3x3Box";
 import { PirmaryActionBar } from "../bar-action/PrimaryActionBar";
 import { SecondaryActionBar } from "../bar-action/SecondaryActionBar";
 import { ResourceActionPreview } from "./previews/ResourceActionPreview";
-import * as THREE from "three";
 import { useKeyboardControls } from "../../hooks/useKeyboardControls";
 import { LandscapeActionPreview } from "./previews/LandscapeActionPreview";
 import { LayerSettings } from "../layer-settings/LayerSettings";
 import { UnknownMeshes } from "./layers/UnknownMeshes";
 import { GenericActionPreview } from "./previews/GenericActionPreview";
+import { OrbitControls } from "../../../../../common/utils/OrbitControls";
+import { MOUSE } from "three";
 
 export const MapView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
@@ -30,10 +29,10 @@ export const MapView = (): React.JSX.Element => {
                 <ambientLight intensity={3} />
                 <directionalLight position={[0, 100, 0]} intensity={2} />
 
-                <DREI.OrbitControls
+                <DreiObitControls
                     target={[60, 0, 60]}
                     ref={orbitControlsRef}
-                    mouseButtons={{ RIGHT: THREE.MOUSE.RIGHT }}
+                    mouseButtons={{ RIGHT: MOUSE.RIGHT }}
                     minDistance={20}
                     maxDistance={120}
                 />

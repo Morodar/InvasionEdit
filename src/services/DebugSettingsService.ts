@@ -8,7 +8,7 @@ export interface DebugSettings {
 
 export class DebugSettingsService {
     saveSettings(settings: DebugSettings) {
-        console.log("saving debug settings");
+        console.debug("saving debug settings");
         const json = JSON.stringify(settings);
         localStorage.setItem(StorageItems.FLD_DEBUG_SETTINGS_KEY, json);
     }
@@ -17,7 +17,7 @@ export class DebugSettingsService {
         try {
             const jsonStr = localStorage.getItem(StorageItems.FLD_DEBUG_SETTINGS_KEY) ?? "{}";
             const json = JSON.parse(jsonStr) as Record<string, unknown>;
-            console.log("loading debug settings");
+            console.debug("loading debug settings");
             if (typeof json !== "object" || json == null) {
                 return this.createDefault();
             }

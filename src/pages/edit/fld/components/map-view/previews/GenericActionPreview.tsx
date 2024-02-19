@@ -1,12 +1,12 @@
 import { useFldPrimaryActionContext } from "../../../context/FldPrimaryActionContext";
 import { Dispatch, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 import { useCursorContext } from "../../../context/CursorContext";
 import { FldFile, IndexValue, getRelativePoints } from "../../../../../../domain/fld/FldFile";
 import { useFldMapContext } from "../../../context/FldMapContext";
 import { FldAction } from "../../../../../../domain/fld/useFldReducer";
 import { useGenericActionContext } from "../../../context/GenericActionContext";
 import { useLeftClickHoldDelayAction } from "../../../hooks/useLeftClickHoldDelayAction";
+import { DoubleSide, InstancedMesh, Object3D } from "three";
 
 export const GenericActionPreview = () => {
     const { fldFile, dispatch } = useFldMapContext();
@@ -31,7 +31,7 @@ const Preview = (props: PreviewProps) => {
     const { width, height } = fldFile;
     const { size, layer, height: absoluteHeight, speed: stepsize, activeAction } = useGenericActionContext();
     const [points, setPoints] = useState<IndexValue[]>([]);
-    const instancedMeshRef = useRef<THREE.InstancedMesh>(null!);
+    const instancedMeshRef = useRef<InstancedMesh>(null!);
     const speed = activeAction === "FIX" ? 8 : 1000 / stepsize;
 
     useLeftClickHoldDelayAction(
@@ -66,7 +66,7 @@ const Preview = (props: PreviewProps) => {
             <meshStandardMaterial
                 color="#0000ff"
                 roughness={0.5}
-                side={THREE.DoubleSide}
+                side={DoubleSide}
                 transparent={true}
                 wireframe={false}
                 opacity={0.7}
@@ -75,4 +75,4 @@ const Preview = (props: PreviewProps) => {
     );
 };
 
-const temp = new THREE.Object3D();
+const temp = new Object3D();
