@@ -61,7 +61,7 @@ const Preview = (props: PreviewProps) => {
     }, [height, points, width]);
 
     return (
-        <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, size * size]}>
+        <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, points.length]}>
             <sphereGeometry args={[0.25, 8, 8]} />
             <meshStandardMaterial
                 color="#0000ff"
