@@ -9,7 +9,8 @@
             "selected-point": "Selected Point",
             "cube": "Debug Cube",
             "cursor-position": "Debug Cursor Position",
-            "settings": "Debug Settings"
+            "settings": "Debug Settings",
+            "show-all-layers": "Show all layers"
         },
         "select-fld-file": "Please select a FLD file.",
         "choose-fld-file": "Choose FLD File",
@@ -74,7 +75,7 @@
         "NOISE_2": "Noise 2",
         "MOUNTAINS_1": "Mountains 1",
         "MOUNTAINS_2": "Mountains 2",
-        "WATER_1": "Water 1",
+        "WATER_1": "Water",
         "WATER_2": "Water 2",
         "TEXTURES": "Textures 1",
         "TEXTURES_2": "Textures 2"

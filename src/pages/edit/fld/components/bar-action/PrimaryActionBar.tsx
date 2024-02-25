@@ -6,10 +6,13 @@ import DiamondIcon from "@mui/icons-material/Diamond";
 import { FldPrimaryAction, useFldPrimaryActionContext } from "../../context/FldPrimaryActionContext";
 import { useTranslation } from "react-i18next";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
+import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 
 export const PirmaryActionBar = () => {
     const { t } = useTranslation();
     const { primaryAction, setPrimaryAction } = useFldPrimaryActionContext();
+    const { debugSettings } = useDebugSettingsContext();
+
     return (
         <Card className="primary-action-bar">
             <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
@@ -37,11 +40,16 @@ export const PirmaryActionBar = () => {
                     </IconButton>
                 </Tooltip>
 
-                <Tooltip title={t("action.primary.generic")}>
-                    <IconButton color={getColor("GENERIC", primaryAction)} onClick={() => setPrimaryAction("GENERIC")}>
-                        <MiscellaneousServicesIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                </Tooltip>
+                {debugSettings.showAllLayers && (
+                    <Tooltip title={t("action.primary.generic")}>
+                        <IconButton
+                            color={getColor("GENERIC", primaryAction)}
+                            onClick={() => setPrimaryAction("GENERIC")}
+                        >
+                            <MiscellaneousServicesIcon sx={{ fontSize: 32 }} />
+                        </IconButton>
+                    </Tooltip>
+                )}
             </Stack>
         </Card>
     );

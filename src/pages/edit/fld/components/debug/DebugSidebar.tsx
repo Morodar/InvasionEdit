@@ -4,7 +4,7 @@ import { useCursorContext } from "../../context/CursorContext";
 import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useTranslation } from "react-i18next";
 import { useFldMapContext } from "../../context/FldMapContext";
-import { Layers, LayerIndexes, LayerIndex } from "../../../../../domain/fld/Layer";
+import { Layers, LayerIndexes, LayerIndex, KnownLayers } from "../../../../../domain/fld/Layer";
 import { FldFile } from "../../../../../domain/fld/FldFile";
 
 export const DebugSidebar = () => {
@@ -30,9 +30,13 @@ const Sidebar = (props: SidebarProps) => {
     const { fldFile, hoveredPoint } = props;
     const { width, height } = fldFile;
     const { t } = useTranslation();
+    const { debugSettings } = useDebugSettingsContext();
+
     const z = hoveredPoint % width;
     const x = height - 1 - Math.floor(hoveredPoint / width);
-    const items = LayerIndexes.map((layer: LayerIndex) => (
+    const layers = debugSettings.showAllLayers ? LayerIndexes : KnownLayers;
+
+    const items = layers.map((layer: LayerIndex) => (
         <ListItem key={layer}>
             <ListItemText>
                 {t(Layers[layer].label)}: {fldFile.layers[layer].getUint8(hoveredPoint)}

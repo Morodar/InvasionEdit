@@ -19,23 +19,30 @@ export interface DebugSettingsDialogProps {
 export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
     const { onClose, open } = props;
     const { t } = useTranslation();
-    const { debugSettings, setShowDebugCube, showDebugCursorPosition, setShowDebugCube3x3 } = useDebugSettingsContext();
+    const { debugSettings, setShowAllLayers, setShowDebugCube, showDebugCursorPosition, setShowDebugCube3x3 } =
+        useDebugSettingsContext();
 
-    const handleDebugCubeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleShowAllLayersChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+        setShowAllLayers(event.target.checked);
+
+    const handleDebugCubeChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         setShowDebugCube(event.target.checked);
-    };
-    const handleDebugCubeChange3x3 = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleDebugCubeChange3x3 = (event: React.ChangeEvent<HTMLInputElement>) =>
         setShowDebugCube3x3(event.target.checked);
-    };
-    const handleDebugCursorPositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleDebugCursorPositionChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         showDebugCursorPosition(event.target.checked);
-    };
 
     return (
         <Dialog onClose={onClose} open={open}>
             <DialogTitle>{t("fld-editor.debug.settings")}</DialogTitle>
             <DialogContent>
                 <FormGroup>
+                    <FormControlLabel
+                        control={<Switch checked={debugSettings.showAllLayers} onChange={handleShowAllLayersChange} />}
+                        label={t("fld-editor.debug.show-all-layers")}
+                    />
                     <FormControlLabel
                         control={<Switch checked={debugSettings.showDebugCube} onChange={handleDebugCubeChange} />}
                         label={t("fld-editor.debug.cube")}

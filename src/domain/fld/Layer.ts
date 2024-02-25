@@ -16,8 +16,8 @@ export class Layer {
     static Unknown4: LayerIndex = 3;
     static Unknown5: LayerIndex = 4;
     static Unknown6: LayerIndex = 5;
-    static Unknown7: LayerIndex = 6;
-    static Unknown8: LayerIndex = 7;
+    static Water: LayerIndex = 6;
+    static Water2: LayerIndex = 7;
     static Unknown9: LayerIndex = 8;
     static Resources: LayerIndex = 9;
     static Unknown11: LayerIndex = 10;
@@ -27,6 +27,7 @@ export class Layer {
     static Unknown15: LayerIndex = 14;
     static Unknown16: LayerIndex = 15;
 }
+export const KnownLayers: LayerIndex[] = [Layer.Landscape, Layer.Resources, Layer.Water];
 
 export const Layers: Layers = {
     0: { label: "LAYER.NOISE_1", fileOffset: 584 },
