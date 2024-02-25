@@ -5,22 +5,31 @@ import { useDebugSettingsContext } from "../../context/DebugSettingsContext";
 import { useTranslation } from "react-i18next";
 import { useFldMapContext } from "../../context/FldMapContext";
 import { Layers, LayerIndexes, LayerIndex } from "../../../../../domain/fld/Layer";
+import { FldFile } from "../../../../../domain/fld/FldFile";
 
 export const DebugSidebar = () => {
     const { hoveredPoint } = useCursorContext();
     const { fldFile } = useFldMapContext();
     const { debugSettings } = useDebugSettingsContext();
-    const { t } = useTranslation();
 
     if (!debugSettings.showDebugCursorPosition) {
         return <></>;
     }
 
-    if (!fldFile || !hoveredPoint) {
+    if (!fldFile) {
         return <></>;
     }
 
+    return <Sidebar fldFile={fldFile} hoveredPoint={hoveredPoint ?? 0} />;
+};
+interface SidebarProps {
+    fldFile: FldFile;
+    hoveredPoint: number;
+}
+const Sidebar = (props: SidebarProps) => {
+    const { fldFile, hoveredPoint } = props;
     const { width, height } = fldFile;
+    const { t } = useTranslation();
     const z = hoveredPoint % width;
     const x = height - 1 - Math.floor(hoveredPoint / width);
     const items = LayerIndexes.map((layer: LayerIndex) => (
