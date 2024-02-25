@@ -30,6 +30,11 @@ export const DebugSidebar = () => {
             </ListItemText>
         </ListItem>
     ));
+
+    const newX = height - 1 - x;
+    const x2 = newX * -1999;
+    const z2 = newX * 1152 + z * 2305;
+
     return (
         <Card className="debug-sidebar">
             <p>{t("fld-editor.debug.hovered-point")}</p>
@@ -42,8 +47,34 @@ export const DebugSidebar = () => {
                         X: {x} Z: {z}
                     </ListItemText>
                 </ListItem>
+                <ListItem>
+                    <ListItemText>
+                        Z2: {z2} (0x {formatAsLittleEndianHex(z2)} LE)
+                    </ListItemText>
+                </ListItem>
+                <ListItem>
+                    <ListItemText>
+                        X2: {x2} (0x {formatAsLittleEndianHex(x2)} LE)
+                    </ListItemText>
+                </ListItem>
                 {items}
             </List>
         </Card>
     );
 };
+
+function formatAsLittleEndianHex(num: number): string {
+    // Ensure num is a 32-bit signed integer
+    num |= 0;
+
+    // Extract individual bytes in little-endian order
+    const byte1 = (num & 0xff).toString(16).toUpperCase().padStart(2, "0");
+    const byte2 = ((num >> 8) & 0xff).toString(16).toUpperCase().padStart(2, "0");
+    const byte3 = ((num >> 16) & 0xff).toString(16).toUpperCase().padStart(2, "0");
+    const byte4 = ((num >> 24) & 0xff).toString(16).toUpperCase().padStart(2, "0");
+
+    // Concatenate the bytes in little-endian order with spaces
+    const hexString = `${byte1} ${byte2} ${byte3} ${byte4}`;
+
+    return hexString;
+}
