@@ -2,11 +2,11 @@
 import { Dispatch, useContext } from "react";
 import { useState, useCallback, useMemo, PropsWithChildren, useEffect } from "react";
 import { FldFile } from "../../../../domain/fld/FldFile";
-import { parseFldFile } from "../../../../domain/fld/parseFldFile";
 import { ResourceDefinition, ResourceLayerUtil } from "../../../../domain/fld/ResourceLayerUtil";
 
 import { createContext } from "react";
 import { FldAction, useFldReducer } from "../../../../domain/fld/useFldReducer";
+import { FldUtils } from "../../../../domain/fld/FldUtils";
 
 export interface FldMapContextProps {
     // state
@@ -33,7 +33,7 @@ export const FldMapContextProvider: React.FC<PropsWithChildren> = ({ children }:
 
     const tryUseFldFile = useCallback(
         async (file: File) => {
-            const result = await parseFldFile(file);
+            const result = await FldUtils.parseFldFile(file);
             dispatch({ type: "SET_FLD", fldFile: result });
         },
         [dispatch],

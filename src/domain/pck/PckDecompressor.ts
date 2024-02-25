@@ -214,20 +214,20 @@ export class PckDecompressor {
 
     static addCoordinateSystem(height: number, width: number, dest: DataView) {
         let pDest = 512;
-        let tmp1 = 0;
-        let tmp2 = 0;
-        let tmp3 = 0;
+        let z1 = 0;
+        let z2 = 0;
+        let x = 0;
 
         for (let iHeight = height; iHeight > 0; iHeight--) {
             for (let iWidth = width; iWidth > 0; iWidth--) {
-                dest.setUint32(pDest + 16 * 4, tmp2, true);
-                dest.setUint32(pDest + 17 * 4, tmp3, true);
-                tmp2 += 2305;
+                dest.setUint32(pDest + 16 * 4, z2, true);
+                dest.setUint32(pDest + 17 * 4, x, true);
+                z2 += 2305;
                 pDest += 0x20 * 4;
             }
-            tmp2 = tmp1 + 1152;
-            tmp3 = PckDecompressor.subtractUnsignedInt32(tmp3, 1999);
-            tmp1 = tmp2;
+            z2 = z1 + 1152; //2305 divided by 2 is almost 1152 --> rotate map by 45°?
+            z1 = z2;
+            x = PckDecompressor.subtractUnsignedInt32(x, 1999);
         }
     }
 

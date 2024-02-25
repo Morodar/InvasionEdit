@@ -2,9 +2,9 @@ import { Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Stack,
 import { SelectFileButton } from "../../../../../../common/input/SelectFileButton";
 import { useEffect, useState } from "react";
 import { FldFile } from "../../../../../../domain/fld/FldFile";
-import { parseFldFile } from "../../../../../../domain/fld/parseFldFile";
 import { useTranslation } from "react-i18next";
 import { useFldMapContext } from "../../../context/FldMapContext";
+import { FldUtils } from "../../../../../../domain/fld/FldUtils";
 
 export interface ChooseFldDialogProps {
     open: boolean;
@@ -24,7 +24,7 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
 
     const handleFileChanged = async (file?: File) => {
         if (file) {
-            const parsedFldFile = await parseFldFile(file);
+            const parsedFldFile = await FldUtils.parseFldFile(file);
             setTmpFldFile(parsedFldFile);
         }
     };
@@ -48,7 +48,7 @@ export const ChooseFldDialog = (props: ChooseFldDialogProps) => {
                 </SelectFileButton>
                 <Button onClick={onClose}>{t("common.cancel")}</Button>
                 <Button disabled={!tmpFldFile} onClick={applyFldFile}>
-                    {t("common.confirm")}{" "}
+                    {t("common.confirm")}
                 </Button>
             </DialogActions>
         </Dialog>

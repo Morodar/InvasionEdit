@@ -1,9 +1,9 @@
 import saveAs from "file-saver";
 import { useFldMapContext } from "../../../context/FldMapContext";
-import { saveFldFile } from "../../../../../../domain/fld/saveFldFile";
 import { IconButton, Tooltip } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import { useTranslation } from "react-i18next";
+import { FldUtils } from "../../../../../../domain/fld/FldUtils";
 
 export const SaveFldButton = () => {
     const { t } = useTranslation();
@@ -11,7 +11,7 @@ export const SaveFldButton = () => {
 
     const downloadFile = () => {
         if (fldFile) {
-            const file: File = saveFldFile(fldFile);
+            const file: File = FldUtils.buildFldFile(fldFile);
             const blob = new Blob([file], { type: file.type });
             saveAs(blob, file.name);
         }

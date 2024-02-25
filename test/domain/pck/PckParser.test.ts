@@ -4,7 +4,7 @@ import { parsePckFile } from "../../../src/domain/pck/PckParser";
 describe("PckParser", () => {
     describe("given valid pck file", async () => {
         const file = TestResouces.Level00_PCK();
-        const result = await parsePckFile(file as unknown as File);
+        const result = await parsePckFile(file);
         const entries = result.pckFileEntries;
 
         it("parses pck header correctly", () => {
@@ -44,6 +44,7 @@ describe("PckParser", () => {
         it("decompresses level00.dat correctly", () => {
             const file = entries[0];
             const expected = TestResouces.level00_Dat_Bytes();
+            expect(file.dataBytes.byteLength).toBe(256);
             expect(file.dataBytes).toEqualBuffer(expected);
         });
 
