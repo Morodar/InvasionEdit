@@ -15,7 +15,7 @@ export class Layer {
     static Unknown3: LayerIndex = 2;
     static Unknown4: LayerIndex = 3;
     static Unknown5: LayerIndex = 4;
-    static Unknown6: LayerIndex = 5;
+    static WaterHeight: LayerIndex = 5;
     static Water: LayerIndex = 6;
     static Water2: LayerIndex = 7;
     static Unknown9: LayerIndex = 8;

@@ -14,6 +14,7 @@ import { SaveFldButton } from "./components/bar-app/fld-file/SaveFldButton";
 import { LandscapeActionContextProvider } from "./context/LandscapeActionContext";
 import { LayerViewContextProvider } from "./context/LayerViewContext";
 import { GenericActionContextProvider } from "./context/GenericActionContext";
+import { WaterActionContextProvider } from "./context/WaterActionContext";
 
 const PageEditFld = (): React.JSX.Element => {
     const { t } = useTranslation();
@@ -27,17 +28,19 @@ const PageEditFld = (): React.JSX.Element => {
                     <FldPrimaryActionContextProvider>
                         <LandscapeActionContextProvider>
                             <ResourceActionContextProvider>
-                                <GenericActionContextProvider>
-                                    <FldMapContextProvider>
-                                        <MainLayout
-                                            withPadding={false}
-                                            centerElements={<FldName />}
-                                            rightSideElements={<RightSideElements />}
-                                        >
-                                            <MapView />
-                                        </MainLayout>
-                                    </FldMapContextProvider>
-                                </GenericActionContextProvider>
+                                <WaterActionContextProvider>
+                                    <GenericActionContextProvider>
+                                        <FldMapContextProvider>
+                                            <MainLayout
+                                                withPadding={false}
+                                                centerElements={<FldName />}
+                                                rightSideElements={<RightSideElements />}
+                                            >
+                                                <MapView />
+                                            </MainLayout>
+                                        </FldMapContextProvider>
+                                    </GenericActionContextProvider>
+                                </WaterActionContextProvider>
                             </ResourceActionContextProvider>
                         </LandscapeActionContextProvider>
                     </FldPrimaryActionContextProvider>

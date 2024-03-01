@@ -3,6 +3,7 @@ import "./PrimaryActionBar.css";
 import LandscapeIcon from "@mui/icons-material/Landscape";
 import ClearIcon from "@mui/icons-material/Clear";
 import DiamondIcon from "@mui/icons-material/Diamond";
+import WaterIcon from "@mui/icons-material/Water";
 import { FldPrimaryAction, useFldPrimaryActionContext } from "../../context/FldPrimaryActionContext";
 import { useTranslation } from "react-i18next";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
@@ -37,6 +38,12 @@ export const PirmaryActionBar = () => {
                         onClick={() => setPrimaryAction("RESOURCES")}
                     >
                         <DiamondIcon sx={{ fontSize: 32 }} />
+                    </IconButton>
+                </Tooltip>
+
+                <Tooltip title={t("action.primary.water")}>
+                    <IconButton color={getColor("WATER", primaryAction)} onClick={() => setPrimaryAction("WATER")}>
+                        <WaterIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
 

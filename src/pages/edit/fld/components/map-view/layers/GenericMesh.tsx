@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useCursorCapture } from "../../../hooks/useCursorCapture";
 import { FldMap } from "../../../../../../domain/fld/FldFile";
 import { LayerSetting } from "../../../context/LayerViewContext";
-import { Layer } from "../../../../../../domain/fld/Layer";
 import { DoubleSide, Mesh, PlaneGeometry } from "three";
 
 interface GenericMeshProps {
@@ -34,13 +33,12 @@ export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Elemen
 
     const planeMesh = useRef<Mesh>(null);
     const planeGeo = useRef<PlaneGeometry>(null);
-    const landscape = map.layers[Layer.Landscape];
 
     useCursorCapture(planeMesh);
     useEffect(() => {
         if (planeGeo.current) {
             const geo = planeGeo.current.attributes.position;
-            for (let i = 0; i < landscape.byteLength; i++) {
+            for (let i = 0; i < layer.byteLength; i++) {
                 const z = i % width;
                 const x = height - 1 - (i - z) / width;
                 const value = layer.getUint8(i);
@@ -54,14 +52,14 @@ export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Elemen
             planeGeo.current.computeBoundingSphere();
             planeGeo.current.computeTangents();
         }
-    }, [height, landscape.byteLength, layer, width]);
+    }, [height, layer.byteLength, layer, width]);
 
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true} visible>
             <planeGeometry args={[width, height, width - 1, height - 1]} ref={planeGeo} />
             <meshStandardMaterial
                 transparent
-                color="#e0e0e0"
+                color="#0000ff"
                 roughness={0.5}
                 opacity={0.5}
                 side={DoubleSide}

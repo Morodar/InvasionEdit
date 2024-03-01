@@ -62,9 +62,13 @@ const initLayerSettings = (): LayerSettings => {
         return acc;
     }, {} as LayerSettings);
 
+    // enable known layers by default
     settings[Layer.Landscape].hide = false;
     settings[Layer.Landscape].showWireframe = false;
     settings[Layer.Resources].hide = false;
     settings[Layer.Resources].showWireframe = false;
+    settings[Layer.Water].hide = false;
+    settings[Layer.Water].showWireframe = false;
+
     return settings;
 };

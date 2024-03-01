@@ -19,6 +19,8 @@ import { UnknownMeshes } from "./layers/UnknownMeshes";
 import { GenericActionPreview } from "./previews/GenericActionPreview";
 import { OrbitControls } from "../../../../../common/utils/OrbitControls";
 import { MOUSE } from "three";
+import { WaterMesh } from "./layers/WaterMesh";
+import { WaterActionPreview } from "./previews/WaterActionPreview";
 
 export const MapView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
@@ -44,10 +46,12 @@ export const MapView = (): React.JSX.Element => {
 
                 <ResourceActionPreview />
                 <LandscapeActionPreview />
+                <WaterActionPreview />
                 <GenericActionPreview />
 
                 <ResourceMeshes />
                 <LandscapeMesh />
+                <WaterMesh />
                 <UnknownMeshes />
             </Canvas>
             <DebugSidebar />

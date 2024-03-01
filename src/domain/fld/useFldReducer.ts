@@ -3,8 +3,10 @@ import { FldFile, IndexValue } from "./FldFile";
 import { Tritium, Xenit } from "./ResourceLayerUtil";
 import { ActiveResource } from "../../pages/edit/fld/context/ResourceActionContext";
 import { Layer, LayerIndex } from "./Layer";
+import { ActiveWater } from "../../pages/edit/fld/context/WaterActionContext";
+import { WaterLayerUtil } from "./WaterLayerUtil";
 
-export type FldAction = SetFldPayload | ResourcePayload | LandscapePayload | GenericPayload;
+export type FldAction = SetFldPayload | ResourcePayload | LandscapePayload | GenericPayload | WaterPayload;
 
 export interface SetFldPayload {
     type: "SET_FLD";
@@ -15,6 +17,13 @@ export interface ResourcePayload {
     type: "RESOURCE";
     resource: ActiveResource;
     points: IndexValue[];
+}
+
+export interface WaterPayload {
+    type: "WATER";
+    water: ActiveWater;
+    points: IndexValue[];
+    selectedIndex: number;
 }
 
 export interface LandscapePayload {
@@ -54,6 +63,10 @@ const reducer = (state: FldFile | null, action: FldAction): FldFile | null => {
         return performLandscapeAction(state, action);
     }
 
+    if (isWaterAction(action)) {
+        return performWaterAction(state, action);
+    }
+
     if (isGenericAction(action)) {
         return performGenericAction(state, action);
     }
@@ -65,6 +78,7 @@ const isSetFldAction = (action: FldAction): action is SetFldPayload => action.ty
 const isResourceAction = (action: FldAction): action is ResourcePayload => action.type === "RESOURCE" && !!action;
 const isLandscapeAction = (action: FldAction): action is LandscapePayload => action.type === "LANDSCAPE" && !!action;
 const isGenericAction = (action: FldAction): action is GenericPayload => action.type === "GENERIC" && !!action;
+const isWaterAction = (action: FldAction): action is WaterPayload => action.type === "WATER" && !!action;
 
 const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
     const newState: FldFile = { ...state };
@@ -86,12 +100,31 @@ const RESOURCE_OPERATION: { [key in ActiveResource]: (oldValue: number) => numbe
     XENIT: addXenit,
 };
 
-function performLandscapeAction(state: FldFile, action: LandscapePayload): FldFile | null {
+function performLandscapeAction(state: FldFile, action: LandscapePayload): FldFile {
     const genericAction: GenericPayload = { ...action, layer: Layer.Landscape, type: "GENERIC" };
     return performGenericAction(state, genericAction);
 }
 
-function performGenericAction(state: FldFile, payload: GenericPayload): FldFile | null {
+function performWaterAction(state: FldFile, payload: WaterPayload): FldFile {
+    const newState: FldFile = { ...state };
+
+    if (payload.water === "DELETE") {
+        payload.points.forEach((p) => WaterLayerUtil.removeWater(newState, p));
+    }
+
+    if (payload.water === "WATER") {
+        const selectedPoint = newState.layers[Layer.Landscape].getUint8(payload.selectedIndex);
+        const height = selectedPoint;
+        payload.points.forEach((p) => WaterLayerUtil.addWater(newState, p, height));
+    }
+
+    newState.layers[Layer.Water] = new DataView(newState.layers[Layer.Water].buffer);
+    newState.layers[Layer.Water2] = new DataView(newState.layers[Layer.Water2].buffer);
+    newState.layers[Layer.WaterHeight] = new DataView(newState.layers[Layer.WaterHeight].buffer);
+    return newState;
+}
+
+function performGenericAction(state: FldFile, payload: GenericPayload): FldFile {
     const newState: FldFile = { ...state };
     const oldLayerView = newState.layers[payload.layer];
     const layerView = new DataView(oldLayerView.buffer);

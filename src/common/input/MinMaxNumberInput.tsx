@@ -32,7 +32,7 @@ export const MinMaxNumberInput = (props: MinMaxNumberInputProps) => {
         };
 
         const inputElement = inputRef.current;
-        inputElement.addEventListener("wheel", handleScroll);
+        inputElement.addEventListener("wheel", handleScroll, { passive: true });
 
         return () => {
             inputElement.removeEventListener("wheel", handleScroll);
