@@ -17,6 +17,7 @@ Discussions about Thandor and reverse engineering progess happens on our [Discor
     -   Extract Game Assets from Thandor PCK files
     -   ✅ Load `*.fld` map, show and edit...
         -   height map
+        -   water areas
         -   resource fields
     -   Save changes and play them in Thandor
 
