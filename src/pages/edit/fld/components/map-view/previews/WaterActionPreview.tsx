@@ -37,7 +37,7 @@ interface PreviewProps {
 const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
     const { width, height } = fldFile;
-    const { size, activeAction } = useWaterActionContext();
+    const { activeAction } = useWaterActionContext();
     const [points, setPoints] = useState<IndexValue[]>([]);
     const instancedMeshRef = useRef<InstancedMesh>(null!);
     const speed = 8;
@@ -58,7 +58,7 @@ const Preview = (props: PreviewProps) => {
     useEffect(() => {
         const relativePoints = getWaterPuddlePoints(fldFile, hoveredPoint);
         setPoints(relativePoints);
-    }, [fldFile, hoveredPoint, size]);
+    }, [fldFile, hoveredPoint]);
 
     useEffect(() => {
         points.forEach((p, i) => {
