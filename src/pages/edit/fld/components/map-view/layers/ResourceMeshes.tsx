@@ -63,13 +63,15 @@ const ResourceRender = (props: ResourceRenderProps) => {
         const mesh = instancedMeshRef.current;
         const temp = new Object3D();
         resources.forEach((resource, i) => {
-            const p = landscape.getUint8(resource.index);
-            const y = p / 8 + 0.01;
-            const z = resource.index % width;
-            const x = height - 1 - (resource.index - z) / width;
-            temp.position.set(x, y, z);
-            temp.updateMatrix();
-            mesh.setMatrixAt(i, temp.matrix);
+            if (resource.index < landscape.byteLength) {
+                const p = landscape.getUint8(resource.index);
+                const y = p / 8 + 0.01;
+                const z = resource.index % width;
+                const x = height - 1 - (resource.index - z) / width;
+                temp.position.set(x, y, z);
+                temp.updateMatrix();
+                mesh.setMatrixAt(i, temp.matrix);
+            }
         });
         mesh.instanceMatrix.needsUpdate = true;
         mesh.updateMatrix();
