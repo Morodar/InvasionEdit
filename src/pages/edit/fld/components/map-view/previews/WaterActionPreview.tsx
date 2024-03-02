@@ -95,26 +95,26 @@ const temp = new Object3D();
 const getWaterPuddlePoints = (fldFile: FldFile, startPoint: number) => {
     const { width } = fldFile;
     const landscape = fldFile.layers[Layer.Landscape];
-    const visited: boolean[] = Array<boolean>(landscape.byteLength).fill(false);
-    const puddlePoints: IndexValue[] = [];
-    const cursorHeight = landscape.getUint8(startPoint);
 
-    const floodFill = (point: number) => {
-        if (point < 0 || point >= visited.length || visited[point]) {
-            return;
+    const visited: boolean[] = Array<boolean>(landscape.byteLength).fill(false);
+    const cursorHeight = landscape.getUint8(startPoint);
+    const puddlePoints: IndexValue[] = [];
+    const stack: number[] = [startPoint];
+    while (stack.length > 0) {
+        const point = stack.pop();
+        if (point == undefined || point < 0 || point >= visited.length || visited[point]) {
+            continue;
         }
         visited[point] = true;
-
         const pointHeight = landscape.getUint8(point);
         // Add points to the puddle if their height is lower than the cursor's height
         if (pointHeight <= cursorHeight) {
             puddlePoints.push({ index: point, value: cursorHeight });
-            floodFill(point - 1);
-            floodFill(point + 1);
-            floodFill(point - width);
-            floodFill(point + width);
+            stack.push(point - 1);
+            stack.push(point + 1);
+            stack.push(point - width);
+            stack.push(point + width);
         }
-    };
-    floodFill(startPoint);
+    }
     return puddlePoints;
 };

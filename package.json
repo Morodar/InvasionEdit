@@ -1,7 +1,7 @@
 {
     "name": "invasion-edit",
     "private": true,
-    "version": "v0.5.0-indev",
+    "version": "v0.5.1-indev",
     "type": "module",
     "scripts": {
         "dev": "vite",
