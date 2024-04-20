@@ -4,18 +4,6 @@ export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: 
     const [isMouseHeld, setIsMouseHeld] = useState(false);
     const [isCooldown, setIsCooldown] = useState(false);
 
-    const handleMouseDown = (e: MouseEvent) => {
-        if (e.button === 0) {
-            setIsMouseHeld(true);
-        }
-    };
-
-    const handleMouseUp = (e: MouseEvent) => {
-        if (e.button === 0) {
-            setIsMouseHeld(false);
-        }
-    };
-
     useEffect(() => {
         if (!isCooldown) {
             return;
@@ -27,6 +15,18 @@ export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: 
     }, [cooldownMs, isCooldown]);
 
     useEffect(() => {
+        const handleMouseDown = (e: MouseEvent) => {
+            if (e.button === 0) {
+                setIsMouseHeld(true);
+            }
+        };
+
+        const handleMouseUp = (e: MouseEvent) => {
+            if (e.button === 0) {
+                setIsMouseHeld(false);
+            }
+        };
+
         window.addEventListener("mousedown", handleMouseDown);
         window.addEventListener("mouseup", handleMouseUp);
 
