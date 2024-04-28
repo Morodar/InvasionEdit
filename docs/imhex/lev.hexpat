@@ -37,10 +37,10 @@ struct MapInfo1 {
 };
 
 struct PlayerInfo1 {
-  s32 x;
-  s32 z;
   u32 camX;
-  u32 zoomLevel;
+  u32 camZ;
+  u32 camHeight; // set to 65536
+  u32 zoomLevel; // set to 4096
   u32 rotation;
   // 256 = 16 Xenit
   u32 startXenit;
@@ -143,7 +143,7 @@ struct Config1 {
   u8 row5[16]; // can be set to 0
   u8 row6[16]; // can be set to 0
   u8 row7[16]; // can be set to 0
-  u8 config1[0];
+  u8 row8[16]; // can be set to 0
   u8 empty[48];
 };
 
