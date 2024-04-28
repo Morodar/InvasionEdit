@@ -40,9 +40,19 @@ struct PlayerInfo1 {
   s32 x;
   s32 z;
   u32 camX;
-  u32 maybeRotation;
-  u32 camZ;
-  u8 empty[0xC];
+  u32 zoomLevel;
+  u32 rotation;
+  // 256 = 16 Xenit
+  u32 startXenit;
+  u32 startTritium;
+  u32 armyOffset;
+};
+
+struct RGBA {
+  u8 red;
+  u8 green;
+  u8 blue;
+  u8 alpha;
 };
 
 struct LevHeader {
@@ -118,27 +128,45 @@ struct LevHeader {
 }; 
 
 struct Config1 {
-  u8 config1[128];
+  // landscape settings
+  u8 row1[16];
+  // shadow / sun settings
+  u8 row2[16];
+  // this changes graphics? (at least for buildings)
+  RGBA buildingSetting1;
+  RGBA buildingSetting2;
+  RGBA decorationSetting1;
+  RGBA decorationSetting2;
+  u32 playerCount1; // required
+  u32 playerCount2; // required
+  u8 empty1[8];
+  u8 row5[16]; // can be set to 0
+  u8 row6[16]; // can be set to 0
+  u8 row7[16]; // can be set to 0
+  u8 config1[0];
   u8 empty[48];
 };
 
 struct Config2 {
+  // can be set to 0
   u8 config2[96];
   u8 empty[224];
 };
 
 struct Config3 {
+  // can be set to 0
   u8 config3[64];
   u8 empty[96];
 };
 
 struct Config4 {
+  // can be set to 0
   u8 config4[64];
   u8 empty[464];
 };
 
 struct Config5 {
-  // maybe technology config
+  // can be set to 0
   u8 config5[64];
   u8 empty[64];
 };
