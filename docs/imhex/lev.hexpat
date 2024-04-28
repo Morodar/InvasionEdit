@@ -39,15 +39,17 @@ struct MapInfo1 {
 struct PlayerInfo1 {
   s32 x;
   s32 z;
-  u32 a;
-  u32 b;
-  u32 c;
+  u32 camX;
+  u32 maybeRotation;
+  u32 camZ;
   u8 empty[0xC];
 };
 
 struct LevHeader {
   char fileExtension[0x04];
   u32 fileSize;
+  
+  // always 1,0,0,0,1,0,7,0?
   u8 unknown0x008[0x08];
   
   Date1 date1;
@@ -73,7 +75,7 @@ struct LevHeader {
   
   u32 u0x0D0;
   u32 u0x0D4;
-  u32 asset_count;
+  u32 entityCount;
   u32 u0x0DC;
   
   u32 u0x0E0;
@@ -115,10 +117,71 @@ struct LevHeader {
   MapInfo1 mapInfo1;
 }; 
 
+struct Config1 {
+  u8 config1[128];
+  u8 empty[48];
+};
+
+struct Config2 {
+  u8 config2[96];
+  u8 empty[224];
+};
+
+struct Config3 {
+  u8 config3[64];
+  u8 empty[96];
+};
+
+struct Config4 {
+  u8 config4[64];
+  u8 empty[464];
+};
+
+struct Config5 {
+  // maybe technology config
+  u8 config5[64];
+  u8 empty[64];
+};
+
+struct MdlEntry {
+  char16 path[32];
+};
+
+
+// -- Entity enums --
+enum Player:u32 {
+  None=0,
+  Ares=1,
+  Thorgon=2,
+  Devoken=3,
+  Illurer=4,
+  Albor=5,
+  Urdoner=6,
+  Alderaden=7,
+  Golrathen=8, 
+};
+
+
+struct Entity {
+  u32 type;
+  Player player;
+  u32 x;
+  u32 z;
+  u32 rotation;
+  u8 empty[12];
+};
+
 struct Lev {
   LevHeader header;
   PlayerInfo1 playerInfo[header.minPlayers-'0'];
   u8 emptyPlayerInfo[32*(7-(header.minPlayers-'0'))];
+  Config1 config1;
+  Config2 config2;
+  Config3 config3;
+  Config4 config4;
+  Config5 config5;
+  MdlEntry entries[53];
+  Entity entities[header.entityCount];
 };
 
 Lev lev @0x00;
