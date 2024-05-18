@@ -42,12 +42,12 @@ export interface GenericPayload {
 }
 
 export const useFldReducer = (): [FldFile | null, React.Dispatch<FldAction>] => {
-    const [fldFile, dispatch] = useReducer(reducer, null);
+    const [fldFile, dispatch] = useReducer(fldReducer, null);
     return [fldFile, dispatch];
 };
 
-const reducer = (state: FldFile | null, action: FldAction): FldFile | null => {
-    if (isSetFldAction(action)) {
+const fldReducer = (state: FldFile | null, action: FldAction): FldFile | null => {
+    if (action.type === "SET_FLD") {
         return action.fldFile;
     }
 
@@ -55,30 +55,17 @@ const reducer = (state: FldFile | null, action: FldAction): FldFile | null => {
         return state;
     }
 
-    if (isResourceAction(action)) {
-        return performResourceAction(state, action);
+    switch (action.type) {
+        case "LANDSCAPE":
+            return performLandscapeAction(state, action);
+        case "RESOURCE":
+            return performResourceAction(state, action);
+        case "WATER":
+            return performWaterAction(state, action);
+        case "GENERIC":
+            return performGenericAction(state, action);
     }
-
-    if (isLandscapeAction(action)) {
-        return performLandscapeAction(state, action);
-    }
-
-    if (isWaterAction(action)) {
-        return performWaterAction(state, action);
-    }
-
-    if (isGenericAction(action)) {
-        return performGenericAction(state, action);
-    }
-
-    return state;
 };
-
-const isSetFldAction = (action: FldAction): action is SetFldPayload => action.type === "SET_FLD" && !!action;
-const isResourceAction = (action: FldAction): action is ResourcePayload => action.type === "RESOURCE" && !!action;
-const isLandscapeAction = (action: FldAction): action is LandscapePayload => action.type === "LANDSCAPE" && !!action;
-const isGenericAction = (action: FldAction): action is GenericPayload => action.type === "GENERIC" && !!action;
-const isWaterAction = (action: FldAction): action is WaterPayload => action.type === "WATER" && !!action;
 
 const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
     const newState: FldFile = { ...state };
