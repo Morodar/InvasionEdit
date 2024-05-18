@@ -11,6 +11,15 @@ export class TestResouces {
         } as unknown as File;
     };
 
+    static Hetra_LEV = (): File => {
+        return {
+            name: "hetra.lev",
+            type: "application/octet-stream",
+            size: 11616,
+            arrayBuffer: () => Promise.resolve(TestResouces.loadFile("Level00_pck/level/hetra.lev").buffer),
+        } as unknown as File;
+    };
+
     static loadFile(fileName: string): Buffer {
         const file: string = path.join(__dirname, fileName);
         return fs.readFileSync(file);

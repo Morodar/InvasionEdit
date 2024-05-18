@@ -5,12 +5,14 @@ export class HeaderUtils {
         this.view = dataView;
     }
 
+    /** Thandor uses little endian only */
     getUint32 = (index: number) => this.view.getUint32(index, true);
 
     readPcName(fromIndex: number): string {
         return this.readString(fromIndex, 0x40);
     }
 
+    /** Thandor strings are 16-Bit LE encoded chars  */
     readString(fromIndex: number, byteLength: number): string {
         let result = "";
         const toIndex = fromIndex + byteLength;
