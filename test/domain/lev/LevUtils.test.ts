@@ -1,7 +1,7 @@
 import { LevOwner } from "../../../src/domain/lev/LevEntity";
 import { LevUtils } from "../../../src/domain/lev/LevUtils";
-import { MapSize } from "../../../src/domain/lev/MapSize";
-import { PlanetName } from "../../../src/domain/lev/PlanetName";
+import { MapSize } from "../../../src/domain/lev/constants/MapSize";
+import { PlanetName } from "../../../src/domain/lev/constants/PlanetName";
 import { TestResouces } from "../../resources/TestResources";
 
 describe("LevUtils.parseLevFile", () => {

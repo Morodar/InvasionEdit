@@ -2,9 +2,9 @@ import { Box, LinearProgress, ThemeProvider, createTheme } from "@mui/material";
 import { Suspense, lazy } from "react";
 import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
 import PageHome from "../pages/home/PageHome";
-import PageEditLevel from "../pages/edit/level/PageEditLevel";
 
 const PageEditFld = lazy(() => import("../pages/edit/fld/PageEditFld"));
+const PageEditLevel = lazy(() => import("../pages/edit/level/PageEditLevel"));
 const PagePckExtractor = lazy(() => import("../pages/extract-pck/PagePckExtractor"));
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 

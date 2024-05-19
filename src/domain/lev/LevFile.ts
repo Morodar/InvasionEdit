@@ -1,6 +1,6 @@
 import { LevEntity } from "./LevEntity";
-import { MapSize } from "./MapSize";
-import { PlanetName } from "./PlanetName";
+import { MapSize } from "./constants/MapSize";
+import { PlanetName } from "./constants/PlanetName";
 
 export interface LevFile {
     name: string;
