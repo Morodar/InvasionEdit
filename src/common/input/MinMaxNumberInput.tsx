@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { useLimitRange } from "../../pages/edit/fld/hooks/useLimitRange";
+import { useLimitRange } from "./useLimitRange";
 import { useEffect, useRef } from "react";
 
 export interface MinMaxNumberInputProps {

@@ -1,4 +1,4 @@
-import { Layer, LayerIndex } from "./Layer";
+import { Layer, LayerIndex } from "./layers/Layer";
 
 export interface FldFile extends FldMap {
     name: string;

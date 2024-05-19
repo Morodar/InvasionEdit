@@ -1,6 +1,6 @@
 import { HeaderUtils } from "../assets/HeaderUtils";
 import { FldFile, MapLayers } from "./FldFile";
-import { LayerIndexes, Layers } from "./Layer";
+import { LayerIndexes, Layers } from "./layers/Layer";
 
 export class FldUtils extends HeaderUtils {
     constructor(dataView: DataView) {
