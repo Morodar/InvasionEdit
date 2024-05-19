@@ -1,16 +1,16 @@
 import { useTranslation } from "react-i18next";
-import { EDIT_FLD } from "../../../conf/AppRoutes";
 import { HomeCard } from "./HomeCard";
+import { EDIT_LVL } from "../../../conf/AppRoutes";
 
-export const FldEditorCard = () => {
+export const LevelEditorCard = () => {
     const { t } = useTranslation();
     return (
         <HomeCard
-            description={t("fld-editor.short-description")}
+            description={t("lvl-editor.short-description")}
             imgUrl="img/fld-editor.png"
-            linkDest={EDIT_FLD}
+            linkDest={EDIT_LVL}
             linkText={t("fld-editor.start-editor")}
-            title={t("fld-editor.title")}
+            title={t("lvl-editor.title")}
         />
     );
 };

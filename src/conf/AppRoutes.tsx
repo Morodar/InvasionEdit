@@ -2,6 +2,7 @@ import { Box, LinearProgress, ThemeProvider, createTheme } from "@mui/material";
 import { Suspense, lazy } from "react";
 import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
 import PageHome from "../pages/home/PageHome";
+import PageEditLevel from "../pages/edit/level/PageEditLevel";
 
 const PageEditFld = lazy(() => import("../pages/edit/fld/PageEditFld"));
 const PagePckExtractor = lazy(() => import("../pages/extract-pck/PagePckExtractor"));
@@ -10,6 +11,7 @@ const darkTheme = createTheme({ palette: { mode: "dark" } });
 export const PROJECT_URL = "https://github.com/Morodar/InvasionEdit";
 export const HOME = "/home";
 export const EDIT_FLD = "/edit/fld";
+export const EDIT_LVL = "/edit/level";
 export const EXTRACT_PCK = "/extract/pck";
 
 export const AppRoutes = () => {
@@ -20,6 +22,7 @@ export const AppRoutes = () => {
                     <Routes>
                         <Route path={EXTRACT_PCK} element={<PagePckExtractor />} />
                         <Route path={EDIT_FLD} element={<PageEditFld />} />
+                        <Route path={EDIT_LVL} element={<PageEditLevel />} />
                         <Route path={HOME} element={<PageHome />} />
                         <Route path="/*" element={<Navigate to={HOME} />} />
                     </Routes>
