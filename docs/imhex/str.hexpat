@@ -36,7 +36,7 @@ struct StrHeader {
 
 
 struct IndexInfo {
-   u32 a;
+   u32 totalSizeOfLanguage;
    u32 indexCount;
    u32 c;
    u32 d;
@@ -61,9 +61,12 @@ struct StrText {
 struct Texts{
     IndexInfo indexInfo;
     StrTextsIndex offsets[indexInfo.indexCount-1];
-    padding[4];
+    u32 lastIndexOffset;
+    
+    u32 lastStringLength=(indexInfo.totalSizeOfLanguage-lastIndexOffset)/2;
+    
     StrText texts[indexInfo.indexCount-1];
-    padding[4];
+    char16 lastText[lastStringLength];
 };
 
 struct StrFile {
