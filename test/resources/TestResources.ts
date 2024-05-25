@@ -8,12 +8,16 @@ export class TestResouces {
 
     private static asFile(name: string, path: string): File {
         const fileBuffer = TestResouces.loadFile(path);
+        const bufferLike = fileBuffer.buffer.slice(
+            fileBuffer.byteOffset,
+            fileBuffer.byteOffset + fileBuffer.byteLength,
+        );
         const size = fileBuffer.byteLength;
         return {
             name,
             size,
             type: "application/octet-stream",
-            arrayBuffer: () => Promise.resolve(fileBuffer.buffer),
+            arrayBuffer: () => Promise.resolve(bufferLike),
         } as unknown as File;
     }
 
