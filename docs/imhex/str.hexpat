@@ -28,7 +28,7 @@ struct StrHeader {
 
   char16 pcname1[0x20];
   char16 pcname2[0x20];
-  u32 unknown;
+  u32 languageCount;
   u8 empty2[0x4c];
   char16 path[0x30];
   u8 empty3[0xA0];
@@ -63,19 +63,12 @@ struct Texts{
     StrTextsIndex offsets[indexInfo.indexCount-1];
     padding[4];
     StrText texts[indexInfo.indexCount-1];
+    padding[4];
 };
 
 struct StrFile {
     StrHeader strHeader;
-    Texts germanTexts;
-    padding[4];
-    Texts englishTexts;
-    padding[4];
-    Texts frenchTexts;
-    padding[4];
-    Texts italianTexts;
-    padding[4];
-    Texts spanishTexts;
+    Texts texts[strHeader.languageCount];
 };
 
 
