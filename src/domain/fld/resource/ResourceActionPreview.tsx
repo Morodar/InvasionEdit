@@ -5,10 +5,11 @@ import { Dispatch, useEffect, useRef, useState } from "react";
 import { useCursorContext } from "../../../common/controls/CursorContext";
 import { FldFile, IndexValue, getRelativePoints } from "../FldFile";
 import { useFldMapContext } from "../FldMapContext";
-import { Tritium, Xenit } from "./ResourceLayerUtil";
 import { useLeftClickHoldAction } from "../../../common/controls/useLeftClickHoldAction";
 import { FldAction } from "../FldReducer";
 import { DoubleSide, InstancedMesh, Object3D } from "three";
+import { Xenit } from "./Xenit";
+import { Tritium } from "./Tritium";
 
 export const ResourceActionPreview = () => {
     const { fldFile, dispatch } = useFldMapContext();

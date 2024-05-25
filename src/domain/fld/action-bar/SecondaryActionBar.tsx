@@ -2,10 +2,10 @@ import { Card } from "@mui/material";
 import "./PrimaryActionBar.css";
 
 import { useFldPrimaryActionContext } from "./FldPrimaryActionContext";
-import { ResourceActions } from "../resource/ResourceActions";
+import { ResourceActionButtons } from "../resource/ResourceActionButtons";
 import { LandscapeActions } from "../landsacpe/LandscapeActions";
 import { GenericActions } from "../generic/GenericActions";
-import { WaterActions } from "../water/WaterActions";
+import { WaterActionButtons } from "../water/WaterActionButtons";
 
 export const SecondaryActionBar = () => {
     const { primaryAction } = useFldPrimaryActionContext();
@@ -27,11 +27,11 @@ const Action = () => {
         case "LANDSCAPE":
             return <LandscapeActions />;
         case "RESOURCES":
-            return <ResourceActions />;
+            return <ResourceActionButtons />;
         case "GENERIC":
             return <GenericActions />;
         case "WATER":
-            return <WaterActions />;
+            return <WaterActionButtons />;
         default:
             return <></>;
     }

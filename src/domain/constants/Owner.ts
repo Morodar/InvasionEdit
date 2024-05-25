@@ -1,4 +1,4 @@
-export enum LevOwner {
+export enum Owner {
     Neutral = 0,
     Ares = 1,
     Thorgon = 2,

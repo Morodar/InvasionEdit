@@ -1,21 +1,8 @@
 import { FldFile, IndexValue } from "../FldFile";
 import { Layer } from "../layers/Layer";
-
-export class Xenit {
-    static LAYER_VALUE = 8;
-    static COLOR = "#D2691E";
-}
-
-export class Tritium {
-    static LAYER_VALUE = 16;
-    static COLOR = "#0099FF";
-}
-
-export class XenitTritium {
-    static LAYER_VALUE = 24;
-    static COLOR = "#800080";
-}
-
+import { Tritium } from "./Tritium";
+import { Xenit } from "./Xenit";
+import { XenitTritium } from "./XenitTritium";
 export interface ResourceDefinition {
     xenit: IndexValue[];
     tritium: IndexValue[];

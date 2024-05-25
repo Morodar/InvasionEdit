@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Tritium, Xenit, XenitTritium } from "../resource/ResourceLayerUtil";
 import { useFldMapContext } from "../FldMapContext";
 import { useLayerViewContext } from "../layers/LayerViewContext";
 import { Layer } from "../layers/Layer";
 import { IndexValue } from "../FldFile";
 import { InstancedMesh, Object3D } from "three";
+import { Tritium } from "../resource/Tritium";
+import { Xenit } from "../resource/Xenit";
+import { XenitTritium } from "../resource/XenitTritium";
 
 export const ResourceMeshes = () => {
     const { resourceLayer, fldFile } = useFldMapContext();

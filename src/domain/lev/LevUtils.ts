@@ -1,4 +1,4 @@
-import { HeaderUtils } from "../assets/HeaderUtils";
+import { HeaderUtils } from "../HeaderUtils";
 import { LevEntity } from "./LevEntity";
 import { LevFile } from "./LevFile";
 

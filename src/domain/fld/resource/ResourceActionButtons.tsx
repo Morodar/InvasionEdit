@@ -6,7 +6,7 @@ import FlashOnIcon from "@mui/icons-material/FlashOn";
 import { MinMaxNumberInput } from "../../../common/input/MinMaxNumberInput";
 import { useTranslation } from "react-i18next";
 
-export const ResourceActions = () => {
+export const ResourceActionButtons = () => {
     const { t } = useTranslation();
     const { activeResource, setActiveResource, size, setSize } = useResourceActionContext();
 

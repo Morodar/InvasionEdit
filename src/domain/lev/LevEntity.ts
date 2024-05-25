@@ -1,8 +1,8 @@
-import { LevOwner } from "./constants/LevOwner";
+import { Owner } from "../constants/Owner";
 
 export interface LevEntity {
     type: number;
-    owner: LevOwner;
+    owner: Owner;
     x: number;
     z: number;
     rotation: number;

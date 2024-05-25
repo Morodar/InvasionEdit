@@ -1,4 +1,4 @@
-import { HeaderUtils } from "../assets/HeaderUtils";
+import { HeaderUtils } from "../HeaderUtils";
 
 export class PckUtils extends HeaderUtils {
     constructor(dataView: DataView) {

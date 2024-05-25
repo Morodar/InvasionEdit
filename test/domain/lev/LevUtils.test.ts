@@ -1,8 +1,8 @@
-import { LevOwner } from "../../../src/domain/lev/LevEntity";
 import { LevUtils } from "../../../src/domain/lev/LevUtils";
-import { MapSize } from "../../../src/domain/lev/constants/MapSize";
-import { PlanetName } from "../../../src/domain/lev/constants/PlanetName";
+import { MapSize } from "../../../src/domain/constants/MapSize";
+import { PlanetName } from "../../../src/domain/constants/PlanetName";
 import { TestResouces } from "../../resources/TestResources";
+import { Owner } from "../../../src/domain/constants/Owner";
 
 describe("LevUtils.parseLevFile", () => {
     describe("given valid lev file", async () => {
@@ -84,14 +84,14 @@ describe("LevUtils.parseLevFile", () => {
             expect(result.entities.length).toBe(193);
             expect(result.entities[0]).toStrictEqual({
                 type: 1,
-                owner: LevOwner.Devoken,
+                owner: Owner.Devoken,
                 x: 148264,
                 z: 4294891337,
                 rotation: 38912,
             });
             expect(result.entities[192]).toStrictEqual({
                 type: 807,
-                owner: LevOwner.Neutral,
+                owner: Owner.Neutral,
                 x: 251235,
                 z: 4294938591,
                 rotation: 0,

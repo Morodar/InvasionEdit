@@ -4,7 +4,7 @@ import { ActiveWater, useWaterActionContext } from "./WaterActionContext";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import InvertColorsOffIcon from "@mui/icons-material/InvertColorsOff";
 
-export const WaterActions = () => {
+export const WaterActionButtons = () => {
     const { t } = useTranslation();
     const { activeAction, setActiveAction } = useWaterActionContext();
 

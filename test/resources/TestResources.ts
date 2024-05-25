@@ -2,23 +2,20 @@ import fs from "fs";
 import path from "path";
 
 export class TestResouces {
-    static Level00_PCK = (): File => {
-        return {
-            name: "Level00.pck",
-            type: "application/octet-stream",
-            size: 234272,
-            arrayBuffer: () => Promise.resolve(TestResouces.loadFile("Level00.pck").buffer),
-        } as unknown as File;
-    };
+    static Level00_PCK = (): File => this.asFile("Level00.pck", "Level00.pck");
+    static Hetra_LEV = (): File => this.asFile("hetra.lev", "Level00_pck/level/hetra.lev");
+    static Level00_DAT = (): File => this.asFile("level00.dat", "Level00_pck/level/level00.dat");
 
-    static Hetra_LEV = (): File => {
+    private static asFile(name: string, path: string): File {
+        const fileBuffer = TestResouces.loadFile(path);
+        const size = fileBuffer.byteLength;
         return {
-            name: "hetra.lev",
+            name,
+            size,
             type: "application/octet-stream",
-            size: 11616,
-            arrayBuffer: () => Promise.resolve(TestResouces.loadFile("Level00_pck/level/hetra.lev").buffer),
+            arrayBuffer: () => Promise.resolve(fileBuffer.buffer),
         } as unknown as File;
-    };
+    }
 
     static loadFile(fileName: string): Buffer {
         const file: string = path.join(__dirname, fileName);

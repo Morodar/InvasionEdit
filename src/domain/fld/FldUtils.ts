@@ -1,4 +1,4 @@
-import { HeaderUtils } from "../assets/HeaderUtils";
+import { HeaderUtils } from "../HeaderUtils";
 import { FldFile, MapLayers } from "./FldFile";
 import { LayerIndexes, Layers } from "./layers/Layer";
 
