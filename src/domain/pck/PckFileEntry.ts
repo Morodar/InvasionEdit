@@ -26,3 +26,10 @@ export interface PckFileEntry extends PckFileEntryHeader {
 export const hasExtraHeader = (raw: PckFileEntryHeader) => raw.dataFormat === 2;
 export const isCompressed = (raw: PckFileEntryHeader) => raw.dataFormat !== 1;
 export const getDecompressedSize = (raw: PckFileEntryHeader) => (raw.newSize !== 0 ? raw.newSize : raw.unpackedSize);
+
+const octetStreamType = { type: "application/octet-stream" };
+export function pckFileEntryToFile(entry: PckFileEntry): File {
+    const clonedData = new Uint8Array(entry.dataBytes.buffer);
+    const blob = new Blob([clonedData], octetStreamType);
+    return new File([blob], entry.name, octetStreamType);
+}

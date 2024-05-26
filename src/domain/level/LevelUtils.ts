@@ -1,3 +1,4 @@
+import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
 import { LevelFile, LevelEntry as LevelEntry, LEVEL_ENTRY_SIZE } from "./LevelFile";
 
@@ -10,7 +11,7 @@ export class LevelUtils extends HeaderUtils {
 }
 
 async function parseLevelFile(file: File): Promise<LevelFile> {
-    const levelFile: ArrayBuffer = await file.arrayBuffer();
+    const levelFile: ArrayBuffer = await readFile(file);
     const view = new DataView(levelFile);
     const util = new LevelUtils(view);
 

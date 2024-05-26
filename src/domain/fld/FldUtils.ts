@@ -1,3 +1,4 @@
+import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
 import { FldFile, MapLayers } from "./FldFile";
 import { LayerIndexes, Layers } from "./layers/Layer";
@@ -18,7 +19,7 @@ export class FldUtils extends HeaderUtils {
 }
 
 async function parseFldFile(file: File): Promise<FldFile> {
-    const content: ArrayBuffer = await file.arrayBuffer();
+    const content: ArrayBuffer = await readFile(file);
     const view = new DataView(content);
     const util = new FldUtils(view);
     const size = view.getUint32(0x04, true);

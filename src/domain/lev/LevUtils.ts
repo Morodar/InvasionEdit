@@ -1,3 +1,4 @@
+import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
 import { LevEntity } from "./LevEntity";
 import { LevFile } from "./LevFile";
@@ -40,7 +41,7 @@ export class LevUtils extends HeaderUtils {
 }
 
 async function parseLevFile(file: File): Promise<LevFile> {
-    const content: ArrayBuffer = await file.arrayBuffer();
+    const content: ArrayBuffer = await readFile(file);
     const view = new DataView(content);
     const util = new LevUtils(view);
     const entityCount = util.getUint32(0x0d8);
