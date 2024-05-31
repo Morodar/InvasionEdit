@@ -1,9 +1,20 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useCallback, useContext, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { LevelPck } from "../../../domain/pck/level/LevelPck";
+import { LayerViewContextProvider } from "../../../domain/fld/layers/LayerViewContext";
+import { DebugSettingsContextProvider } from "../../../common/debug/DebugSettingsContext";
+import { CursorContextProvider } from "../../../common/controls/CursorContext";
+import { FldMapContextProvider } from "../../../domain/fld/FldMapContext";
+import { FldPrimaryActionContextProvider } from "../../../domain/fld/action-bar/FldPrimaryActionContext";
+import { GenericActionContextProvider } from "../../../domain/fld/generic/GenericActionContext";
+import { LandscapeActionContextProvider } from "../../../domain/fld/landsacpe/LandscapeActionContext";
+import { ResourceActionContextProvider } from "../../../domain/fld/resource/ResourceActionContext";
+import { WaterActionContextProvider } from "../../../domain/fld/water/WaterActionContext";
+import { LevelPckSelectionContextProvider } from "../../../domain/pck/level/LevelPckSelectionContext";
 
 export interface EditLevelContextProps {
-    hasFile: boolean;
-    parsePckFile: (file?: File) => Promise<void>;
+    levelPck?: LevelPck;
+    setLevelPck: React.Dispatch<LevelPck | undefined>;
 }
 
 export const EditLevelContext = createContext<EditLevelContextProps | undefined>(undefined);
@@ -17,19 +28,33 @@ export const useEditLevelContext = (): EditLevelContextProps => {
 };
 
 export const EditLevelContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-    const [parseError, setParseError] = useState<string>();
+    const [levelPck, setLevelPck] = useState<LevelPck>();
 
-    const handleFileChanged = useCallback(async (file?: File) => {
-        if (!file) {
-            return;
-        }
-        try {
-        } catch {
-            setParseError("failed to parse file");
-        }
-    }, []);
+    const value: EditLevelContextProps = useMemo(() => ({ setLevelPck, levelPck }), [levelPck]);
 
-    const value: EditLevelContextProps = { hasFile: false, parsePckFile: handleFileChanged };
-
-    return <EditLevelContext.Provider value={value}>{children}</EditLevelContext.Provider>;
+    return (
+        <EditLevelContext.Provider value={value}>
+            <LayerViewContextProvider>
+                <DebugSettingsContextProvider>
+                    <CursorContextProvider>
+                        <FldPrimaryActionContextProvider>
+                            <LandscapeActionContextProvider>
+                                <ResourceActionContextProvider>
+                                    <WaterActionContextProvider>
+                                        <GenericActionContextProvider>
+                                            <FldMapContextProvider>
+                                                <LevelPckSelectionContextProvider>
+                                                    {children}
+                                                </LevelPckSelectionContextProvider>
+                                            </FldMapContextProvider>
+                                        </GenericActionContextProvider>
+                                    </WaterActionContextProvider>
+                                </ResourceActionContextProvider>
+                            </LandscapeActionContextProvider>
+                        </FldPrimaryActionContextProvider>
+                    </CursorContextProvider>
+                </DebugSettingsContextProvider>
+            </LayerViewContextProvider>
+        </EditLevelContext.Provider>
+    );
 };

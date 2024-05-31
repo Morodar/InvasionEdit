@@ -1,8 +1,9 @@
-import { Box, LinearProgress, ThemeProvider, createTheme } from "@mui/material";
+import { LinearProgress, ThemeProvider, createTheme } from "@mui/material";
 import { Suspense, lazy } from "react";
 import { Route, Routes, Navigate, HashRouter } from "react-router-dom";
-import PageHome from "../pages/home/PageHome";
+import { MainLayout } from "../layout/MainLayout";
 
+const PageHome = lazy(() => import("../pages/home/PageHome"));
 const PageEditFld = lazy(() => import("../pages/edit/fld/PageEditFld"));
 const PageEditLevel = lazy(() => import("../pages/edit/level/PageEditLevel"));
 const PagePckExtractor = lazy(() => import("../pages/extract-pck/PagePckExtractor"));
@@ -34,8 +35,8 @@ export const AppRoutes = () => {
 
 const LoadingBar = () => {
     return (
-        <Box sx={{ width: "100%" }} component="div">
+        <MainLayout withPadding={false}>
             <LinearProgress />
-        </Box>
+        </MainLayout>
     );
 };

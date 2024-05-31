@@ -19,6 +19,7 @@
     },
     "lvl-editor": {
         "title": "Level Editor",
+        "select-file": "Level File",
         "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)"
     },
     "pck-extractor": {
@@ -88,5 +89,8 @@
         "WATER_2": "Water 2",
         "TEXTURES": "Textures 1",
         "TEXTURES_2": "Textures 2"
+    },
+    "LAYER_SETTINGS": {
+        "HEADER": "Layers"
     }
 }

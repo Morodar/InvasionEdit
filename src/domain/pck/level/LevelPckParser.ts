@@ -106,11 +106,11 @@ async function extractLevFiles(
 
     for (const entry of pckEntries) {
         if (entry.fileType == 7759212) {
-            const file = pckFileEntryToFile(entry);
-            const lev = await LevUtils.parseLevFile(file);
-            const fileName = lev.name.replace("level\\", "").replace(".lev", ".");
+            const fileName = entry.name.replace("level\\", "").replace(".lev", ".");
             const levelEntry = levelNameToLevelEntry.get(fileName);
             if (levelEntry) {
+                const file = pckFileEntryToFile(entry);
+                const lev = await LevUtils.parseLevFile(file);
                 levelToLev.set(levelEntry, lev);
                 usedEntries.push(entry);
             }
