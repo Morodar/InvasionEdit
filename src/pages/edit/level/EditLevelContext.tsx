@@ -11,6 +11,8 @@ import { LandscapeActionContextProvider } from "../../../domain/fld/landsacpe/La
 import { ResourceActionContextProvider } from "../../../domain/fld/resource/ResourceActionContext";
 import { WaterActionContextProvider } from "../../../domain/fld/water/WaterActionContext";
 import { LevelPckSelectionContextProvider } from "../../../domain/pck/level/LevelPckSelectionContext";
+import { LevContextProvider } from "../../../domain/lev/LevContext";
+import { SelectedEntityContextProvider } from "../../../domain/lev/entities/SelectedEntityContext";
 
 export interface EditLevelContextProps {
     levelPck?: LevelPck;
@@ -43,9 +45,13 @@ export const EditLevelContextProvider: React.FC<PropsWithChildren> = ({ children
                                     <WaterActionContextProvider>
                                         <GenericActionContextProvider>
                                             <FldMapContextProvider>
-                                                <LevelPckSelectionContextProvider>
-                                                    {children}
-                                                </LevelPckSelectionContextProvider>
+                                                <SelectedEntityContextProvider>
+                                                    <LevContextProvider>
+                                                        <LevelPckSelectionContextProvider>
+                                                            {children}
+                                                        </LevelPckSelectionContextProvider>
+                                                    </LevContextProvider>
+                                                </SelectedEntityContextProvider>
                                             </FldMapContextProvider>
                                         </GenericActionContextProvider>
                                     </WaterActionContextProvider>

@@ -1,14 +1,14 @@
 .right-side-container {
-    width:auto;
-    height:auto;
-    max-height:calc(100vh-64px);
+    width: auto;
+    max-height: calc(100vh - 64px);
+    height: calc(100vh - 64px);
     position: fixed;
-    left:auto;
-    right:0;
+    left: auto;
+    right: 0;
     top: 0%;
 
     display: flex;
-    margin-top:64px;
+    margin-top: 64px;
     z-index: 200;
 }
 

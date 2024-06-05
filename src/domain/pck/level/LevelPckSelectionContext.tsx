@@ -3,6 +3,7 @@ import { PropsWithChildren, createContext, useCallback, useContext, useEffect, u
 import { Level } from "../../level/Level";
 import { useEditLevelContext } from "../../../pages/edit/level/EditLevelContext";
 import { useFldMapContext } from "../../fld/FldMapContext";
+import { useLevContext } from "../../lev/LevContext";
 
 export interface LevelPckSelectionContextProps {
     selectedLevel?: Level;
@@ -21,15 +22,17 @@ export const useLevelPckSelectionContext = (): LevelPckSelectionContextProps => 
 
 export const LevelPckSelectionContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const { levelPck } = useEditLevelContext();
-    const { dispatch } = useFldMapContext();
+    const { dispatch: fldDispatch } = useFldMapContext();
+    const { dispatch: levDispatch } = useLevContext();
     const [selectedLevel, setSelectedLevel] = useState<Level>();
 
     const selectLevel = useCallback(
         (level: Level) => {
             setSelectedLevel(level);
-            dispatch({ type: "SET_FLD", fldFile: level.fld });
+            fldDispatch({ type: "SET_FLD", fldFile: level.fld });
+            levDispatch({ type: "SET_LEV", levFile: level.lev });
         },
-        [dispatch],
+        [fldDispatch, levDispatch],
     );
 
     useEffect(() => {
@@ -39,7 +42,7 @@ export const LevelPckSelectionContextProvider: React.FC<PropsWithChildren> = ({ 
         } else if (!levelPck) {
             setSelectedLevel(undefined);
         }
-    }, [dispatch, levelPck, selectLevel, selectedLevel]);
+    }, [fldDispatch, levelPck, selectLevel, selectedLevel]);
 
     const value: LevelPckSelectionContextProps = useMemo(
         () => ({ selectedLevel, selectLevel }),

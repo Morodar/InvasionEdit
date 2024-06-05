@@ -8,6 +8,9 @@ export class HeaderUtils {
     /** Thandor uses little endian only */
     getUint32 = (index: number) => this.view.getUint32(index, true);
 
+    /** Thandor uses little endian only */
+    getInt32 = (index: number) => this.view.getInt32(index, true);
+
     readPcName(fromIndex: number): string {
         return this.readString(fromIndex, 0x40);
     }

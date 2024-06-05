@@ -7,10 +7,12 @@ import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import React from "react";
 import { LayerSettings } from "../../../../domain/fld/layers/LayerSettings";
 import LayersIcon from "@mui/icons-material/Layers";
-import { LevelList } from "../LevelList";
+import { LevelList } from "../../../../domain/pck/level/components/LevelList";
 import { useEditLevelContext } from "../EditLevelContext";
+import ApartmentIcon from "@mui/icons-material/Apartment";
+import { EntityList } from "../../../../domain/lev/components/EntityList";
 
-type ViewOptions = "layers" | "level-select";
+type ViewOptions = "layers" | "level-select" | "entity-view";
 
 export const LevelRail = (): ReactElement => {
     const { t } = useTranslation();
@@ -23,6 +25,7 @@ export const LevelRail = (): ReactElement => {
         <RightSideContainer>
             {view === "layers" && <LayerSettings />}
             {view === "level-select" && <LevelList pck={levelPck} />}
+            {view === "entity-view" && <EntityList />}
             <Card className="level-rail" square>
                 <ToggleButtonGroup orientation="vertical" size="large" value={view} exclusive onChange={handleChange}>
                     <Tooltip title={"Levels"}>
@@ -34,6 +37,12 @@ export const LevelRail = (): ReactElement => {
                     <Tooltip title={t("LAYER_SETTINGS.HEADER")}>
                         <ToggleButton value="layers">
                             <LayersIcon />
+                        </ToggleButton>
+                    </Tooltip>
+
+                    <Tooltip title={"Buildings, Vechicles, Decoration"}>
+                        <ToggleButton value="entity-view">
+                            <ApartmentIcon />
                         </ToggleButton>
                     </Tooltip>
                 </ToggleButtonGroup>
