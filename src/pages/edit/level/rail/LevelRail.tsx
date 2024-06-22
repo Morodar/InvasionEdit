@@ -1,4 +1,4 @@
-import { Card, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
+import { Card, CardContent, ToggleButton, ToggleButtonGroup, Tooltip } from "@mui/material";
 import { ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import "./LevelRail.css";
@@ -11,6 +11,8 @@ import { LevelList } from "../../../../domain/pck/level/components/LevelList";
 import { useEditLevelContext } from "../EditLevelContext";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import { EntityList } from "../../../../domain/lev/components/EntityList";
+import { useSelectedEntityContext } from "../../../../domain/lev/entities/SelectedEntityContext";
+import { EntityInfo } from "../../../../domain/lev/components/SelectedEntity";
 
 type ViewOptions = "layers" | "level-select" | "entity-view";
 
@@ -20,12 +22,21 @@ export const LevelRail = (): ReactElement => {
 
     const [view, setView] = React.useState<ViewOptions>("layers");
     const handleChange = (_: React.MouseEvent<HTMLElement>, nextView: ViewOptions) => setView(nextView);
+    const { selectedEntity } = useSelectedEntityContext();
 
     return (
         <RightSideContainer>
+            <div>
+                <Card square elevation={3}>
+                    <CardContent>
+                        <EntityInfo entity={selectedEntity} />
+                    </CardContent>
+                </Card>
+            </div>
             {view === "layers" && <LayerSettings />}
             {view === "level-select" && <LevelList pck={levelPck} />}
             {view === "entity-view" && <EntityList />}
+
             <Card className="level-rail" square>
                 <ToggleButtonGroup orientation="vertical" size="large" value={view} exclusive onChange={handleChange}>
                     <Tooltip title={"Levels"}>

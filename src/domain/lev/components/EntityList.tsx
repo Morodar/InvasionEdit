@@ -3,12 +3,9 @@ import { H2 } from "../../../common/header/Headers";
 import { useLevContext } from "../LevContext";
 import { entityTypeToName } from "../constants/entityTypeToName";
 import "./EntityList.css";
-import { EntityInfo } from "./SelectedEntity";
-import { useSelectedEntityContext } from "../entities/SelectedEntityContext";
 
 export const EntityList = () => {
     const { levFile } = useLevContext();
-    const { selectedEntity } = useSelectedEntityContext();
 
     if (!levFile) {
         return <></>;
@@ -29,8 +26,6 @@ export const EntityList = () => {
                         ))}
                     </List>
                 </div>
-                <hr style={{ width: "80%" }} />
-                <EntityInfo entity={selectedEntity} />
             </CardContent>
         </Card>
     );

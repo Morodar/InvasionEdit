@@ -21,7 +21,7 @@ import { WaterActionPreview } from "../../../fld/water/WaterActionPreview";
 import { useKeyboardControls } from "../../../../common/controls/useKeyboardControls";
 import "./LevelView.css";
 import { LevelRail } from "../../../../pages/edit/level/rail/LevelRail";
-import { EntityRender } from "../../../lev/components/EntityRender";
+import { EntityRender } from "../../../lev/entities/EntityRender";
 
 export const LevelView = (): ReactElement => {
     const orbitControlsRef = useRef<OrbitControls>(null);
