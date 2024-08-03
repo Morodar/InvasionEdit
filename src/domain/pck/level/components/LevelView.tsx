@@ -22,6 +22,7 @@ import { useKeyboardControls } from "../../../../common/controls/useKeyboardCont
 import "./LevelView.css";
 import { LevelRail } from "../../../../pages/edit/level/rail/LevelRail";
 import { EntityRender } from "../../../lev/entities/EntityRender";
+import { PreviewEntityRender } from "../../../lev/entities/PreviewEntityRender";
 
 export const LevelView = (): ReactElement => {
     const orbitControlsRef = useRef<OrbitControls>(null);
@@ -55,6 +56,7 @@ export const LevelView = (): ReactElement => {
                 <WaterMesh />
                 <UnknownMeshes />
                 <EntityRender />
+                <PreviewEntityRender />
             </Canvas>
             <DebugSidebar />
             <PirmaryActionBar />

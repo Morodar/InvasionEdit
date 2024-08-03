@@ -10,6 +10,16 @@ export class C {
     static ALDERADEN = "#8b2186";
     static GOLRATHEN = "#666";
 
+    static NEUTRAL_PREVIEW = "#ebfde6";
+    static ARES_PREVIEW = "#4c4cdd";
+    static THORGON_PREVIEW = "#74d774";
+    static DEVOKEN_PREVIEW = "#db6565";
+    static ILLURER_PREVIEW = "#aedddd";
+    static ALBOR_PREVIEW = "#c8a481";
+    static URDONER_PREVIEW = "#624f42";
+    static ALDERADEN_PREVIEW = "#8f6d8e";
+    static GOLRATHEN_PREVIEW = "#bcbcbc";
+
     static SELECTED = "#ffca28";
     static HOVERING = "#ffeb3b";
 }

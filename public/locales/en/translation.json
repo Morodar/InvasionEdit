@@ -61,7 +61,8 @@
             "landscape": "Landscape",
             "xenit-and-tritium": "Xenit & Tritium",
             "generic": "Generic",
-            "water": "Water"
+            "water": "Water",
+            "buildings": "Buildings"
         }
     },
     "actions": {

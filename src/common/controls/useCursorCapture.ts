@@ -9,7 +9,7 @@ const raycaster = new Raycaster();
 
 export const useCursorCapture = (meshRef: RefObject<Mesh>) => {
     const { camera, pointer, gl } = useThree();
-    const { hoveredPoint, setHoveredPoint, setMeshPoint } = useCursorContext();
+    const { hoveredPoint, setHoveredPoint, setMeshPoint ,setRawPoint} = useCursorContext();
     const { fldFile } = useFldMapContext();
 
     const [lastIndex, setLastIndex] = useState<number>();
@@ -24,6 +24,7 @@ export const useCursorCapture = (meshRef: RefObject<Mesh>) => {
             if (hoveredPoint !== undefined) {
                 setHoveredPoint(undefined);
                 setMeshPoint(undefined);
+                setRawPoint(undefined);
             }
             return;
         }
@@ -57,10 +58,12 @@ export const useCursorCapture = (meshRef: RefObject<Mesh>) => {
                     setHoveredPoint(index);
                     setLastIndex(index);
                 }
+                setRawPoint({ x: point.x, z: point.z, value: point.y });
             } else {
                 if (hoveredPoint !== undefined) {
                     setHoveredPoint(undefined);
                     setMeshPoint(undefined);
+                    setRawPoint(undefined);
                 }
             }
         }
