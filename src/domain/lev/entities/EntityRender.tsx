@@ -4,7 +4,7 @@ import { LevEntity } from "../LevEntity";
 import { useFldMapContext } from "../../fld/FldMapContext";
 import { Layer } from "../../fld/layers/Layer";
 import { useSelectedEntityContext } from "./SelectedEntityContext";
-import THREE, { MeshStandardMaterial, Vector3 } from "three";
+import { Euler, Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { ThreeEvent } from "@react-three/fiber";
 import { determineColor } from "../constants/OwnerColors";
 import { useEntityModel } from "../constants/entityTypeTo3dModel";
@@ -57,13 +57,14 @@ export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: Entit
 
     const color = determineColor(entity.owner, isSelected, isHovering);
     const position: Vector3 = new Vector3(x - 1, height / 8 + 0.3, z);
-
+    const rotation = entity.rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
     return (
         <Suspense
             fallback={
                 <FallbackModel
                     entityType={entity.type}
                     position={position}
+                    rotation={rotation}
                     color={color}
                     onClick={handleClick}
                     onPointerEnter={() => setIsHovering(true)}
@@ -74,6 +75,7 @@ export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: Entit
             <RenderModel
                 entityType={entity.type}
                 position={position}
+                rotation={rotation}
                 color={color}
                 onClick={handleClick}
                 onPointerEnter={() => setIsHovering(true)}
@@ -86,20 +88,29 @@ export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: Entit
 interface RenderModelProps {
     entityType: number;
     position: Vector3;
+    rotation: number;
     color: string;
     onClick?: ((event: ThreeEvent<MouseEvent>) => void) | undefined;
     onPointerEnter?: ((event: ThreeEvent<PointerEvent>) => void) | undefined;
     onPointerLeave?: ((event: ThreeEvent<PointerEvent>) => void) | undefined;
 }
 
-function RenderModel({ position, color, entityType, onClick, onPointerEnter, onPointerLeave }: RenderModelProps) {
+function RenderModel({
+    position,
+    rotation,
+    color,
+    entityType,
+    onClick,
+    onPointerEnter,
+    onPointerLeave,
+}: RenderModelProps) {
     const model = useEntityModel(entityType);
-    const modelRef = useRef<THREE.Group>(null);
+    const modelRef = useRef<Group>(null);
 
     useEffect(() => {
         if (model && modelRef.current != null) {
             modelRef.current.traverse((child) => {
-                if (child instanceof THREE.Mesh) {
+                if (child instanceof Mesh) {
                     const newMaterial = new MeshStandardMaterial({ color: color });
                     child.material = newMaterial;
                 }
@@ -110,8 +121,9 @@ function RenderModel({ position, color, entityType, onClick, onPointerEnter, onP
     useEffect(() => {
         if (model && modelRef.current) {
             modelRef.current.position.copy(position);
+            modelRef.current.rotation.copy(new Euler(0, rotation, 0));
         }
-    }, [model, position]);
+    }, [model, position, rotation]);
 
     return (
         <primitive

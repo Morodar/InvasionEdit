@@ -86,14 +86,14 @@ describe("LevUtils.parseLevFile", () => {
                 type: 1,
                 owner: Owner.Devoken,
                 x: 148264,
-                z: 4294891337,
+                z: -75959,
                 rotation: 38912,
             });
             expect(result.entities[192]).toStrictEqual({
                 type: 807,
                 owner: Owner.Neutral,
                 x: 251235,
-                z: 4294938591,
+                z: -28705,
                 rotation: 0,
             });
         });

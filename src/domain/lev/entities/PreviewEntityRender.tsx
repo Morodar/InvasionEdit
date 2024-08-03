@@ -1,5 +1,5 @@
-import { ReactElement, Suspense, useEffect, useRef } from "react";
-import THREE, { MeshStandardMaterial, Vector3 } from "three";
+import { Dispatch, ReactElement, Suspense, useEffect, useRef } from "react";
+import { Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { determinePreviewColor } from "../constants/OwnerColors";
 import { useEntityModel } from "../constants/entityTypeTo3dModel";
 import { Owner } from "../../constants/Owner";
@@ -8,12 +8,16 @@ import { useFldPrimaryActionContext } from "../../fld/action-bar/FldPrimaryActio
 import { useCursorContext } from "../../../common/controls/CursorContext";
 import { useFldMapContext } from "../../fld/FldMapContext";
 import { Layer } from "../../fld/layers/Layer";
+import { useLevContext } from "../LevContext";
+import { LevAction } from "../LevReducer";
+import { useLeftClickAction } from "../../../common/controls/useLeftClickAction";
 
 export const PreviewEntityRender = () => {
     const { owner, placingEntity } = usePlaceEntityContext();
     const { primaryAction } = useFldPrimaryActionContext();
     const { rawPoint } = useCursorContext();
     const { fldFile } = useFldMapContext();
+    const { dispatch } = useLevContext();
 
     if (primaryAction !== "BUILDING" || !rawPoint || !placingEntity || fldFile == null) {
         return <></>;
@@ -30,6 +34,7 @@ export const PreviewEntityRender = () => {
             mapWidth={width}
             mapHeight={height}
             lanscapeMap={lanscapeMap}
+            dispatch={dispatch}
         />
     );
 };
@@ -42,6 +47,7 @@ interface EntityObjectProps {
     mapHeight: number;
     mapWidth: number;
     lanscapeMap: DataView;
+    dispatch: Dispatch<LevAction>;
 }
 
 export const EntityObject = ({
@@ -52,12 +58,21 @@ export const EntityObject = ({
     mapWidth,
     mapHeight,
     lanscapeMap,
+    dispatch,
 }: EntityObjectProps): ReactElement => {
     const index = Math.floor(mapHeight - x) * mapWidth + Math.floor(z);
     const height = lanscapeMap.getUint8(index);
 
     const color = determinePreviewColor(owner);
-    const position: Vector3 = new Vector3(x - 1, height / 8 + 0.3, z);
+    const position: Vector3 = new Vector3(x, height / 8 + 0.3, z);
+
+    const adjustedX = mapHeight - 1 - x;
+    const zPlacing = Math.floor(adjustedX * -1999);
+    const xPlacing = Math.floor(adjustedX * 1152 + z * 2305);
+
+    useLeftClickAction(() =>
+        dispatch({ type: "PLACE_ENTITY", entityType, owner, x: xPlacing, z: zPlacing, rotation: 1 }),
+    );
 
     return (
         <Suspense fallback={<FallbackModel entityType={entityType} position={position} color={color} />}>
@@ -74,12 +89,12 @@ interface RenderModelProps {
 
 function RenderModel({ position, color, entityType }: RenderModelProps) {
     const model = useEntityModel(entityType);
-    const modelRef = useRef<THREE.Group>(null);
+    const modelRef = useRef<Group>(null);
 
     useEffect(() => {
         if (model && modelRef.current) {
             modelRef.current.traverse((child) => {
-                if (child instanceof THREE.Mesh) {
+                if (child instanceof Mesh) {
                     const newMaterial = new MeshStandardMaterial({ color: color });
                     child.material = newMaterial;
                 }
