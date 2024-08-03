@@ -29,7 +29,7 @@ export class DebugSettingsService {
                 showDebugCursorPosition: this.readBooleanOrDefault(json, "showDebugCursorPosition"),
                 showAllLayers: this.readBooleanOrDefault(json, "showAllLayers"),
             };
-        } catch (Error) {
+        } catch {
             return this.createDefault();
         }
     }

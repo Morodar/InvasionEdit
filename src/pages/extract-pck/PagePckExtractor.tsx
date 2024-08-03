@@ -33,7 +33,7 @@ const PagePckExtractor = () => {
                 await delay(250); // reduces Layout shifting in short time
                 const pck = await pckTask;
                 setPckFile(pck);
-            } catch (Error) {
+            } catch {
                 setParseFailed(true);
             } finally {
                 setIsParsing(false);

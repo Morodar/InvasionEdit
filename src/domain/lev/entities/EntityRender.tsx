@@ -4,7 +4,7 @@ import { LevEntity } from "../LevEntity";
 import { useFldMapContext } from "../../fld/FldMapContext";
 import { Layer } from "../../fld/layers/Layer";
 import { useSelectedEntityContext } from "./SelectedEntityContext";
-import { MeshStandardMaterial, Vector3 } from "three";
+import THREE, { MeshStandardMaterial, Vector3 } from "three";
 import { ThreeEvent } from "@react-three/fiber";
 import { determineColor } from "../constants/OwnerColors";
 import { useEntityModel } from "../constants/entityTypeTo3dModel";
@@ -97,12 +97,11 @@ function RenderModel({ position, color, entityType, onClick, onPointerEnter, onP
     const modelRef = useRef<THREE.Group>(null);
 
     useEffect(() => {
-        if (model && modelRef.current) {
+        if (model && modelRef.current != null) {
             modelRef.current.traverse((child) => {
-                if ((child as THREE.Mesh).isMesh) {
-                    const mesh = child as THREE.Mesh;
+                if (child instanceof THREE.Mesh) {
                     const newMaterial = new MeshStandardMaterial({ color: color });
-                    mesh.material = newMaterial;
+                    child.material = newMaterial;
                 }
             });
         }

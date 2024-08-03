@@ -86,7 +86,7 @@ export class PckDecompressor {
                     pB = pP - 16;
                     try {
                         a = compressed.getUint32(pByteCompressedContent, true) >>> c;
-                    } catch (Error) {
+                    } catch {
                         console.log(pByteCompressedContent);
                     }
                     c++;

@@ -1,5 +1,5 @@
 import { ReactElement, Suspense, useEffect, useRef } from "react";
-import { MeshStandardMaterial, Vector3 } from "three";
+import THREE, { MeshStandardMaterial, Vector3 } from "three";
 import { determinePreviewColor } from "../constants/OwnerColors";
 import { useEntityModel } from "../constants/entityTypeTo3dModel";
 import { Owner } from "../../constants/Owner";
@@ -79,10 +79,9 @@ function RenderModel({ position, color, entityType }: RenderModelProps) {
     useEffect(() => {
         if (model && modelRef.current) {
             modelRef.current.traverse((child) => {
-                if ((child as THREE.Mesh).isMesh) {
-                    const mesh = child as THREE.Mesh;
+                if (child instanceof THREE.Mesh) {
                     const newMaterial = new MeshStandardMaterial({ color: color });
-                    mesh.material = newMaterial;
+                    child.material = newMaterial;
                 }
             });
         }

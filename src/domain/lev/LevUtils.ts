@@ -31,9 +31,9 @@ export class LevUtils extends HeaderUtils {
         return {
             type: this.getUint32(index),
             owner: this.getUint32(index + 4),
-            x: this.getInt32(index + 8),
-            z: this.getInt32(index + 12),
-            rotation: this.getInt32(index + 16),
+            x: this.getUint32(index + 8),
+            z: this.getUint32(index + 12),
+            rotation: this.getUint32(index + 16),
         };
     }
 
