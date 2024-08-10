@@ -8,6 +8,9 @@ export interface PlaceEntityContextProps {
 
     owner: Owner;
     setOwner: Dispatch<SetStateAction<Owner>>;
+
+    rotation: number;
+    setRotation: Dispatch<SetStateAction<Owner>>;
 }
 
 export const PlaceEntityContext = createContext<PlaceEntityContextProps | undefined>(undefined);
@@ -21,12 +24,13 @@ export const usePlaceEntityContext = (): PlaceEntityContextProps => {
 };
 
 export const PlaceEntityContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
+    const [rotation, setRotation] = useState<number>(0);
     const [placingEntity, setPlacingEntity] = useState<number>();
     const [owner, setOwner] = useState<Owner>(Owner.Ares);
 
     const contextValue: PlaceEntityContextProps = useMemo(
-        () => ({ placingEntity, setPlacingEntity, owner, setOwner }),
-        [owner, placingEntity],
+        () => ({ placingEntity, setPlacingEntity, owner, setOwner, rotation, setRotation }),
+        [owner, placingEntity, rotation],
     );
     return <PlaceEntityContext.Provider value={contextValue}>{children}</PlaceEntityContext.Provider>;
 };

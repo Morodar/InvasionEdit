@@ -1,5 +1,5 @@
 import { Dispatch, ReactElement, Suspense, useEffect, useRef } from "react";
-import { Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
+import { Euler, Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { determinePreviewColor } from "../constants/OwnerColors";
 import { useEntityModel } from "../constants/entityTypeTo3dModel";
 import { Owner } from "../../constants/Owner";
@@ -11,6 +11,7 @@ import { Layer } from "../../fld/layers/Layer";
 import { useLevContext } from "../LevContext";
 import { LevAction } from "../LevReducer";
 import { useLeftClickAction } from "../../../common/controls/useLeftClickAction";
+import { useKeyboardHoldDelayAction } from "../../../common/controls/useKeyboardHoldDelayAction";
 
 export const PreviewEntityRender = () => {
     const { owner, placingEntity } = usePlaceEntityContext();
@@ -66,17 +67,27 @@ export const EntityObject = ({
     const color = determinePreviewColor(owner);
     const position: Vector3 = new Vector3(x, height / 8 + 0.3, z);
 
+    const { rotation, setRotation } = usePlaceEntityContext();
+
+    useKeyboardHoldDelayAction(() => setRotation((old) => old + 1000), "r", 20, []);
+    useKeyboardHoldDelayAction(() => setRotation((old) => old - 1000), "t", 20, []);
+
     const adjustedX = mapHeight - 1 - x;
     const zPlacing = Math.floor(adjustedX * -1999);
     const xPlacing = Math.floor(adjustedX * 1152 + z * 2305);
+    const visualRotation = rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
 
     useLeftClickAction(() =>
-        dispatch({ type: "PLACE_ENTITY", entityType, owner, x: xPlacing, z: zPlacing, rotation: 1 }),
+        dispatch({ type: "PLACE_ENTITY", entityType, owner, x: xPlacing, z: zPlacing, rotation: rotation }),
     );
 
     return (
-        <Suspense fallback={<FallbackModel entityType={entityType} position={position} color={color} />}>
-            <RenderModel entityType={entityType} position={position} color={color} />
+        <Suspense
+            fallback={
+                <FallbackModel entityType={entityType} position={position} color={color} rotation={visualRotation} />
+            }
+        >
+            <RenderModel entityType={entityType} position={position} color={color} rotation={visualRotation} />
         </Suspense>
     );
 };
@@ -85,9 +96,10 @@ interface RenderModelProps {
     entityType: number;
     position: Vector3;
     color: string;
+    rotation: number;
 }
 
-function RenderModel({ position, color, entityType }: RenderModelProps) {
+function RenderModel({ position, color, entityType, rotation }: RenderModelProps) {
     const model = useEntityModel(entityType);
     const modelRef = useRef<Group>(null);
 
@@ -105,8 +117,9 @@ function RenderModel({ position, color, entityType }: RenderModelProps) {
     useEffect(() => {
         if (model && modelRef.current) {
             modelRef.current.position.copy(position);
+            modelRef.current.rotation.copy(new Euler(0, rotation, 0));
         }
-    }, [model, position]);
+    }, [model, position, rotation]);
 
     return <primitive object={model} ref={modelRef} />;
 }
