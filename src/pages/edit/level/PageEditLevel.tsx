@@ -5,6 +5,7 @@ import { LevelView } from "../../../domain/pck/level/components/LevelView";
 import { LevelPckFileSelection } from "./LevelPckFileSelection";
 import { FldName } from "../../../domain/fld/file/FldName";
 import { DebugSettingsButton } from "../../../common/debug/DebugSettingsButton";
+import { SaveLevelButton } from "../../../domain/pck/level/SaveLevelButton";
 
 const PageEditLevel = (): ReactElement => {
     return (
@@ -19,7 +20,16 @@ const EditLevel = (): ReactElement => {
 
     if (levelPck) {
         return (
-            <MainLayout withPadding={false} centerElements={<FldName />} rightSideElements={<DebugSettingsButton />}>
+            <MainLayout
+                withPadding={false}
+                centerElements={<FldName />}
+                rightSideElements={
+                    <>
+                        <DebugSettingsButton />
+                        <SaveLevelButton />
+                    </>
+                }
+            >
                 <LevelView />
             </MainLayout>
         );

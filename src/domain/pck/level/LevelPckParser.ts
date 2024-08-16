@@ -20,7 +20,7 @@ export class LevelPckParser {
         const usedFiles: PckFileEntry[] = [];
 
         const { levelEntries, usedEntries: usedLevelEntries } = await extractLevelEntries(pckFiles);
-        const levelNameToLevelEntry: Map<string, LevelEntry> = buldNameToEntryMap(levelEntries);
+        const levelNameToLevelEntry: Map<string, LevelEntry> = buildNameToEntryMap(levelEntries);
         usedFiles.push(...usedLevelEntries);
 
         const { levelToFld, usedEntries: usedFldEntries } = await extractFldFiles(pckFiles, levelNameToLevelEntry);
@@ -35,7 +35,7 @@ export class LevelPckParser {
     }
 }
 
-function buldNameToEntryMap(levelEntries: LevelEntry[]): Map<string, LevelEntry> {
+function buildNameToEntryMap(levelEntries: LevelEntry[]): Map<string, LevelEntry> {
     return levelEntries.reduce((map, v) => {
         map.set(v.name, v);
         return map;
@@ -59,7 +59,7 @@ async function extractLevelEntries(pckEntries: PckFileEntry[]): Promise<LevelEnt
     const usedFiles: PckFileEntry[] = [];
 
     for (const entry of pckEntries) {
-        if (entry.name.endsWith(".dat")) {
+        if (entry.name.endsWith(".dat") && !entry.name.startsWith("campagne")) {
             const file = pckFileEntryToFile(entry);
             const levelFile = await LevelUtils.parseLevelFile(file);
             levels.push(...levelFile.levels);
