@@ -11,7 +11,7 @@ export class LevelUtils extends HeaderUtils {
     }
 
     static parseLevelFile = async (file: File): Promise<LevelFile> => parseLevelFile(file);
-    static buildLevelFile = (levelPck: LevelPck): File => buildLevelFile(levelPck);
+    static buildLevelFile = (levelPck: LevelPck): File => buildLevelPckFile(levelPck);
 }
 
 async function parseLevelFile(file: File): Promise<LevelFile> {
@@ -45,7 +45,7 @@ function parseLevelEntry(offset: number, util: LevelUtils): LevelEntry {
     };
 }
 
-function buildLevelFile(levelPck: LevelPck): File {
+function buildLevelPckFile(levelPck: LevelPck): File {
     // build level dat (todo)
 
     // build level files (todo)
