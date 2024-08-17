@@ -1,6 +1,9 @@
 import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
+import { LevelPck } from "../pck/level/LevelPck";
 import { LevelFile, LevelEntry as LevelEntry, LEVEL_ENTRY_SIZE } from "./LevelFile";
+import packageJson from "../../../package.json";
+import { pckFileEntryToPckEntryBytes } from "../pck/PckFileEntry";
 
 export class LevelUtils extends HeaderUtils {
     constructor(dataView: DataView) {
@@ -8,6 +11,7 @@ export class LevelUtils extends HeaderUtils {
     }
 
     static parseLevelFile = async (file: File): Promise<LevelFile> => parseLevelFile(file);
+    static buildLevelFile = (levelPck: LevelPck): File => buildLevelFile(levelPck);
 }
 
 async function parseLevelFile(file: File): Promise<LevelFile> {
@@ -39,4 +43,45 @@ function parseLevelEntry(offset: number, util: LevelUtils): LevelEntry {
         c: util.getUint32(offset + 0x0f8),
         d: util.getUint32(offset + 0x0fc),
     };
+}
+
+function buildLevelFile(levelPck: LevelPck): File {
+    // build level dat (todo)
+
+    // build level files (todo)
+
+    // convert remaining files
+    const fileCount = levelPck.remainingFiles.length;
+    const remainingFiles = levelPck.remainingFiles.map((rf) => pckFileEntryToPckEntryBytes(rf));
+
+    // determine full file size (relevant for pck header)
+    const fileSize = 512 + remainingFiles.reduce((sizes, file) => sizes + file.byteLength, 0);
+
+    const pckHeader = new ArrayBuffer(512);
+    const pckHeaderView = new DataView(pckHeader);
+    const headerUtils = new HeaderUtils(pckHeaderView);
+
+    // write "pck"
+    headerUtils.writeUint32(0x00, 7037808);
+    // write fileSize
+    headerUtils.writeUint32(0x04, fileSize);
+    // write magic bytes
+    headerUtils.writeUint32(0x08, 1);
+    headerUtils.writeUint32(0x0e, 1);
+
+    // write time stamps
+    const now = new Date();
+    headerUtils.writeDateVariant1(0x10, now);
+    headerUtils.writeDateVariant1(0x18, now);
+    headerUtils.writeDateVariant1(0x20, now);
+
+    // write pcName1 + pcName2 (use "InvasionEdit + version" as pcName)
+    const pcName = `Invasion Edit - ${packageJson.version}`;
+    headerUtils.writeString(0x30, pcName);
+    headerUtils.writeString(0x70, pcName);
+
+    // write fileCount
+    headerUtils.writeUint32(0xb0, fileCount);
+
+    return new File([pckHeader, ...remainingFiles], levelPck.filename);
 }

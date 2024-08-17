@@ -7,6 +7,7 @@ export class PckDecompressor {
                 // Content is compressed
                 return this.decompressFile0(compressed, decompressedSize);
             case 1:
+                // Content is not compressed, copy bytes
                 return this.decompressFile1(compressed, decompressedSize);
             case 2: {
                 // Content is compressed and needs additional modification

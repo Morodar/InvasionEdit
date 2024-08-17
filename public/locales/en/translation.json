@@ -20,7 +20,8 @@
     "lvl-editor": {
         "title": "Level Editor",
         "select-file": "Level File",
-        "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)"
+        "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
+        "save-levels": "Save Levels"
     },
     "pck-extractor": {
         "short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
