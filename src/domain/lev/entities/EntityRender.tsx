@@ -120,6 +120,7 @@ function RenderModel({
 
     useEffect(() => {
         if (model && modelRef.current) {
+            modelRef.current.scale.copy({ x: 0.5, y: 0.5, z: 0.5 });
             modelRef.current.position.copy(position);
             modelRef.current.rotation.copy(new Euler(0, rotation, 0));
         }

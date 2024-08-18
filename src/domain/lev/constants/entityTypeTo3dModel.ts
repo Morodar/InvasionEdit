@@ -5,9 +5,19 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader, FBXLoader, GLTF } from "three/examples/jsm/Addons.js";
 
 const mapping: Map<number, string> = new Map<number, string>([
-    [300, "headquarter.obj"],
-    [380, "high-wall.obj"],
-    [382, "panzersperre.obj"],
+    [1, "JeepWiesel.glb"],
+    [2, "JeepWiesel.glb"],
+
+    [300, "Hauptgebäude.glb"],
+    [301, "LeichteWaffenfabrik.glb"],
+    [310, "Kraftwerk.glb"],
+    [330, "Xenitmine.glb"],
+    [331, "Xenitsilo.glb"],
+    [332, "Tritiumpumpe.glb"],
+    [333, "Tritiumtank.glb"],
+    [380, "HoheMauer.glb"],
+    [381, "Mauer.glb"],
+    [382, "Panzersperre.glb"],
 ]);
 
 export function entityTypeTo3dModel(type: number): string {

@@ -117,6 +117,7 @@ function RenderModel({ position, color, entityType, rotation }: RenderModelProps
     useEffect(() => {
         if (model && modelRef.current) {
             modelRef.current.position.copy(position);
+            modelRef.current.scale.copy({ x: 0.5, y: 0.5, z: 0.5 });
             modelRef.current.rotation.copy(new Euler(0, rotation, 0));
         }
     }, [model, position, rotation]);
