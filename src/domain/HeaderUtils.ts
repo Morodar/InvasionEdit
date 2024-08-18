@@ -13,6 +13,9 @@ export class HeaderUtils {
     getInt32 = (index: number) => this.view.getInt32(index, true);
     writeInt32 = (index: number, value: number) => this.view.setInt32(index, value, true);
 
+    getUint8 = (index: number) => this.view.getUint8(index);
+    writeUint8 = (index: number, value: number) => this.view.setUint8(index, value);
+
     readPcName(fromIndex: number): string {
         return this.readString(fromIndex, 0x40);
     }

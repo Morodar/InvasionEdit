@@ -1,9 +1,11 @@
 import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
-import { LevelPck } from "../pck/level/LevelPck";
+import { buildLevelDatPckFileEntry, LevelPck } from "../pck/level/LevelPck";
 import { LevelFile, LevelEntry as LevelEntry, LEVEL_ENTRY_SIZE } from "./LevelFile";
 import packageJson from "../../../package.json";
-import { pckFileEntryToPckEntryBytes } from "../pck/PckFileEntry";
+import { PckFileEntry, pckFileEntryToPckEntryBytes } from "../pck/PckFileEntry";
+import { buildFldPckFileEntry } from "../fld/FldUtils";
+import { buildLevPckFileEntry } from "../lev/LevUtils";
 
 export class LevelUtils extends HeaderUtils {
     constructor(dataView: DataView) {
@@ -46,42 +48,53 @@ function parseLevelEntry(offset: number, util: LevelUtils): LevelEntry {
 }
 
 function buildLevelPckFile(levelPck: LevelPck): File {
-    // build level dat (todo)
+    const files: PckFileEntry[] = [];
+    // build level.dat
+    files.push(buildLevelDatPckFileEntry(levelPck));
 
-    // build level files (todo)
+    // build level files (lev and fld)
+    for (const level of levelPck.levels) {
+        files.push(buildLevPckFileEntry(level.lev));
+        files.push(buildFldPckFileEntry(level.fld));
+    }
 
-    // convert remaining files
-    const fileCount = levelPck.remainingFiles.length;
-    const remainingFiles = levelPck.remainingFiles.map((rf) => pckFileEntryToPckEntryBytes(rf));
+    // bundle remaining files
+    files.push(...levelPck.remainingFiles);
 
-    // determine full file size (relevant for pck header)
-    const fileSize = 512 + remainingFiles.reduce((sizes, file) => sizes + file.byteLength, 0);
+    // add pck entry headers (in binary form)
+    const fileCount = files.length;
+    const filePckEntries = files.map((file) => pckFileEntryToPckEntryBytes(file));
 
+    // determine full pck file size (relevant for pck header)
+    const fileSize = 512 + filePckEntries.reduce((sizes, file) => sizes + file.byteLength, 0);
+
+    // build pck header
     const pckHeader = new ArrayBuffer(512);
     const pckHeaderView = new DataView(pckHeader);
-    const headerUtils = new HeaderUtils(pckHeaderView);
+    const utils = new HeaderUtils(pckHeaderView);
 
     // write "pck"
-    headerUtils.writeUint32(0x00, 7037808);
+    utils.writeUint32(0x00, 7037808);
     // write fileSize
-    headerUtils.writeUint32(0x04, fileSize);
+    utils.writeUint32(0x04, fileSize);
     // write magic bytes
-    headerUtils.writeUint32(0x08, 1);
-    headerUtils.writeUint32(0x0e, 1);
+    utils.writeUint32(0x08, 1);
+    utils.writeUint32(0x0e, 1);
 
     // write time stamps
     const now = new Date();
-    headerUtils.writeDateVariant1(0x10, now);
-    headerUtils.writeDateVariant1(0x18, now);
-    headerUtils.writeDateVariant1(0x20, now);
+    utils.writeDateVariant1(0x10, now);
+    utils.writeDateVariant1(0x18, now);
+    utils.writeDateVariant1(0x20, now);
 
     // write pcName1 + pcName2 (use "InvasionEdit + version" as pcName)
     const pcName = `Invasion Edit - ${packageJson.version}`;
-    headerUtils.writeString(0x30, pcName);
-    headerUtils.writeString(0x70, pcName);
+    utils.writeString(0x30, pcName);
+    utils.writeString(0x70, pcName);
 
     // write fileCount
-    headerUtils.writeUint32(0xb0, fileCount);
+    utils.writeUint32(0xb0, fileCount);
 
-    return new File([pckHeader, ...remainingFiles], levelPck.filename);
+    // glue pck header and all pck entries together
+    return new File([pckHeader, ...filePckEntries], levelPck.filename);
 }

@@ -49,9 +49,7 @@ function performPlaceEntityAction(state: LevFile, action: PlaceEntity): LevFile 
         x: action.x,
         z: action.z,
     };
-    console.log(newState.entities);
-    console.log(Math.max(...newState.entities.map((e) => e.rotation)));
-    newState.entities = [...newState.entities, entity];
+    newState.entities.push(entity);
     newState.entityCount = newState.entities.length;
     return newState;
 }

@@ -13,7 +13,12 @@ export interface PckFileEntryHeader {
     /** Packed size in bytes */
     packedSize: number;
 
-    /** Indicates where the data block is compressed or not. */
+    /**
+     * Indicates wheter the data block is compressed or not.
+     * - 0 content is compressed
+     * - 1 content is not compressed
+     * - 2 content is compressed and needs additional modification
+     */
     dataFormat: number;
 
     /** (real) Unpacked size, set when DataFormat is 2. */
