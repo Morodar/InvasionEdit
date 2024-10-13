@@ -77,7 +77,7 @@ export class LevUtils extends HeaderUtils {
             camX: this.getUint32(index),
             camZ: this.getUint32(index + 4),
             camY: this.getUint32(index + 8),
-            zoomLevel: this.getUint32(index + 12),
+            zoomLevel: 2048,
             camRotation: this.getUint32(index + 16),
             startXenit: this.getUint32(index + 20),
             startTritium: this.getUint32(index + 24),

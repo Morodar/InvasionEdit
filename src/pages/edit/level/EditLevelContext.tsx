@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, SetStateAction, createContext, useContext, useMemo, useState } from "react";
 import { LevelPck } from "../../../domain/pck/level/LevelPck";
 import { LayerViewContextProvider } from "../../../domain/fld/layers/LayerViewContext";
 import { DebugSettingsContextProvider } from "../../../common/debug/DebugSettingsContext";
@@ -17,7 +17,7 @@ import { PlaceEntityContextProvider } from "../../../domain/lev/entities/PlaceEn
 
 export interface EditLevelContextProps {
     levelPck?: LevelPck;
-    setLevelPck: React.Dispatch<LevelPck | undefined>;
+    setLevelPck: React.Dispatch<SetStateAction<LevelPck | undefined>>;
 }
 
 export const EditLevelContext = createContext<EditLevelContextProps | undefined>(undefined);

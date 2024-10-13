@@ -4,6 +4,7 @@ import { Level } from "../../level/Level";
 import { useEditLevelContext } from "../../../pages/edit/level/EditLevelContext";
 import { useFldMapContext } from "../../fld/FldMapContext";
 import { useLevContext } from "../../lev/LevContext";
+import { LevelPck } from "./LevelPck";
 
 export interface LevelPckSelectionContextProps {
     selectedLevel?: Level;
@@ -21,18 +22,40 @@ export const useLevelPckSelectionContext = (): LevelPckSelectionContextProps => 
 };
 
 export const LevelPckSelectionContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-    const { levelPck } = useEditLevelContext();
-    const { dispatch: fldDispatch } = useFldMapContext();
-    const { dispatch: levDispatch } = useLevContext();
+    const { levelPck, setLevelPck } = useEditLevelContext();
+    const { fldFile, dispatch: fldDispatch } = useFldMapContext();
+    const { levFile, dispatch: levDispatch } = useLevContext();
     const [selectedLevel, setSelectedLevel] = useState<Level>();
 
     const selectLevel = useCallback(
         (level: Level) => {
             setSelectedLevel(level);
+
+            // take context state and update levelPck
+            setLevelPck((prevPck: LevelPck | undefined) => {
+                if (!prevPck || !selectedLevel) {
+                    return prevPck;
+                }
+                const updated: LevelPck = { ...prevPck };
+
+                const levelIndex = levelPck?.levels.indexOf(selectedLevel) ?? -1;
+                if (levelIndex === -1 || !levFile || !fldFile) {
+                    return updated;
+                }
+                updated.levels[levelIndex] = {
+                    dat: prevPck.levels[levelIndex].dat,
+                    fld: fldFile,
+                    lev: levFile,
+                };
+
+                return updated;
+            });
+
+            // update context state
             fldDispatch({ type: "SET_FLD", fldFile: level.fld });
             levDispatch({ type: "SET_LEV", levFile: level.lev });
         },
-        [fldDispatch, levDispatch],
+        [fldDispatch, fldFile, levDispatch, levFile, levelPck?.levels, selectedLevel, setLevelPck],
     );
 
     useEffect(() => {
