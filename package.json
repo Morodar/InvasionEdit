@@ -30,7 +30,7 @@
         "react-dom": "^18.3.1",
         "react-i18next": "^15.0.3",
         "react-router-dom": "^6.27.0",
-        "three": "^0.167.1"
+        "three": "^0.169.0"
     },
     "devDependencies": {
         "@react-three/test-renderer": "^8.2.1",
@@ -40,7 +40,7 @@
         "@types/node": "^22.7.5",
         "@types/react": "^18.3.11",
         "@types/react-dom": "^18.3.1",
-        "@types/three": "^0.167.2",
+        "@types/three": "^0.169.0",
         "@typescript-eslint/eslint-plugin": "^8.8.1",
         "@typescript-eslint/parser": "^8.8.1",
         "@vitejs/plugin-react": "^4.3.2",
