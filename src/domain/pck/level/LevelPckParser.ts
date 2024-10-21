@@ -59,7 +59,11 @@ async function extractLevelEntries(pckEntries: PckFileEntry[]): Promise<LevelEnt
     const usedFiles: PckFileEntry[] = [];
 
     for (const entry of pckEntries) {
-        if (entry.name.endsWith(".dat") && !entry.name.startsWith("campagne")) {
+        if (
+            entry.name.endsWith(".dat") &&
+            !entry.name.startsWith("campagne") &&
+            !entry.name.startsWith("level\\campagne")
+        ) {
             const file = pckFileEntryToFile(entry);
             const levelFile = await LevelUtils.parseLevelFile(file);
             levels.push(...levelFile.levels);
