@@ -28,13 +28,15 @@ export const LevelRail = (): ReactElement => {
 
     return (
         <RightSideContainer>
-            <div>
-                <Card square elevation={3}>
-                    <CardContent>
-                        <EntityInfo entity={selectedEntity} />
-                    </CardContent>
-                </Card>
-            </div>
+            {selectedEntity && (
+                <div>
+                    <Card square elevation={3}>
+                        <CardContent>
+                            <EntityInfo entity={selectedEntity} />
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
             {view === "layers" && <LayerSettings />}
             {view === "level-select" && <LevelList pck={levelPck} />}
             {view === "entity-view" && <EntityList />}
