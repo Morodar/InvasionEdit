@@ -20,3 +20,12 @@ export const Players: Owner[] = [
     Owner.Alderaden,
     Owner.Golrathen,
 ];
+
+export const PlaceablePlayers: Owner[] = [
+    Owner.Ares,
+    Owner.Thorgon,
+    Owner.Devoken,
+    Owner.Illurer,
+    Owner.Albor,
+    Owner.Urdoner,
+];

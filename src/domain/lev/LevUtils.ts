@@ -239,8 +239,104 @@ export function buildLevPckFileEntry(levFile: LevFile): PckFileEntry {
     utils.writeUint32(0x2f8, 1771410823);
     utils.writeUint32(0x2fc, 0);
 
-    utils.writeUint32(0x310, 7);
-    utils.writeUint32(0x314, 7);
+    // player count
+    utils.writeUint32(0x310, 6);
+    utils.writeUint32(0x314, 6);
+
+    utils.writeUint32(0x328, 3889176576);
+    utils.writeUint32(0x32c, 3627032576);
+
+    utils.writeUint32(0x330, 12829635);
+    utils.writeUint32(0x334, 4281808695);
+    utils.writeUint32(0x338, 0);
+    utils.writeUint32(0x33c, 1771410823);
+
+    utils.writeUint32(0x340, 9539985);
+    utils.writeUint32(0x344, 4281413937);
+    utils.writeUint32(0x348, 10197915);
+    utils.writeUint32(0x34c, 4281413937);
+
+    utils.writeUint32(0x350, 1);
+    utils.writeUint32(0x354, 43);
+    utils.writeUint32(0x358, 67);
+    utils.writeUint32(0x35c, 73);
+
+    utils.writeUint32(0x390, 8);
+    utils.writeUint32(0x394, 2);
+    utils.writeUint32(0x398, 1);
+    utils.writeUint32(0x39c, 0);
+
+    utils.writeUint32(0x3a0, 8);
+    utils.writeUint32(0x3a4, 3);
+    utils.writeUint32(0x3a8, 1);
+    utils.writeUint32(0x3ac, 0);
+
+    utils.writeUint32(0x3b0, 8);
+    utils.writeUint32(0x3b4, 4);
+    utils.writeUint32(0x3b8, 1);
+    utils.writeUint32(0x3bc, 0);
+
+    utils.writeUint32(0x3c0, 8);
+    utils.writeUint32(0x3c4, 3);
+    utils.writeUint32(0x3c8, 2);
+    utils.writeUint32(0x3cc, 0);
+
+    utils.writeUint32(0x3d0, 8);
+    utils.writeUint32(0x3d4, 4);
+    utils.writeUint32(0x3d8, 2);
+    utils.writeUint32(0x3dc, 0);
+
+    utils.writeUint32(0x3e0, 8);
+    utils.writeUint32(0x3e4, 4);
+    utils.writeUint32(0x3e8, 3);
+    utils.writeUint32(0x3ec, 0);
+
+    // 0x4d0
+    utils.writeUint32(0x4d0, 50463002);
+    utils.writeUint32(0x4d4, 16580350);
+
+    utils.writeUint32(0x4e0, 84148506);
+    utils.writeUint32(0x4e4, 16580350);
+
+    utils.writeUint32(0x4f0, 100925978);
+    utils.writeUint32(0x4f4, 16580350);
+
+    utils.writeUint32(0x500, 100991770);
+    utils.writeUint32(0x504, 16580350);
+
+    // 0x570
+    utils.writeUint32(0x570, 2);
+    utils.writeUint32(0x574, 1);
+
+    utils.writeUint32(0x580, 2);
+    utils.writeUint32(0x584, 2);
+
+    utils.writeUint32(0x590, 2);
+    utils.writeUint32(0x594, 3);
+
+    utils.writeUint32(0x5a0, 2);
+    utils.writeUint32(0x5a4, 4);
+
+    // 0x780
+    utils.writeUint32(0x780, 1);
+    utils.writeUint32(0x784, 2031617);
+    utils.writeUint32(0x788, 257);
+    utils.writeUint32(0x78c, 1376513);
+
+    utils.writeUint32(0x790, 1);
+    utils.writeUint32(0x794, 2097154);
+    utils.writeUint32(0x798, 257);
+    utils.writeUint32(0x79c, 1442050);
+
+    utils.writeUint32(0x7a0, 1);
+    utils.writeUint32(0x7a4, 2162691);
+    utils.writeUint32(0x7a8, 257);
+    utils.writeUint32(0x7ac, 1507587);
+
+    utils.writeUint32(0x7b0, 1);
+    utils.writeUint32(0x7b4, 2228228);
+    utils.writeUint32(0x7b8, 257);
+    utils.writeUint32(0x7bc, 1573124);
 
     // write model file definition
     utils.writeMdls(levFile.mdls);
