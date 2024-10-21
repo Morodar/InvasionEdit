@@ -10,7 +10,8 @@
             "cube": "Debug Cube",
             "cursor-position": "Debug Cursor Position",
             "settings": "Debug Settings",
-            "show-all-layers": "Show all layers"
+            "show-all-layers": "Show all layers",
+            "show-entities-list": "Show entities list"
         },
         "select-fld-file": "Please select a FLD file.",
         "choose-fld-file": "Choose FLD File",

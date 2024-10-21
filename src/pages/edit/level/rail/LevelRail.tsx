@@ -13,6 +13,7 @@ import ApartmentIcon from "@mui/icons-material/Apartment";
 import { EntityList } from "../../../../domain/lev/components/EntityList";
 import { useSelectedEntityContext } from "../../../../domain/lev/entities/SelectedEntityContext";
 import { EntityInfo } from "../../../../domain/lev/components/SelectedEntity";
+import { useDebugSettingsContext } from "../../../../common/debug/DebugSettingsContext";
 
 type ViewOptions = "layers" | "level-select" | "entity-view";
 
@@ -23,6 +24,7 @@ export const LevelRail = (): ReactElement => {
     const [view, setView] = React.useState<ViewOptions>("layers");
     const handleChange = (_: React.MouseEvent<HTMLElement>, nextView: ViewOptions) => setView(nextView);
     const { selectedEntity } = useSelectedEntityContext();
+    const { debugSettings } = useDebugSettingsContext();
 
     return (
         <RightSideContainer>
@@ -50,12 +52,13 @@ export const LevelRail = (): ReactElement => {
                             <LayersIcon />
                         </ToggleButton>
                     </Tooltip>
-
-                    <Tooltip title={"Buildings, Vechicles, Decoration"}>
-                        <ToggleButton value="entity-view">
-                            <ApartmentIcon />
-                        </ToggleButton>
-                    </Tooltip>
+                    {debugSettings.showEntitiesList && (
+                        <Tooltip title={"Buildings, Vechicles, Decoration"}>
+                            <ToggleButton value="entity-view">
+                                <ApartmentIcon />
+                            </ToggleButton>
+                        </Tooltip>
+                    )}
                 </ToggleButtonGroup>
             </Card>
         </RightSideContainer>
