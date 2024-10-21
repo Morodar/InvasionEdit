@@ -7,7 +7,7 @@ export const LevelEditorCard = () => {
     return (
         <HomeCard
             description={t("lvl-editor.short-description")}
-            imgUrl="img/fld-editor.png"
+            imgUrl="img/lev-editor.png"
             linkDest={EDIT_LVL}
             linkText={t("fld-editor.start-editor")}
             title={t("lvl-editor.title")}
