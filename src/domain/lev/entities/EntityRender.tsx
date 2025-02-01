@@ -1,4 +1,4 @@
-import { ReactElement, Suspense, useEffect, useRef, useState } from "react";
+import { memo, ReactElement, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLevContext } from "../LevContext";
 import { LevEntity } from "../LevEntity";
 import { useFldMapContext } from "../../fld/FldMapContext";
@@ -37,18 +37,26 @@ interface EntityObjectProps {
     lanscapeMap: DataView;
 }
 
-export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: EntityObjectProps): ReactElement => {
+export const EntityObject = memo(({ entity, mapWidth, mapHeight, lanscapeMap }: EntityObjectProps): ReactElement => {
     const { selectedEntity, setSelectedEntity } = useSelectedEntityContext();
     const isSelected = entity === selectedEntity;
     const [isHovering, setIsHovering] = useState(false);
-    const handleClick = () => {
+    const handleClick = useCallback(() => {
         setSelectedEntity((prev: LevEntity | undefined) => {
             if (prev !== entity) {
                 return entity;
             }
             return undefined;
         });
-    };
+    }, [entity, setSelectedEntity]);
+
+    const handlePointerEnter = useCallback(() => {
+        setIsHovering(true);
+    }, []);
+
+    const handlePointerLeave = useCallback(() => {
+        setIsHovering(false);
+    }, []);
 
     const x = mapHeight - -entity.z / 1999;
     const z = (entity.x - (mapHeight - x) * 1152) / 2305;
@@ -56,7 +64,7 @@ export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: Entit
     const height = lanscapeMap.getUint8(index);
 
     const color = determineColor(entity.owner, isSelected, isHovering);
-    const position: Vector3 = new Vector3(x - 1, height / 8 + 0.3, z);
+    const position: Vector3 = useMemo(() => new Vector3(x - 1, height / 8 + 0.3, z), [height, x, z]);
     const rotation = entity.rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
     return (
         <Suspense
@@ -67,8 +75,8 @@ export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: Entit
                     rotation={rotation}
                     color={color}
                     onClick={handleClick}
-                    onPointerEnter={() => setIsHovering(true)}
-                    onPointerLeave={() => setIsHovering(false)}
+                    onPointerEnter={handlePointerEnter}
+                    onPointerLeave={handlePointerLeave}
                 />
             }
         >
@@ -78,12 +86,12 @@ export const EntityObject = ({ entity, mapWidth, mapHeight, lanscapeMap }: Entit
                 rotation={rotation}
                 color={color}
                 onClick={handleClick}
-                onPointerEnter={() => setIsHovering(true)}
-                onPointerLeave={() => setIsHovering(false)}
+                onPointerEnter={handlePointerEnter}
+                onPointerLeave={handlePointerLeave}
             />
         </Suspense>
     );
-};
+});
 
 interface RenderModelProps {
     entityType: number;
@@ -95,47 +103,41 @@ interface RenderModelProps {
     onPointerLeave?: ((event: ThreeEvent<PointerEvent>) => void) | undefined;
 }
 
-function RenderModel({
-    position,
-    rotation,
-    color,
-    entityType,
-    onClick,
-    onPointerEnter,
-    onPointerLeave,
-}: RenderModelProps) {
-    const model = useEntityModel(entityType);
-    const modelRef = useRef<Group>(null);
+const RenderModel = memo(
+    ({ position, rotation, color, entityType, onClick, onPointerEnter, onPointerLeave }: RenderModelProps) => {
+        const model = useEntityModel(entityType);
+        const modelRef = useRef<Group>(null);
 
-    useEffect(() => {
-        if (model && modelRef.current != null) {
-            modelRef.current.traverse((child) => {
-                if (child instanceof Mesh) {
-                    const newMaterial = new MeshStandardMaterial({ color: color });
-                    child.material = newMaterial;
-                }
-            });
-        }
-    }, [color, model]);
+        useEffect(() => {
+            if (model && modelRef.current != null) {
+                modelRef.current.traverse((child) => {
+                    if (child instanceof Mesh) {
+                        const newMaterial = new MeshStandardMaterial({ color: color });
+                        child.material = newMaterial;
+                    }
+                });
+            }
+        }, [color, model]);
 
-    useEffect(() => {
-        if (model && modelRef.current) {
-            modelRef.current.scale.copy({ x: 0.5, y: 0.5, z: 0.5 });
-            modelRef.current.position.copy(position);
-            modelRef.current.rotation.copy(new Euler(0, rotation, 0));
-        }
-    }, [model, position, rotation]);
+        useEffect(() => {
+            if (model && modelRef.current) {
+                modelRef.current.scale.copy({ x: 0.5, y: 0.5, z: 0.5 });
+                modelRef.current.position.copy(position);
+                modelRef.current.rotation.copy(new Euler(0, rotation, 0));
+            }
+        }, [model, position, rotation]);
 
-    return (
-        <primitive
-            object={model}
-            ref={modelRef}
-            onClick={onClick}
-            onPointerEnter={onPointerEnter}
-            onPointerLeave={onPointerLeave}
-        />
-    );
-}
+        return (
+            <primitive
+                object={model}
+                ref={modelRef}
+                onClick={onClick}
+                onPointerEnter={onPointerEnter}
+                onPointerLeave={onPointerLeave}
+            />
+        );
+    },
+);
 
 function FallbackModel({ position, color, onClick, onPointerEnter, onPointerLeave }: RenderModelProps) {
     return (
