@@ -3,6 +3,7 @@ import { FldFile, IndexValue } from "./FldFile";
 import { Layer, LayerIndex } from "./layers/Layer";
 import { WaterPayload, performWaterAction } from "./water/WaterActions";
 import { ResourcePayload, performResourceAction } from "./resource/ResourceActions";
+import { cloneDataView } from "../cloneDataView";
 
 export type FldAction = SetFldPayload | ResourcePayload | LandscapePayload | GenericPayload | WaterPayload;
 
@@ -60,7 +61,7 @@ function performLandscapeAction(state: FldFile, action: LandscapePayload): FldFi
 function performGenericAction(state: FldFile, payload: GenericPayload): FldFile {
     const newState: FldFile = { ...state };
     const oldLayerView = newState.layers[payload.layer];
-    const layerView = new DataView(oldLayerView.buffer);
+    const layerView = cloneDataView(oldLayerView);
     newState.layers[payload.layer] = layerView;
     let isDirty = false;
     if (payload.action === "FIX") {
