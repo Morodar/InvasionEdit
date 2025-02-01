@@ -3,25 +3,11 @@ import { useMemo } from "react";
 import { Group, Object3DEventMap } from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader, FBXLoader, GLTF } from "three/examples/jsm/Addons.js";
-
-const mapping: Map<number, string> = new Map<number, string>([
-    [1, "JeepWiesel.glb"],
-    [2, "JeepWiesel.glb"],
-
-    [300, "Hauptgebäude.glb"],
-    [301, "LeichteWaffenfabrik.glb"],
-    [310, "Kraftwerk.glb"],
-    [330, "Xenitmine.glb"],
-    [331, "Xenitsilo.glb"],
-    [332, "Tritiumpumpe.glb"],
-    [333, "Tritiumtank.glb"],
-    [380, "HoheMauer.glb"],
-    [381, "Mauer.glb"],
-    [382, "Panzersperre.glb"],
-]);
+import { BUILDINGS } from "./Buildings";
+import { BUILDING_KEYS } from "./EntityKeys";
 
 export function entityTypeTo3dModel(type: number): string {
-    const model = mapping.get(type) ?? "unknown.obj";
+    const model = BUILDINGS.get(type as BUILDING_KEYS)?.model ?? "unknown.obj";
     return "3d/" + model;
 }
 
@@ -33,7 +19,8 @@ function isGltf(result: LoaderResult): result is GLTF {
 
 export function useEntityModel(type: number) {
     const modelUrl = entityTypeTo3dModel(type);
-    const model: LoaderResult = useLoader(getLoader(modelUrl), modelUrl);
+    const loader = useMemo(() => getLoader(modelUrl), [modelUrl]);
+    const model: LoaderResult = useLoader(loader, modelUrl);
     const clone = useMemo(() => {
         if (isGltf(model)) {
             return model.scene.clone();
