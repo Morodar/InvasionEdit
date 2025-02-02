@@ -1,7 +1,6 @@
 import { Dispatch, ReactElement, Suspense, useEffect, useRef } from "react";
 import { Euler, Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { determinePreviewColor } from "../constants/OwnerColors";
-import { useEntityModel } from "../constants/entityTypeTo3dModel";
 import { Owner } from "../../constants/Owner";
 import { usePlaceEntityContext } from "./PlaceEntityContext";
 import { useFldPrimaryActionContext } from "../../fld/action-bar/FldPrimaryActionContext";
@@ -12,6 +11,7 @@ import { useLevContext } from "../LevContext";
 import { LevAction } from "../LevReducer";
 import { useLeftClickAction } from "../../../common/controls/useLeftClickAction";
 import { useKeyboardHoldDelayAction } from "../../../common/controls/useKeyboardHoldDelayAction";
+import { useEntityModel } from "./useEntityModel";
 
 export const PreviewEntityRender = () => {
     const { owner, placingEntity } = usePlaceEntityContext();

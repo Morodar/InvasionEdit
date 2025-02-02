@@ -1,8 +1,8 @@
 import { Card, CardContent, List, ListItem, ListItemText } from "@mui/material";
 import { H2 } from "../../../common/header/Headers";
 import { useLevContext } from "../LevContext";
-import { entityTypeToName } from "../constants/entityTypeToName";
 import "./EntityList.css";
+import { entityTypeToName } from "../constants/Entities";
 
 export const EntityList = () => {
     const { levFile } = useLevContext();

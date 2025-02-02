@@ -3,19 +3,9 @@ import { useMemo } from "react";
 import { Group, Object3DEventMap } from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader, FBXLoader, GLTF } from "three/examples/jsm/Addons.js";
-import { BUILDINGS } from "./Buildings";
-import { BUILDING_KEYS } from "./EntityKeys";
-
-export function entityTypeTo3dModel(type: number): string {
-    const model = BUILDINGS.get(type as BUILDING_KEYS)?.model ?? "unknown.obj";
-    return "3d/" + model;
-}
+import { entityTypeTo3dModel } from "../constants/Entities";
 
 type LoaderResult = Group<Object3DEventMap> | GLTF;
-
-function isGltf(result: LoaderResult): result is GLTF {
-    return (result as GLTF).scene !== undefined;
-}
 
 export function useEntityModel(type: number) {
     const modelUrl = entityTypeTo3dModel(type);
@@ -29,6 +19,10 @@ export function useEntityModel(type: number) {
         }
     }, [model]);
     return clone;
+}
+
+function isGltf(result: LoaderResult): result is GLTF {
+    return (result as GLTF).scene !== undefined;
 }
 
 function getLoader(modelUrl: string) {

@@ -1,10 +1,9 @@
 import { Stack } from "@mui/material";
 import { usePlaceEntityContext } from "./PlaceEntityContext";
-import { entityTypeToName } from "../constants/entityTypeToName";
-import { entityTypeToImage } from "../constants/entityTypeToImage";
 import "./PlaceEntitySelection.css";
 import { OwnerColor } from "../components/OwnerColor";
 import { PlaceablePlayers } from "../../constants/Owner";
+import { entityTypeToImage, entityTypeToName } from "../constants/Entities";
 const buildings: number[] = [300, 301, 310, 330, 331, 332, 333, 380, 381, 382];
 
 export const PlaceEntitySelection = () => {

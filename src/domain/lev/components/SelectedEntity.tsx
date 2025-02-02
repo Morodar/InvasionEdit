@@ -1,13 +1,12 @@
 import { IconButton } from "@mui/material";
 import { H2 } from "../../../common/header/Headers";
 import { LevEntity } from "../LevEntity";
-import { entityTypeToImage } from "../constants/entityTypeToImage";
-import { entityTypeToName } from "../constants/entityTypeToName";
 import { OwnerColor } from "./OwnerColor";
 import "./SelectedEntity.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useLevContext } from "../LevContext";
 import { useSelectedEntityContext } from "../entities/SelectedEntityContext";
+import { entityTypeToImage, entityTypeToName } from "../constants/Entities";
 
 interface EntityInfoProps {
     entity?: LevEntity;

@@ -23,15 +23,17 @@ const RESOURCE_OPERATION: { [key in ActiveResource]: (oldValue: number) => numbe
 export const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
     const newState: FldFile = { ...state };
     newState.layers = { ...state.layers };
-    newState.layers[Layer.Resources] = cloneDataView(state.layers[Layer.Resources]);
+    const resourceLayer = cloneDataView(state.layers[Layer.Resources]);
+    newState.layers[Layer.Resources] = resourceLayer;
     let isDirty = false;
+
     const resourceOperation = RESOURCE_OPERATION[action.resource];
     action.points.forEach((p) => {
-        const oldValue = newState.layers[Layer.Resources].getUint8(p.index);
+        const oldValue = resourceLayer.getUint8(p.index);
         const newValue = resourceOperation(oldValue);
         if (oldValue !== newValue) {
             isDirty = true;
-            newState.layers[Layer.Resources].setUint8(p.index, newValue);
+            resourceLayer.setUint8(p.index, newValue);
         }
     });
 

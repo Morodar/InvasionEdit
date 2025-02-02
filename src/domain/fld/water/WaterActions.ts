@@ -1,7 +1,8 @@
+import { cloneDataView } from "../../cloneDataView";
 import { FldFile, IndexValue } from "../FldFile";
 import { Layer } from "../layers/Layer";
+import { NO_WATER_VALUE, WATER_VALUE } from "./Water";
 import { ActiveWater } from "./WaterActionContext";
-import { WaterLayerUtil } from "./WaterLayerUtil";
 
 export interface WaterPayload {
     type: "WATER";
@@ -12,19 +13,35 @@ export interface WaterPayload {
 
 export function performWaterAction(state: FldFile, payload: WaterPayload): FldFile {
     const newState: FldFile = { ...state };
+    newState.layers = { ...state.layers };
 
-    if (payload.water === "DELETE") {
-        payload.points.forEach((p) => WaterLayerUtil.removeWater(newState, p));
+    newState.layers[Layer.Water] = cloneDataView(newState.layers[Layer.Water]);
+    newState.layers[Layer.Water2] = cloneDataView(newState.layers[Layer.Water2]);
+    newState.layers[Layer.WaterHeight] = cloneDataView(newState.layers[Layer.WaterHeight]);
+    const selectedHeight = newState.layers[Layer.Landscape].getUint8(payload.selectedIndex);
+
+    switch (payload.water) {
+        case "DELETE":
+            payload.points.forEach((p) => removeWater(newState, p));
+            break;
+        case "WATER":
+            payload.points.forEach((p) => addWater(newState, p, selectedHeight));
+            break;
     }
 
-    if (payload.water === "WATER") {
-        const selectedPoint = newState.layers[Layer.Landscape].getUint8(payload.selectedIndex);
-        const height = selectedPoint;
-        payload.points.forEach((p) => WaterLayerUtil.addWater(newState, p, height));
-    }
-
-    newState.layers[Layer.Water] = new DataView(newState.layers[Layer.Water].buffer);
-    newState.layers[Layer.Water2] = new DataView(newState.layers[Layer.Water2].buffer);
-    newState.layers[Layer.WaterHeight] = new DataView(newState.layers[Layer.WaterHeight].buffer);
     return newState;
+}
+
+function addWater(fld: FldFile, point: IndexValue, height: number) {
+    const landscape = fld.layers[Layer.Landscape].getUint8(point.index);
+    const waterHeight = height - landscape;
+    fld.layers[Layer.Water].setUint8(point.index, WATER_VALUE);
+    fld.layers[Layer.Water2].setUint8(point.index, WATER_VALUE);
+    fld.layers[Layer.WaterHeight].setUint8(point.index, waterHeight);
+}
+
+function removeWater(fld: FldFile, point: IndexValue) {
+    fld.layers[Layer.Water].setUint8(point.index, NO_WATER_VALUE);
+    fld.layers[Layer.Water2].setUint8(point.index, NO_WATER_VALUE);
+    fld.layers[Layer.WaterHeight].setUint8(point.index, 0);
 }

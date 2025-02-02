@@ -7,7 +7,7 @@ import { useSelectedEntityContext } from "./SelectedEntityContext";
 import { Euler, Group, Mesh, MeshStandardMaterial, Vector3 } from "three";
 import { ThreeEvent } from "@react-three/fiber";
 import { determineColor } from "../constants/OwnerColors";
-import { useEntityModel } from "../constants/entityTypeTo3dModel";
+import { useEntityModel } from "./useEntityModel";
 
 export const EntityRender = () => {
     const { levFile } = useLevContext();
