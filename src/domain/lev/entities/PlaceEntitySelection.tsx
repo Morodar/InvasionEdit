@@ -4,7 +4,7 @@ import "./PlaceEntitySelection.css";
 import { OwnerColor } from "../components/OwnerColor";
 import { PlaceablePlayers } from "../../constants/Owner";
 import { entityTypeToImage, entityTypeToName } from "../constants/Entities";
-const buildings: number[] = [300, 301, 310, 330, 331, 332, 333, 380, 381, 382];
+const buildings: number[] = [300, 301, 310, 330, 331, 332, 333, 382, 381, 380];
 
 export const PlaceEntitySelection = () => {
     const { placingEntity, setPlacingEntity, owner, setOwner } = usePlaceEntityContext();
