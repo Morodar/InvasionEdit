@@ -23,8 +23,6 @@ export const FldHeaderDialog = (props: FldHeaderDialogProps) => {
                             {t("common.file-size")}: {fldFile.fileSize} bytes
                         </ListItem>
                         <ListItem>Meta Save Location: {fldFile.devSaveLocation}</ListItem>
-                        <ListItem>Unknown 0x0B0: {fldFile.unknown0xB0}</ListItem>
-                        <ListItem>Unknown 0x0B4: {fldFile.unknown0xB4}</ListItem>
                     </List>
                 </Typography>
             </DialogContent>

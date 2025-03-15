@@ -1,0 +1,16 @@
+.entity-list-container {
+    overflow-y: hidden;
+    max-height: 100%;
+}
+
+.entity-list-container .content {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    overflow-y: hidden;
+    box-sizing: border-box;
+}
+
+.entity-list {
+    overflow-y: auto;
+}

@@ -1,7 +1,10 @@
 import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
+import { PckFileEntry } from "../pck/PckFileEntry";
 import { FldFile, MapLayers } from "./FldFile";
 import { LayerIndexes, Layers } from "./layers/Layer";
+import packageJson from "../../../package.json";
+import { PckDecompressor } from "../pck/PckDecompressor";
 
 export class FldUtils extends HeaderUtils {
     constructor(dataView: DataView) {
@@ -73,6 +76,58 @@ function buildFldFile(fldFile: FldFile): File {
 
     const blob = new Blob([dest]);
     return new File([blob], fldFile.name);
+}
+
+export function buildFldPckFileEntry(fldFile: FldFile): PckFileEntry {
+    // 512 = header size; 128 = bytes per point on map
+    const fileSize = 512 + 128 * fldFile.width * fldFile.height;
+    const dest = new ArrayBuffer(fileSize);
+    const destView = new DataView(dest);
+    const utils = new HeaderUtils(destView);
+
+    utils.writeUint32(0, 6581350); // "fld"
+
+    // write fileSize
+    utils.writeUint32(0x04, fileSize);
+
+    // write magic bytes
+    utils.writeUint32(0x08, 1);
+    utils.writeUint32(0x0c, 6);
+    utils.writeUint32(0x0e, 6);
+
+    // write time stamps
+    const now = new Date();
+    utils.writeDateVariant1(0x10, now);
+    utils.writeDateVariant1(0x18, now);
+    utils.writeDateVariant1(0x20, now);
+
+    // write pcName1 + pcName2 (use "InvasionEdit + version" as pcName)
+    const pcName = `Invasion Edit - ${packageJson.version}`;
+    utils.writeString(0x30, pcName);
+    utils.writeString(0x70, pcName);
+
+    utils.writeUint32(0xb0, fldFile.unknown0xB0);
+    utils.writeUint32(0xb4, fldFile.unknown0xB4);
+    utils.writeUint32(0xb8, fldFile.width);
+    utils.writeUint32(0xbc, fldFile.height);
+
+    // add x / z coordinates
+    PckDecompressor.addCoordinateSystem(fldFile.height, fldFile.width, destView);
+
+    // apply layers
+    LayerIndexes.forEach((layer) => {
+        saveLayer(fldFile.layers[layer], destView, Layers[layer].fileOffset);
+    });
+
+    return {
+        name: fldFile.name,
+        dataBytes: destView,
+        dataFormat: 1,
+        fileType: 6581350, // "fld"
+        packedSize: fileSize,
+        unpackedSize: fileSize,
+        newSize: 0,
+    };
 }
 
 function cloneBuffer(buffer: ArrayBuffer): ArrayBuffer {

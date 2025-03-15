@@ -19,8 +19,14 @@ export interface DebugSettingsDialogProps {
 export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
     const { onClose, open } = props;
     const { t } = useTranslation();
-    const { debugSettings, setShowAllLayers, setShowDebugCube, showDebugCursorPosition, setShowDebugCube3x3 } =
-        useDebugSettingsContext();
+    const {
+        debugSettings,
+        setShowAllLayers,
+        setShowDebugCube,
+        showDebugCursorPosition,
+        setShowDebugCube3x3,
+        setShowEntitiesList,
+    } = useDebugSettingsContext();
 
     const handleShowAllLayersChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         setShowAllLayers(event.target.checked);
@@ -33,6 +39,9 @@ export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
 
     const handleDebugCursorPositionChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         showDebugCursorPosition(event.target.checked);
+
+    const handleShowEntitiesListChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+        setShowEntitiesList(event.target.checked);
 
     return (
         <Dialog onClose={onClose} open={open}>
@@ -61,6 +70,12 @@ export const DebugSettingsDialog = (props: DebugSettingsDialogProps) => {
                             />
                         }
                         label={t("fld-editor.debug.cursor-position")}
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch checked={debugSettings.showEntitiesList} onChange={handleShowEntitiesListChange} />
+                        }
+                        label={t("fld-editor.debug.show-entities-list")}
                     />
                 </FormGroup>
             </DialogContent>

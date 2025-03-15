@@ -1,25 +1,95 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Invasion Edit</title>
-    <style>
-      html {
-        background: black;
-        color: white;
-      }
-    </style>
-  </head>
-  <body>
-    <noscript>
-      This pages requires JavaScript. Diese Seite benötigt JavaScript.
-    </noscript>
-    <div id="root">
-      <p>Loading App ...</p>
-      <p>Anwendung wird geladen ...</p>
-    </div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Invasion Edit</title>
+        <style>
+            html {
+                background: black;
+                color: white;
+                height: 100%;
+            }
+
+            * {
+                scrollbar-width: thin;
+            }
+
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            body {
+                height: 100%;
+            }
+
+            #root {
+                height: 100%;
+            }
+
+            em {
+                color: rgb(255, 217, 0);
+            }
+
+            .hi {
+                display: flex;
+                height: 100%;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .hi-loader {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background-color: #fff2;
+                box-shadow:
+                    32px 0 #fff2,
+                    -32px 0 #fff2;
+                position: relative;
+                animation: flash 1s ease-out infinite;
+                margin-top: 32px;
+            }
+
+            @keyframes flash {
+                0% {
+                    background-color: #fff2;
+                    box-shadow:
+                        32px 0 #fff2,
+                        -32px 0 #fff;
+                }
+                33% {
+                    background-color: #fff;
+                    box-shadow:
+                        32px 0 #fff2,
+                        -32px 0 #fff2;
+                }
+                66% {
+                    background-color: #fff2;
+                    box-shadow:
+                        32px 0 #fff,
+                        -32px 0 #fff2;
+                }
+                100% {
+                    background-color: #fff2;
+                    box-shadow:
+                        32px 0 #fff2,
+                        -32px 0 #fff;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <noscript> This pages requires JavaScript. Diese Seite benötigt JavaScript. </noscript>
+        <div id="root">
+            <div class="hi">
+                <h1>Invasion Edit</h1>
+                <span class="hi-loader"></span>
+            </div>
+        </div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>

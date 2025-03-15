@@ -4,7 +4,7 @@ import { Layer } from "../layers/Layer";
 import { useFldMapContext } from "../FldMapContext";
 import { useLayerViewContext } from "../layers/LayerViewContext";
 import { DoubleSide, Mesh, PlaneGeometry } from "three";
-import { WATER_COLOR } from "../water/WaterLayerUtil";
+import { WATER_COLOR } from "../water/Water";
 
 export const WaterMesh = () => {
     const { fldFile } = useFldMapContext();

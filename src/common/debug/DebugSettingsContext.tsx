@@ -10,7 +10,9 @@ export interface DebugSettingsContextProps {
     setShowDebugCube: (value: boolean) => void;
     setShowDebugCube3x3: (value: boolean) => void;
     showDebugCursorPosition: (value: boolean) => void;
+    setShowEntitiesList: (value: boolean) => void;
 }
+
 export const DebugSettingsContext = createContext<DebugSettingsContextProps | undefined>(undefined);
 
 export const useDebugSettingsContext = (): DebugSettingsContextProps => {
@@ -38,6 +40,7 @@ export const DebugSettingsContextProvider: React.FC<PropsWithChildren> = ({ chil
     const setShowAllLayers = (value: boolean) => setSettings((old) => ({ ...old, showAllLayers: value }));
     const setShowDebugCube = (value: boolean) => setSettings((old) => ({ ...old, showDebugCube: value }));
     const setShowDebugCube3x3 = (value: boolean) => setSettings((old) => ({ ...old, showDebugCube3x3: value }));
+    const setShowEntitiesList = (value: boolean) => setSettings((old) => ({ ...old, showEntitiesList: value }));
 
     const showDebugCursorPosition = (value: boolean) =>
         setSettings((old) => ({ ...old, showDebugCursorPosition: value }));
@@ -49,6 +52,7 @@ export const DebugSettingsContextProvider: React.FC<PropsWithChildren> = ({ chil
             setShowDebugCube3x3,
             setShowAllLayers,
             showDebugCursorPosition,
+            setShowEntitiesList,
         }),
         [settings],
     );

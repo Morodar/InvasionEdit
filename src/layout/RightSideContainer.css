@@ -1,0 +1,22 @@
+.right-side-container {
+    width: auto;
+    max-height: calc(100vh - 64px);
+    height: calc(100vh - 64px);
+    position: fixed;
+    left: auto;
+    right: 0;
+    top: 0%;
+
+    display: flex;
+    margin-top: 64px;
+    z-index: 200;
+}
+
+.right-side-container.vertical-center {
+    position: absolute;
+    z-index: 100;
+
+    top: calc(50%);
+    transform: translateY(-50%);
+    right: 16px;
+}

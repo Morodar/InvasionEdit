@@ -4,7 +4,7 @@ export async function readFile(blob: Blob | File): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as ArrayBuffer);
-        reader.onerror = () => reject();
+        reader.onerror = () => reject(new Error("failed to read blob"));
         reader.readAsArrayBuffer(blob);
     });
 }

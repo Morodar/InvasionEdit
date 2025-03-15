@@ -9,7 +9,7 @@ import { useLeftClickHoldDelayAction } from "../../../common/controls/useLeftCli
 import { ActiveWater, useWaterActionContext } from "./WaterActionContext";
 import { Color } from "@react-three/fiber";
 import { Layer } from "../layers/Layer";
-import { WATER_COLOR } from "./WaterLayerUtil";
+import { WATER_COLOR } from "./Water";
 
 export const WaterActionPreview = () => {
     const { fldFile, dispatch } = useFldMapContext();

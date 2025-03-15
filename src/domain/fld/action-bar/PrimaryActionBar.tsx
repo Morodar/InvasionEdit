@@ -8,6 +8,7 @@ import { FldPrimaryAction, useFldPrimaryActionContext } from "./FldPrimaryAction
 import { useTranslation } from "react-i18next";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import { useDebugSettingsContext } from "../../../common/debug/DebugSettingsContext";
+import HouseIcon from "@mui/icons-material/House";
 
 export const PirmaryActionBar = () => {
     const { t } = useTranslation();
@@ -44,6 +45,15 @@ export const PirmaryActionBar = () => {
                 <Tooltip title={t("action.primary.water")}>
                     <IconButton color={getColor("WATER", primaryAction)} onClick={() => setPrimaryAction("WATER")}>
                         <WaterIcon sx={{ fontSize: 32 }} />
+                    </IconButton>
+                </Tooltip>
+
+                <Tooltip title={t("action.primary.buildings")}>
+                    <IconButton
+                        color={getColor("BUILDING", primaryAction)}
+                        onClick={() => setPrimaryAction("BUILDING")}
+                    >
+                        <HouseIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
 
