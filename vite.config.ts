@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-
 const BASE_DIR = "/InvasionEdit/";
 
 // https://vitejs.dev/config/
@@ -12,5 +11,11 @@ export default defineConfig({
     define: {
         "import.meta.env.BASE_DIR": JSON.stringify(BASE_DIR),
     },
-    plugins: [react()],
+    plugins: [
+        react({
+            babel: {
+                plugins: ["babel-plugin-react-compiler"],
+            },
+        }),
+    ],
 });
