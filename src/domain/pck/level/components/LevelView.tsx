@@ -38,7 +38,7 @@ export const LevelView = (): ReactElement => {
                     ref={orbitControlsRef}
                     mouseButtons={{ RIGHT: MOUSE.RIGHT }}
                     minDistance={20}
-                    maxDistance={120}
+                    maxDistance={200}
                 />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />
 

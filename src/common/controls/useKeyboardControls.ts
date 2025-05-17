@@ -2,7 +2,6 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useState } from "react";
 import { Camera, Vector3 } from "three";
 import { useFldMapContext } from "../../domain/fld/FldMapContext";
-import { centerCamera } from "../camera/useCenterCamera";
 import { OrbitControls } from "../camera/OrbitControls";
 
 export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitControls>) => {
@@ -98,7 +97,7 @@ function updateCameraPosition(
     const newTarget = target.clone().add(moveVector);
     newTarget.y = 0;
     if (!isWithinBoundary(target, width, height)) {
-        centerCamera(camera.position, target, width, height);
+        //centerCamera(camera.position, target, width, height);
     } else if (isWithinBoundary(newTarget, width, height)) {
         // ensure target looks at map
         camera.position.add(moveVector);

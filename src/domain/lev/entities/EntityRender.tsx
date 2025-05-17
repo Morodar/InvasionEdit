@@ -64,7 +64,10 @@ export const EntityObject = memo(({ entity, mapWidth, mapHeight, lanscapeMap }: 
     const height = lanscapeMap.getUint8(index);
 
     const color = determineColor(entity.owner, isSelected, isHovering);
-    const position: Vector3 = useMemo(() => new Vector3(x - 1, height / 8 + 0.3, z), [height, x, z]);
+    const position: Vector3 = useMemo(
+        () => new Vector3(entity.z / 1000, height / 4 + 0.6, entity.x / 1000),
+        [entity.x, entity.z, height],
+    );
     const rotation = entity.rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
     return (
         <Suspense
@@ -121,7 +124,7 @@ const RenderModel = memo(
 
         useEffect(() => {
             if (model && modelRef.current) {
-                modelRef.current.scale.copy({ x: 0.5, y: 0.5, z: 0.5 });
+                modelRef.current.scale.copy({ x: 0.9, y: 0.9, z: 0.9 });
                 modelRef.current.position.copy(position);
                 modelRef.current.rotation.copy(new Euler(0, rotation, 0));
             }

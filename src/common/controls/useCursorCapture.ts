@@ -7,7 +7,7 @@ import { Mesh, Raycaster } from "three";
 
 const raycaster = new Raycaster();
 
-export const useCursorCapture = (meshRef: RefObject<Mesh>) => {
+export const useCursorCapture = (meshRef: RefObject<Mesh | null>) => {
     const { camera, pointer, gl } = useThree();
     const { hoveredPoint, setHoveredPoint, setMeshPoint, setRawPoint } = useCursorContext();
     const { fldFile } = useFldMapContext();
@@ -44,15 +44,15 @@ export const useCursorCapture = (meshRef: RefObject<Mesh>) => {
         setLastCamZ(camera.position.z);
 
         if (meshRef.current && fldFile) {
-            const { height, width, layers } = fldFile;
+            const { width, layers } = fldFile;
             const points = layers[Layer.Landscape];
             raycaster.setFromCamera(pointer, camera);
             const intersects = raycaster.intersectObject(meshRef.current);
             if (intersects.length > 0) {
                 const point = intersects[0].point;
-                const x = Math.round(point.x);
-                const z = Math.round(point.z);
-                const index = (height - x) * width + z - width;
+                const x = Math.floor(point.x / -1.999);
+                const z = Math.floor((point.z - x * 1.152) / 2.305);
+                const index = (x + 1) * width + z - width;
                 if (index !== lastIndex && index < points.byteLength) {
                     setMeshPoint({ x, z, value: Math.round(point.y) });
                     setHoveredPoint(index);

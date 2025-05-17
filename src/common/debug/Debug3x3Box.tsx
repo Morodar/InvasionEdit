@@ -40,10 +40,15 @@ const Render = (props: RenderProps) => {
         const temp = new Object3D();
         points.forEach((point, i) => {
             const p = landscape.getUint8(point.index);
-            const y = p / 8 + 0.01;
+            const y = p / 4 + 0.01;
             const z = point.index % width;
-            const x = height - 1 - (point.index - z) / width;
-            temp.position.set(x, y, z);
+            const x = (point.index - z) / width;
+
+            // rotate map 45° and stretch using values from decompression algorithm
+            const x2 = x * -1.999;
+            const z2 = x * 1.152 + z * 2.305;
+
+            temp.position.set(x2, y, z2);
             temp.updateMatrix();
             mesh.setMatrixAt(i, temp.matrix);
         });

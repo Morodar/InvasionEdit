@@ -30,8 +30,7 @@ struct StrHeader {
   char16 pcname2[0x20];
   u32 languageCount;
   u8 empty2[0x4c];
-  char16 path[0x30];
-  u8 empty3[0xA0];
+  char16 path[0x80];
 };
 
 

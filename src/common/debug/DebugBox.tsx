@@ -11,13 +11,18 @@ export const DebugBox = () => {
     if (!debugSettings.showDebugCube || !hoveredPoint || !fldFile) {
         return;
     }
-    const { width, height, layers } = fldFile;
+    const { width, layers } = fldFile;
 
     const z = hoveredPoint % width;
-    const x = height - 1 - Math.floor(hoveredPoint / width);
+    const x = (hoveredPoint - z) / width;
+
+    // rotate map 45° and stretch using values from decompression algorithm
+    const x2 = x * -1.999;
+    const z2 = x * 1.152 + z * 2.305;
+
     const point = layers[Layer.Landscape].getUint8(hoveredPoint);
     return (
-        <mesh position={[x, point / 8, z]}>
+        <mesh position={[x2, point / 4, z2]}>
             <sphereGeometry args={[0.5, 8, 8]} />
             <meshStandardMaterial color="hotpink" />
         </mesh>
