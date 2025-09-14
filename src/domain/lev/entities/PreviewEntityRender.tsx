@@ -60,8 +60,6 @@ export const EntityObject = ({
     lanscapeMap,
     dispatch,
 }: EntityObjectProps): ReactElement => {
-    // const index = Math.floor(mapHeight - x) * mapWidth + Math.floor(z);
-
     const indexX = Math.floor(x / -1.999);
     const indexZ = Math.floor((z - indexX * 1.152) / 2.305);
     const index = (indexX + 1) * mapWidth + indexZ - mapWidth;

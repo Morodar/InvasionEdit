@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useMemo, useState } from "react";
+import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useState } from "react";
 import { Point3D } from "../../domain/fld/FldFile";
 
 export interface CursorContextProps {
@@ -28,9 +28,14 @@ export const CursorContextProvider: React.FC<PropsWithChildren> = ({ children }:
     const [meshPoint, setMeshPoint] = useState<Point3D>();
     const [rawPoint, setRawPoint] = useState<Point3D>();
 
-    const contextValue: CursorContextProps = useMemo(() => {
-        return { hoveredPoint, meshPoint, rawPoint, setHoveredPoint, setMeshPoint, setRawPoint };
-    }, [hoveredPoint, meshPoint, rawPoint]);
+    const contextValue: CursorContextProps = {
+        hoveredPoint,
+        meshPoint,
+        rawPoint,
+        setHoveredPoint,
+        setMeshPoint,
+        setRawPoint,
+    };
 
     return <CursorContext.Provider value={contextValue}>{children}</CursorContext.Provider>;
 };

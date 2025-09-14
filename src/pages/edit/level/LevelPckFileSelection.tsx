@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback, useState } from "react";
+import { PropsWithChildren, useState } from "react";
 import { useEditLevelContext } from "./EditLevelContext";
 import { LevelPckParser } from "../../../domain/pck/level/LevelPckParser";
 import { useTranslation } from "react-i18next";
@@ -16,22 +16,19 @@ export const LevelPckFileSelection = (props: PropsWithChildren) => {
     const [, setParseError] = useState<string>();
     const [isParsing, setIsParsing] = useState(false);
 
-    const parsePckFile = useCallback(
-        (file?: File) => {
-            if (!file) {
-                return;
-            }
-            setIsParsing(true);
-            LevelPckParser.parseLevelPck(file)
-                .then((level) => setLevelPck(level))
-                .catch((e) => {
-                    console.debug(e);
-                    setParseError("failed to parse file");
-                })
-                .finally(() => setIsParsing(false));
-        },
-        [setLevelPck],
-    );
+    const parsePckFile = (file?: File) => {
+        if (!file) {
+            return;
+        }
+        setIsParsing(true);
+        LevelPckParser.parseLevelPck(file)
+            .then((level) => setLevelPck(level))
+            .catch((e) => {
+                console.debug(e);
+                setParseError("failed to parse file");
+            })
+            .finally(() => setIsParsing(false));
+    };
 
     if (levelPck) {
         return props.children;

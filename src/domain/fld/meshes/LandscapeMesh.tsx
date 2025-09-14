@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCursorCapture } from "../../../common/controls/useCursorCapture";
 import { FldMap } from "../FldFile";
 import { useFldMapContext } from "../FldMapContext";
@@ -35,7 +35,7 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
 
     useCursorCapture(planeMesh);
 
-    const texture = useMemo(() => createHeightTexture(map), [map]);
+    const texture = createHeightTexture(map);
 
     useEffect(() => {
         if (planeGeo.current) {

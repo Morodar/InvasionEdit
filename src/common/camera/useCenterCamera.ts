@@ -1,11 +1,11 @@
 import { useThree } from "@react-three/fiber";
 import { useFldMapContext } from "../../domain/fld/FldMapContext";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { Vector3 } from "three";
 import { OrbitControls } from "./OrbitControls";
 
 /** Centers the camera whenever the current fld file changes */
-export const useCenterCamera = (orbitControlsRef: React.RefObject<OrbitControls>) => {
+export const useCenterCamera = (orbitControlsRef: RefObject<OrbitControls | null>) => {
     const { fldFile } = useFldMapContext();
     const { camera } = useThree();
 

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { LayerIndex } from "../layers/Layer";
 
 export type GenericAction = "FIX" | "SMOOTH" | "STEP-UP" | "STEP-DOWN";
@@ -36,20 +36,18 @@ export const GenericActionContextProvider: React.FC<PropsWithChildren> = ({ chil
     const [speed, setSpeed] = useState<number>(8);
     const [layer, setLayer] = useState<LayerIndex>(0);
 
-    const contextValue = useMemo(() => {
-        return {
-            activeAction,
-            height,
-            size,
-            speed,
-            layer,
-            setActiveAction,
-            setHeight,
-            setSize,
-            setSpeed,
-            setLayer,
-        };
-    }, [activeAction, height, layer, size, speed]);
+    const contextValue = {
+        activeAction,
+        height,
+        size,
+        speed,
+        layer,
+        setActiveAction,
+        setHeight,
+        setSize,
+        setSpeed,
+        setLayer,
+    };
 
     return <GenericActionContext.Provider value={contextValue}>{children}</GenericActionContext.Provider>;
 };

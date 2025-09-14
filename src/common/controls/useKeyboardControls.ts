@@ -1,10 +1,10 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { Camera, Vector3 } from "three";
 import { useFldMapContext } from "../../domain/fld/FldMapContext";
 import { OrbitControls } from "../camera/OrbitControls";
 
-export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitControls>) => {
+export const useKeyboardControls = (orbitControlsRef: RefObject<OrbitControls | null>) => {
     const { fldFile } = useFldMapContext();
     const [keys, setKeys] = useState(new Set<string>());
     const [lastUpdate, setLastUpdate] = useState(new Date());
@@ -41,7 +41,7 @@ export const useKeyboardControls = (orbitControlsRef?: React.RefObject<OrbitCont
     });
 };
 
-const speed = 0.1;
+const speed = 0.4;
 const rotateSpeed = 0.002;
 
 function updateCameraPosition(
@@ -52,6 +52,9 @@ function updateCameraPosition(
     width = 60,
     height = 60,
 ) {
+    const maxTargetX = Math.abs(width / -1.999);
+    const maxTargetZ = Math.abs(height + 1.152 + width + 2.305);
+    const maxRadius = Math.max(maxTargetX, maxTargetZ);
     const target = orbit.target;
     const moveBy = speed * timeMs;
     const rotateBy = rotateSpeed * timeMs;
@@ -96,9 +99,8 @@ function updateCameraPosition(
     }
     const newTarget = target.clone().add(moveVector);
     newTarget.y = 0;
-    if (!isWithinBoundary(target, width, height)) {
-        //centerCamera(camera.position, target, width, height);
-    } else if (isWithinBoundary(newTarget, width, height)) {
+    const isInBoundary = isWithinBoundary(newTarget, maxRadius, maxRadius * 2);
+    if (isInBoundary) {
         // ensure target looks at map
         camera.position.add(moveVector);
         target.set(newTarget.x, newTarget.y, newTarget.z);
@@ -108,5 +110,6 @@ function updateCameraPosition(
 }
 
 const up = new Vector3(0, 1, 0);
-const isWithinBoundary = (target: Vector3, width: number, height: number) =>
-    target.x >= 0 && target.x <= width && target.z >= 0 && target.z <= height;
+const isWithinBoundary = (target: Vector3, maxX: number, maxZ: number) => {
+    return target.x >= -maxX && target.x <= 0 && target.z >= 0 && target.z <= maxZ;
+};

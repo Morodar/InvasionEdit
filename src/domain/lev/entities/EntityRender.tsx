@@ -1,4 +1,4 @@
-import { memo, ReactElement, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, ReactElement, Suspense, useEffect, useRef, useState } from "react";
 import { useLevContext } from "../LevContext";
 import { LevEntity } from "../LevEntity";
 import { useFldMapContext } from "../../fld/FldMapContext";
@@ -41,22 +41,22 @@ export const EntityObject = memo(({ entity, mapWidth, mapHeight, lanscapeMap }: 
     const { selectedEntity, setSelectedEntity } = useSelectedEntityContext();
     const isSelected = entity === selectedEntity;
     const [isHovering, setIsHovering] = useState(false);
-    const handleClick = useCallback(() => {
+    const handleClick = () => {
         setSelectedEntity((prev: LevEntity | undefined) => {
             if (prev !== entity) {
                 return entity;
             }
             return undefined;
         });
-    }, [entity, setSelectedEntity]);
+    };
 
-    const handlePointerEnter = useCallback(() => {
+    const handlePointerEnter = () => {
         setIsHovering(true);
-    }, []);
+    };
 
-    const handlePointerLeave = useCallback(() => {
+    const handlePointerLeave = () => {
         setIsHovering(false);
-    }, []);
+    };
 
     const x = mapHeight - -entity.z / 1999;
     const z = (entity.x - (mapHeight - x) * 1152) / 2305;
@@ -64,10 +64,7 @@ export const EntityObject = memo(({ entity, mapWidth, mapHeight, lanscapeMap }: 
     const height = lanscapeMap.getUint8(index);
 
     const color = determineColor(entity.owner, isSelected, isHovering);
-    const position: Vector3 = useMemo(
-        () => new Vector3(entity.z / 1000, height / 4 + 0.6, entity.x / 1000),
-        [entity.x, entity.z, height],
-    );
+    const position = new Vector3(entity.z / 1000, height / 4 + 0.6, entity.x / 1000);
     const rotation = entity.rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
     return (
         <Suspense

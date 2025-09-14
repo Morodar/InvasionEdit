@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState } from "react";
 
 export type ActiveResource = "DELETE" | "XENIT" | "TRITIUM";
 
@@ -27,14 +27,12 @@ export const ResourceActionContextProvider: React.FC<PropsWithChildren> = ({ chi
     const [activeResource, setActiveResource] = useState<ActiveResource>("XENIT");
     const [size, setSize] = useState<number>(1);
 
-    const contextValue = useMemo(() => {
-        return {
-            activeResource,
-            size,
-            setSize,
-            setActiveResource,
-        };
-    }, [activeResource, size]);
+    const contextValue = {
+        activeResource,
+        size,
+        setSize,
+        setActiveResource,
+    };
 
     return <ResourceActionContext.Provider value={contextValue}>{children}</ResourceActionContext.Provider>;
 };

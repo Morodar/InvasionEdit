@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, SetStateAction, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, SetStateAction, createContext, useContext, useState } from "react";
 import { LevelPck } from "../../../domain/pck/level/LevelPck";
 import { LayerViewContextProvider } from "../../../domain/fld/layers/LayerViewContext";
 import { DebugSettingsContextProvider } from "../../../common/debug/DebugSettingsContext";
@@ -33,7 +33,7 @@ export const useEditLevelContext = (): EditLevelContextProps => {
 export const EditLevelContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [levelPck, setLevelPck] = useState<LevelPck>();
 
-    const value: EditLevelContextProps = useMemo(() => ({ setLevelPck, levelPck }), [levelPck]);
+    const value: EditLevelContextProps = { setLevelPck, levelPck };
 
     return (
         <EditLevelContext.Provider value={value}>

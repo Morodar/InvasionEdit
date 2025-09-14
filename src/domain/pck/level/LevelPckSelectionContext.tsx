@@ -1,10 +1,11 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 import { Level } from "../../level/Level";
 import { useEditLevelContext } from "../../../pages/edit/level/EditLevelContext";
 import { useFldMapContext } from "../../fld/FldMapContext";
 import { useLevContext } from "../../lev/LevContext";
 import { LevelPck } from "./LevelPck";
+import { useCallback } from "react";
 
 export interface LevelPckSelectionContextProps {
     selectedLevel?: Level;
@@ -81,10 +82,10 @@ export const LevelPckSelectionContextProvider: React.FC<PropsWithChildren> = ({ 
         });
     }, [fldFile, selectedLevelIndex, setLevelPck]);
 
-    const value: LevelPckSelectionContextProps = useMemo(
-        () => ({ selectedLevel, selectLevel }),
-        [selectLevel, selectedLevel],
-    );
+    const value: LevelPckSelectionContextProps = {
+        selectedLevel,
+        selectLevel,
+    };
 
     return <LevelPckSelectionContext.Provider value={value}>{children}</LevelPckSelectionContext.Provider>;
 };

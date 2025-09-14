@@ -1,4 +1,4 @@
-import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useMemo, useState } from "react";
+import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useState } from "react";
 import { LevEntity } from "../LevEntity";
 
 /* eslint-disable react-refresh/only-export-components */
@@ -20,9 +20,9 @@ export const useSelectedEntityContext = (): SelectedEntityContextProps => {
 export const SelectedEntityContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [selectedEntity, setSelectedEntity] = useState<LevEntity>();
 
-    const contextValue: SelectedEntityContextProps = useMemo(
-        () => ({ selectedEntity, setSelectedEntity }),
-        [selectedEntity],
-    );
+    const contextValue: SelectedEntityContextProps = {
+        selectedEntity,
+        setSelectedEntity,
+    };
     return <SelectedEntityContext.Provider value={contextValue}>{children}</SelectedEntityContext.Provider>;
 };

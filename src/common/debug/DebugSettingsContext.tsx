@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from "react";
 import { DebugSettings, DebugSettingsService } from "./DebugSettingsService";
 
 export interface DebugSettingsContextProps {
@@ -45,17 +45,14 @@ export const DebugSettingsContextProvider: React.FC<PropsWithChildren> = ({ chil
     const showDebugCursorPosition = (value: boolean) =>
         setSettings((old) => ({ ...old, showDebugCursorPosition: value }));
 
-    const contextValue: DebugSettingsContextProps = useMemo(
-        () => ({
-            debugSettings: settings,
-            setShowDebugCube,
-            setShowDebugCube3x3,
-            setShowAllLayers,
-            showDebugCursorPosition,
-            setShowEntitiesList,
-        }),
-        [settings],
-    );
+    const contextValue: DebugSettingsContextProps = {
+        debugSettings: settings,
+        setShowDebugCube,
+        setShowDebugCube3x3,
+        setShowAllLayers,
+        showDebugCursorPosition,
+        setShowEntitiesList,
+    };
 
     return <DebugSettingsContext.Provider value={contextValue}>{children}</DebugSettingsContext.Provider>;
 };

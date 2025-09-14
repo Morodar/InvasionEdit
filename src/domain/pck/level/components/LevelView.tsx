@@ -1,8 +1,7 @@
-import { OrbitControls as DreiObitControls, Stats } from "@react-three/drei";
-import { OrbitControls } from "../../../../common/camera/OrbitControls";
-
+import { OrbitControls as DreiOrbitControls, Stats } from "@react-three/drei";
+import { OrbitControls } from "three-stdlib";
 import { Canvas } from "@react-three/fiber";
-import React, { ReactElement, useRef } from "react";
+import { ReactElement, RefObject, useRef } from "react";
 import { MOUSE } from "three";
 import { useCenterCamera } from "../../../../common/camera/useCenterCamera";
 import { Debug3x3Box } from "../../../../common/debug/Debug3x3Box";
@@ -33,9 +32,9 @@ export const LevelView = (): ReactElement => {
                 <ambientLight intensity={3} />
                 <directionalLight position={[0, 100, 0]} intensity={2} />
 
-                <DreiObitControls
-                    target={[60, 0, 60]}
+                <DreiOrbitControls
                     ref={orbitControlsRef}
+                    target={[60, 0, 60]}
                     mouseButtons={{ RIGHT: MOUSE.RIGHT }}
                     minDistance={20}
                     maxDistance={200}
@@ -67,12 +66,12 @@ export const LevelView = (): ReactElement => {
 };
 
 interface MapViewUtilProps {
-    orbitControlsRef: React.RefObject<OrbitControls>;
+    orbitControlsRef: RefObject<OrbitControls | null>;
 }
 
-const MapViewUtil = (props: MapViewUtilProps) => {
-    useCenterCamera(props.orbitControlsRef);
-    useKeyboardControls(props.orbitControlsRef);
+const MapViewUtil = ({ orbitControlsRef }: MapViewUtilProps) => {
+    useCenterCamera(orbitControlsRef);
+    useKeyboardControls(orbitControlsRef);
 
     return <></>;
 };
