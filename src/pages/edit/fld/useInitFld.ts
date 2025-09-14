@@ -15,6 +15,6 @@ export const useInitFld = () => {
                         .catch(() => console.error("failed to parse fld file"));
                 }
             })
-            .catch(() => console.error("faled to download initial map"));
+            .catch(() => console.error("failed to download initial map"));
     }, [tryUseFldFile]);
 };
