@@ -32,8 +32,8 @@ struct PckHeader {
 };
 
 struct FileEntry {
-  char16 filename[0x080]; 
-  u8 empty[0xF0];
+  char16 filename[0xf6]; //? not sure on length see obsidian
+  u8 writtenToInMemory[0x4];
   u32 unpackedSize;
   u32 fileType;
   u32 packedSize;
@@ -44,7 +44,7 @@ struct FileEntry {
     u8 dataBytes[packedSize-16];
   }else{
     u8 dataBytes[packedSize];
-  }
+  }//rename first part of dataBytes to compression algo?
 };
 
 

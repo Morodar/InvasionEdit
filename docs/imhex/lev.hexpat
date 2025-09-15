@@ -65,7 +65,7 @@ struct LevHeader {
   u32 fileSize;
   
   // always 1,0,0,0,1,0,7,0?
-  u8 unknown0x008[0x04];
+  u8 unknown0x008[0x04]; //possibly version code? Always 1 it seems.
   u8 FileIdentifier[0x04];//Always 700001 for .lev, code checks this too (seems like an alias for file type, tec has 20000)
   
   Date1 date1;
