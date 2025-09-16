@@ -1,11 +1,11 @@
 import { useThree } from "@react-three/fiber";
 import { useFldMapContext } from "../../domain/fld/FldMapContext";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { Vector3 } from "three";
 import { OrbitControls } from "./OrbitControls";
 
 /** Centers the camera whenever the current fld file changes */
-export const useCenterCamera = (orbitControlsRef: React.RefObject<OrbitControls>) => {
+export const useCenterCamera = (orbitControlsRef: RefObject<OrbitControls | null>) => {
     const { fldFile } = useFldMapContext();
     const { camera } = useThree();
 
@@ -30,8 +30,12 @@ export function centerCamera(camera: Vector3, target: Vector3, width: number, he
     const centerH = height / 2;
     const centerW = width / 2;
 
+    // rotate map 45° and stretch using values from decompression algorithm
+    const x2 = centerW * -1.999;
+    const z2 = centerW * 1.152 + centerH * 2.305;
+
     // update camera position
-    camera.set(width + 20, 80, centerH);
+    camera.set(x2 + 200, 500, z2 + 200);
     // update where camera looks
-    target.set(centerW + 20, 0, centerH);
+    target.set(x2 + 20, 0, z2);
 }

@@ -1,0 +1,25 @@
+/** Colors.ts - keep colors in sync! */
+:root {
+    --neutral: #ccfbbf;
+    --ares: #0e0ede;
+    --thorgon: #11da10;
+    --devoken: #de0e0e;
+    --illurer: #0ecece;
+    --albor: #ce6e0e;
+    --urdoner: #5f3418;
+    --alderaden: #8b2186;
+    --golrathen: #666;
+
+    --neutral: #ebfde6;
+    --ares-preview: #4c4cdd;
+    --thorgon-preview: #74d774;
+    --devoken-preview: #db6565;
+    --illurer-preview: #aedddd;
+    --albor-preview: #c8a481;
+    --urdoner-preview: #624f42;
+    --alderaden-preview: #8f6d8e;
+    --golrathen-preview: #bcbcbc;
+
+    --selected: #ffca28;
+    --hovering: #ffeb3b;
+}

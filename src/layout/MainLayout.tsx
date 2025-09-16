@@ -1,5 +1,5 @@
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { HOME } from "../conf/AppRoutes";
@@ -9,8 +9,8 @@ import packageJson from "../../package.json";
 
 interface MainLayoutProps extends PropsWithChildren {
     withPadding?: boolean;
-    centerElements?: JSX.Element;
-    rightSideElements?: JSX.Element;
+    centerElements?: ReactElement;
+    rightSideElements?: ReactElement;
 }
 
 export const MainLayout = ({ withPadding = true, centerElements, rightSideElements, children }: MainLayoutProps) => {

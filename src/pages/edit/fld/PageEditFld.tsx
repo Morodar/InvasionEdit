@@ -1,4 +1,4 @@
-import { MapView } from "./MapView";
+import { FldView } from "./FldView";
 import { MainLayout } from "../../../layout/MainLayout";
 import { ChooseFldButton } from "../../../domain/fld/file/ChooseFldButton";
 import { FldName } from "../../../domain/fld/file/FldName";
@@ -36,7 +36,7 @@ const PageEditFld = (): React.JSX.Element => {
                                                 centerElements={<FldName />}
                                                 rightSideElements={<RightSideElements />}
                                             >
-                                                <MapView />
+                                                <FldView />
                                             </MainLayout>
                                         </FldMapContextProvider>
                                     </GenericActionContextProvider>

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Canvas } from "@react-three/fiber";
-import "./MapView.css";
+import "./FldView.css";
 import { ResourceMeshes } from "../../../domain/fld/meshes/ResourceMeshes";
 import { useInitFld } from "./useInitFld";
 import { useCenterCamera } from "../../../common/camera/useCenterCamera";
@@ -21,8 +21,9 @@ import { OrbitControls } from "../../../common/camera/OrbitControls";
 import { MOUSE } from "three";
 import { WaterMesh } from "../../../domain/fld/meshes/WaterMesh";
 import { WaterActionPreview } from "../../../domain/fld/water/WaterActionPreview";
+import { RightSideContainer } from "../../../layout/RightSideContainer";
 
-export const MapView = (): React.JSX.Element => {
+export const FldView = (): React.JSX.Element => {
     const orbitControlsRef = useRef<OrbitControls>(null);
 
     return (
@@ -35,7 +36,7 @@ export const MapView = (): React.JSX.Element => {
                     target={[60, 0, 60]}
                     ref={orbitControlsRef}
                     mouseButtons={{ RIGHT: MOUSE.RIGHT }}
-                    minDistance={20}
+                    minDistance={5}
                     maxDistance={120}
                 />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />
@@ -57,7 +58,9 @@ export const MapView = (): React.JSX.Element => {
             <DebugSidebar />
             <PirmaryActionBar />
             <SecondaryActionBar />
-            <LayerSettings />
+            <RightSideContainer verticalCenter>
+                <LayerSettings />
+            </RightSideContainer>
         </div>
     );
 };

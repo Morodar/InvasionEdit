@@ -11,15 +11,16 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useDebugSettingsContext } from "../../../common/debug/DebugSettingsContext";
 
 export const LayerSettings = () => {
+    const { t } = useTranslation();
     const { layerSettings } = useLayerViewContext();
     const { debugSettings } = useDebugSettingsContext();
     const layers = debugSettings.showAllLayers ? LayerIndexes : KnownLayers;
     const layerItems = layers.map((layer) => <LayerSettingItem key={layer} layerSettings={layerSettings[layer]} />);
     return (
         <Typography component="div">
-            <Card className="layer-settings">
+            <Card className="layer-settings" square elevation={2}>
                 <CardContent className="layer-content">
-                    <H3 variant="subtitle1">Layers</H3>
+                    <H3 variant="subtitle1">{t("LAYER_SETTINGS.HEADER")}</H3>
                     <List className="list-container" disablePadding dense>
                         {layerItems}
                     </List>

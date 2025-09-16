@@ -1,16 +1,5 @@
 .map-view .layer-settings {
-    position: absolute;
-    z-index: 100;
-
-    top: calc(50% + 32px);
-    transform: translateY(-50%);
-    right: 16px;
-
     width: 250px;
-    height:auto;
-    max-width: 300px;
-    max-height: 80vh;
-
 }
 
 .map-view .layer-settings .list-container {

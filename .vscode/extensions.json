@@ -4,6 +4,6 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "lokalise.i18n-ally",
-        "zixuanchen.vitest-explorer"
+        "vitest.explorer"
     ]
 }

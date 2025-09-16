@@ -5,6 +5,7 @@ export interface DebugSettings {
     showDebugCube3x3: boolean;
     showDebugCursorPosition: boolean;
     showAllLayers: boolean;
+    showEntitiesList: boolean;
 }
 
 export class DebugSettingsService {
@@ -28,8 +29,9 @@ export class DebugSettingsService {
                 showDebugCube3x3: this.readBooleanOrDefault(json, "showDebugCube3x3"),
                 showDebugCursorPosition: this.readBooleanOrDefault(json, "showDebugCursorPosition"),
                 showAllLayers: this.readBooleanOrDefault(json, "showAllLayers"),
+                showEntitiesList: this.readBooleanOrDefault(json, "showEntitiesList"),
             };
-        } catch (Error) {
+        } catch {
             return this.createDefault();
         }
     }
@@ -47,5 +49,6 @@ export class DebugSettingsService {
         showDebugCursorPosition: false,
         showDebugCube3x3: false,
         showAllLayers: false,
+        showEntitiesList: false,
     });
 }

@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from "react";
 import { DebugSettings, DebugSettingsService } from "./DebugSettingsService";
 
 export interface DebugSettingsContextProps {
@@ -10,7 +10,9 @@ export interface DebugSettingsContextProps {
     setShowDebugCube: (value: boolean) => void;
     setShowDebugCube3x3: (value: boolean) => void;
     showDebugCursorPosition: (value: boolean) => void;
+    setShowEntitiesList: (value: boolean) => void;
 }
+
 export const DebugSettingsContext = createContext<DebugSettingsContextProps | undefined>(undefined);
 
 export const useDebugSettingsContext = (): DebugSettingsContextProps => {
@@ -38,20 +40,19 @@ export const DebugSettingsContextProvider: React.FC<PropsWithChildren> = ({ chil
     const setShowAllLayers = (value: boolean) => setSettings((old) => ({ ...old, showAllLayers: value }));
     const setShowDebugCube = (value: boolean) => setSettings((old) => ({ ...old, showDebugCube: value }));
     const setShowDebugCube3x3 = (value: boolean) => setSettings((old) => ({ ...old, showDebugCube3x3: value }));
+    const setShowEntitiesList = (value: boolean) => setSettings((old) => ({ ...old, showEntitiesList: value }));
 
     const showDebugCursorPosition = (value: boolean) =>
         setSettings((old) => ({ ...old, showDebugCursorPosition: value }));
 
-    const contextValue: DebugSettingsContextProps = useMemo(
-        () => ({
-            debugSettings: settings,
-            setShowDebugCube,
-            setShowDebugCube3x3,
-            setShowAllLayers,
-            showDebugCursorPosition,
-        }),
-        [settings],
-    );
+    const contextValue: DebugSettingsContextProps = {
+        debugSettings: settings,
+        setShowDebugCube,
+        setShowDebugCube3x3,
+        setShowAllLayers,
+        showDebugCursorPosition,
+        setShowEntitiesList,
+    };
 
     return <DebugSettingsContext.Provider value={contextValue}>{children}</DebugSettingsContext.Provider>;
 };

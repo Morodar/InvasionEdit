@@ -23,5 +23,6 @@ export const WaterActionButtons = () => {
         </Stack>
     );
 };
+
 const getActionColor = (resourceAction: ActiveWater, currentAction: ActiveWater) =>
     resourceAction === currentAction ? "primary" : "default";

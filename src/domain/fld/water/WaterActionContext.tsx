@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState } from "react";
 
 export type ActiveWater = "DELETE" | "WATER";
 
@@ -24,12 +24,10 @@ export const useWaterActionContext = (): WaterActionContextProps => {
 export const WaterActionContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [activeAction, setActiveAction] = useState<ActiveWater>("WATER");
 
-    const contextValue = useMemo(() => {
-        return {
-            activeAction,
-            setActiveAction,
-        };
-    }, [activeAction]);
+    const contextValue = {
+        activeAction,
+        setActiveAction,
+    };
 
     return <WaterActionContext.Provider value={contextValue}>{children}</WaterActionContext.Provider>;
 };

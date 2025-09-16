@@ -10,7 +10,8 @@
             "cube": "Debug Cube",
             "cursor-position": "Debug Cursor Position",
             "settings": "Debug Settings",
-            "show-all-layers": "Show all layers"
+            "show-all-layers": "Show all layers",
+            "show-entities-list": "Show entities list"
         },
         "select-fld-file": "Please select a FLD file.",
         "choose-fld-file": "Choose FLD File",
@@ -19,7 +20,9 @@
     },
     "lvl-editor": {
         "title": "Level Editor",
-        "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)"
+        "select-file": "Level File",
+        "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
+        "save-levels": "Save Levels"
     },
     "pck-extractor": {
         "short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
@@ -60,7 +63,8 @@
             "landscape": "Landscape",
             "xenit-and-tritium": "Xenit & Tritium",
             "generic": "Generic",
-            "water": "Water"
+            "water": "Water",
+            "buildings": "Buildings"
         }
     },
     "actions": {
@@ -88,5 +92,8 @@
         "WATER_2": "Water 2",
         "TEXTURES": "Textures 1",
         "TEXTURES_2": "Textures 2"
+    },
+    "LAYER_SETTINGS": {
+        "HEADER": "Layers"
     }
 }

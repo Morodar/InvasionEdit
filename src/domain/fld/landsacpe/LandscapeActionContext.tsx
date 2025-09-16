@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState } from "react";
 
 export type LandscapeAction = "FIX" | "SMOOTH" | "STEP-UP" | "STEP-DOWN";
 
@@ -32,18 +32,16 @@ export const LandscapeActionContextProvider: React.FC<PropsWithChildren> = ({ ch
     const [height, setHeight] = useState<number>(16);
     const [speed, setSpeed] = useState<number>(8);
 
-    const contextValue = useMemo(() => {
-        return {
-            activeAction,
-            height,
-            size,
-            speed,
-            setActiveAction,
-            setHeight,
-            setSize,
-            setSpeed,
-        };
-    }, [activeAction, height, size, speed]);
+    const contextValue = {
+        activeAction,
+        height,
+        size,
+        speed,
+        setActiveAction,
+        setHeight,
+        setSize,
+        setSpeed,
+    };
 
     return <LandscapeActionContext.Provider value={contextValue}>{children}</LandscapeActionContext.Provider>;
 };

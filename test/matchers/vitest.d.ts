@@ -7,8 +7,11 @@ interface CustomMatchers<R = unknown> {
 }
 
 declare module "vitest" {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface Assertion<T = any> extends CustomMatchers<T> {}
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface AsymmetricMatchersContaining extends CustomMatchers {}
+    interface Assertion<T = any> extends CustomMatchers<T> {
+        toEqualBuffer(expected: Buffer): R;
+    }
+
+    interface AsymmetricMatchersContaining extends CustomMatchers {
+        toEqualBuffer(expected: Buffer): R;
+    }
 }

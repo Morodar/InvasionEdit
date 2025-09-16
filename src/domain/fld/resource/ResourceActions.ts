@@ -1,3 +1,4 @@
+import { cloneDataView } from "../../cloneDataView";
 import { IndexValue, FldFile } from "../FldFile";
 import { Layer } from "../layers/Layer";
 import { ActiveResource } from "./ResourceActionContext";
@@ -21,11 +22,20 @@ const RESOURCE_OPERATION: { [key in ActiveResource]: (oldValue: number) => numbe
 
 export const performResourceAction = (state: FldFile, action: ResourcePayload): FldFile => {
     const newState: FldFile = { ...state };
+    newState.layers = { ...state.layers };
+    const resourceLayer = cloneDataView(state.layers[Layer.Resources]);
+    newState.layers[Layer.Resources] = resourceLayer;
+    let isDirty = false;
+
     const resourceOperation = RESOURCE_OPERATION[action.resource];
     action.points.forEach((p) => {
-        const oldValue = newState.layers[Layer.Resources].getUint8(p.index);
+        const oldValue = resourceLayer.getUint8(p.index);
         const newValue = resourceOperation(oldValue);
-        newState.layers[Layer.Resources].setUint8(p.index, newValue);
+        if (oldValue !== newValue) {
+            isDirty = true;
+            resourceLayer.setUint8(p.index, newValue);
+        }
     });
-    return newState;
+
+    return isDirty ? newState : state;
 };

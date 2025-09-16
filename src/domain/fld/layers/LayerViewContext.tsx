@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useMemo, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { Layer, LayerIndex, LayerIndexes } from "./Layer";
 
 export interface LayerSetting {
@@ -14,6 +14,7 @@ export interface LayerViewContextProps {
     layerSettings: LayerSettings;
     toggleHide: (layer: LayerIndex) => void;
     toggleWireframe: (layer: LayerIndex) => void;
+    setLayerSettings: React.Dispatch<React.SetStateAction<LayerSettings>>;
 }
 
 export const LayerViewContext = createContext<LayerViewContextProps | undefined>(undefined);
@@ -48,10 +49,12 @@ export const LayerViewContextProvider: React.FC<PropsWithChildren> = ({ children
         });
     };
 
-    const contextValue: LayerViewContextProps = useMemo(
-        () => ({ layerSettings, setLayerSettings, toggleHide, toggleWireframe }),
-        [layerSettings],
-    );
+    const contextValue: LayerViewContextProps = {
+        layerSettings,
+        setLayerSettings,
+        toggleHide,
+        toggleWireframe,
+    };
 
     return <LayerViewContext.Provider value={contextValue}>{children}</LayerViewContext.Provider>;
 };

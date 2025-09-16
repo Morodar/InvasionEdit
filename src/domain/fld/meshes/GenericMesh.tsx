@@ -40,11 +40,16 @@ export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Elemen
             const geo = planeGeo.current.attributes.position;
             for (let i = 0; i < layer.byteLength; i++) {
                 const z = i % width;
-                const x = height - 1 - (i - z) / width;
+                const x = (i - z) / width;
                 const value = layer.getUint8(i);
-                geo.setY(i, value / 8);
-                geo.setX(i, x);
-                geo.setZ(i, z);
+
+                // rotate map 45° and stretch using values from decompression algorithm
+                const x2 = x * -1.999;
+                const z2 = x * 1.152 + z * 2.305;
+
+                geo.setY(i, value / 4);
+                geo.setX(i, x2);
+                geo.setZ(i, z2);
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();

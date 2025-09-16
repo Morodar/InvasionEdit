@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCursorCapture } from "../../../common/controls/useCursorCapture";
 import { FldMap } from "../FldFile";
 import { useFldMapContext } from "../FldMapContext";
@@ -35,19 +35,26 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
 
     useCursorCapture(planeMesh);
 
-    const texture = useMemo(() => createHeightTexture(map), [map]);
+    const texture = createHeightTexture(map);
 
     useEffect(() => {
         if (planeGeo.current) {
             const geo = planeGeo.current.attributes.position;
             for (let i = 0; i < landscape.byteLength; i++) {
-                const value = landscape.getUint8(i);
-                const m = mountains1.getUint8(i);
+                const height = landscape.getUint8(i);
+                const extraHeight = mountains1.getUint8(i);
+
+                // position in coordinate system
                 const z = i % width;
-                const x = height - 1 - (i - z) / width;
-                geo.setY(i, (value - m) / 8);
-                geo.setX(i, x);
-                geo.setZ(i, z);
+                const x = (i - z) / width;
+
+                // rotate map 45° and stretch using values from decompression algorithm
+                const x2 = x * -1.999;
+                const z2 = x * 1.152 + z * 2.305;
+
+                geo.setY(i, (height - extraHeight) / 4);
+                geo.setX(i, x2);
+                geo.setZ(i, z2);
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();

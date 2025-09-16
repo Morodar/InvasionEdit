@@ -54,8 +54,13 @@ const Preview = (props: PreviewProps) => {
     useEffect(() => {
         points.forEach((p, i) => {
             const z = p.index % width;
-            const x = height - 1 - Math.floor(p.index / width);
-            temp.position.set(x, p.value / 8, z);
+            const x = Math.floor(p.index / width);
+
+            // rotate map 45° and stretch using values from decompression algorithm
+            const x2 = x * -1.999;
+            const z2 = x * 1.152 + z * 2.305;
+
+            temp.position.set(x2, p.value / 4, z2);
             temp.updateMatrix();
             instancedMeshRef.current.setMatrixAt(i, temp.matrix);
         });

@@ -4,7 +4,7 @@ import { Layer } from "../layers/Layer";
 import { useFldMapContext } from "../FldMapContext";
 import { useLayerViewContext } from "../layers/LayerViewContext";
 import { DoubleSide, Mesh, PlaneGeometry } from "three";
-import { WATER_COLOR } from "../water/WaterLayerUtil";
+import { WATER_COLOR } from "../water/Water";
 
 export const WaterMesh = () => {
     const { fldFile } = useFldMapContext();
@@ -46,12 +46,17 @@ export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element =>
                 const m = mountains1.getUint8(i);
                 const u6 = unknown6.getUint8(i);
                 const hasWater = w === 0;
-                const y = hasWater ? (value - m + u6) / 8 : (value - m - 8) / 8;
+                const y = hasWater ? (value - m + u6) / 4 : (value - m - 4) / 4;
                 const z = i % width;
-                const x = height - 1 - (i - z) / width;
+                const x = (i - z) / width;
+
+                // rotate map 45° and stretch using values from decompression algorithm
+                const x2 = x * -1.999;
+                const z2 = x * 1.152 + z * 2.305;
+
                 positions.setY(i, y);
-                positions.setX(i, x);
-                positions.setZ(i, z);
+                positions.setX(i, x2);
+                positions.setZ(i, z2);
             }
             positions.needsUpdate = true;
             geo.computeVertexNormals();
