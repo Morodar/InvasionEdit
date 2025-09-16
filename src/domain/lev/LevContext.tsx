@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Dispatch, PropsWithChildren, createContext, useContext, useMemo } from "react";
+import { Dispatch, PropsWithChildren, createContext, useContext } from "react";
 import { LevFile } from "./LevFile";
 import { LevAction, useLevReducer } from "./LevReducer";
 
@@ -23,7 +23,7 @@ export const useLevContext = (): LevContextProps => {
 export const LevContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [levFile, dispatch] = useLevReducer();
 
-    const contextValue: LevContextProps = useMemo(() => ({ levFile, dispatch }), [dispatch, levFile]);
+    const contextValue: LevContextProps = { levFile, dispatch };
 
     return <LevContext.Provider value={contextValue}>{children}</LevContext.Provider>;
 };

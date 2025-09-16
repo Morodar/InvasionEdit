@@ -36,7 +36,7 @@ export const FldView = (): React.JSX.Element => {
                     target={[60, 0, 60]}
                     ref={orbitControlsRef}
                     mouseButtons={{ RIGHT: MOUSE.RIGHT }}
-                    minDistance={20}
+                    minDistance={5}
                     maxDistance={120}
                 />
                 <MapViewUtil orbitControlsRef={orbitControlsRef} />

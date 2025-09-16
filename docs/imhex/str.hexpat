@@ -30,8 +30,7 @@ struct StrHeader {
   char16 pcname2[0x20];
   u32 languageCount;//number of "things"? Seems to be used by all standard file types, sound, mld, arm, eff
   u8 empty2[0x4c];
-  char16 path[0x30];//hetra path is longer, empty3 section is likely also path
-  u8 empty3[0xA0];
+  char16 path[0x80];//hetra path is longer, empty3 section is likely also path
 };
 
 

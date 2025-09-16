@@ -57,24 +57,25 @@ export const EntityObject = ({
     x,
     z,
     mapWidth,
-    mapHeight,
     lanscapeMap,
     dispatch,
 }: EntityObjectProps): ReactElement => {
-    const index = Math.floor(mapHeight - x) * mapWidth + Math.floor(z);
+    const indexX = Math.floor(x / -1.999);
+    const indexZ = Math.floor((z - indexX * 1.152) / 2.305);
+    const index = (indexX + 1) * mapWidth + indexZ - mapWidth;
+
     const height = lanscapeMap.getUint8(index);
 
     const color = determinePreviewColor(owner);
-    const position: Vector3 = new Vector3(x, height / 8 + 0.3, z);
+    const position: Vector3 = new Vector3(x, height / 4 + 0.3, z);
 
     const { rotation, setRotation } = usePlaceEntityContext();
 
     useKeyboardHoldDelayAction(() => setRotation((old) => old + 1000), "r", 20, []);
     useKeyboardHoldDelayAction(() => setRotation((old) => old - 1000), "t", 20, []);
 
-    const adjustedX = mapHeight - 1 - x;
-    const zPlacing = Math.floor(adjustedX * -1999);
-    const xPlacing = Math.floor(adjustedX * 1152 + z * 2305);
+    const zPlacing = Math.floor(indexX * -1999);
+    const xPlacing = Math.floor(indexX * 1152 + indexZ * 2305);
     const visualRotation = rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
 
     useLeftClickAction(() =>
@@ -117,7 +118,7 @@ function RenderModel({ position, color, entityType, rotation }: RenderModelProps
     useEffect(() => {
         if (model && modelRef.current) {
             modelRef.current.position.copy(position);
-            modelRef.current.scale.copy({ x: 0.5, y: 0.5, z: 0.5 });
+            modelRef.current.scale.copy({ x: 0.9, y: 0.9, z: 0.9 });
             modelRef.current.rotation.copy(new Euler(0, rotation, 0));
         }
     }, [model, position, rotation]);

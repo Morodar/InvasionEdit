@@ -57,10 +57,14 @@ const Preview = (props: PreviewProps) => {
                 const p = points[i];
                 const height = p.value;
                 const z = p.index % fldFile.width;
-                const x = fldFile.height - 1 - (p.index - z) / fldFile.width;
-                geo.setY(i, height / 8 + 0.26);
-                geo.setX(i, x);
-                geo.setZ(i, z);
+                const x = Math.floor(p.index / fldFile.width);
+
+                // rotate map 45° and stretch using values from decompression algorithm
+                const x2 = x * -1.999;
+                const z2 = x * 1.152 + z * 2.305;
+                geo.setY(i, height / 4 + 0.5);
+                geo.setX(i, x2);
+                geo.setZ(i, z2);
             }
             planeGeo.current.attributes.position.needsUpdate = true;
             planeGeo.current.computeVertexNormals();
@@ -73,9 +77,12 @@ const Preview = (props: PreviewProps) => {
     if (points.length === 1) {
         const point = points[0];
         const z = point.index % fldFile.width;
-        const x = fldFile.height - 1 - Math.floor(point.index / fldFile.width);
+        const x = Math.floor(point.index / fldFile.width);
+        // rotate map 45° and stretch using values from decompression algorithm
+        const x2 = x * -1.999;
+        const z2 = x * 1.152 + z * 2.305;
         return (
-            <mesh castShadow={true} receiveShadow={true} position={[x, point.value / 8, z]}>
+            <mesh castShadow={true} receiveShadow={true} position={[x2, point.value / 4 + 0.5, z2]}>
                 <sphereGeometry args={[0.25, 8, 8]} />
                 <meshStandardMaterial
                     color="#ffffff"

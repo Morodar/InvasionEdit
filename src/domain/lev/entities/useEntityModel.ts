@@ -1,5 +1,4 @@
 import { useLoader } from "@react-three/fiber";
-import { useMemo } from "react";
 import { Group, Object3DEventMap } from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { GLTFLoader, FBXLoader, GLTF } from "three/examples/jsm/Addons.js";
@@ -9,16 +8,14 @@ type LoaderResult = Group<Object3DEventMap> | GLTF;
 
 export function useEntityModel(type: number) {
     const modelUrl = entityTypeTo3dModel(type);
-    const loader = useMemo(() => getLoader(modelUrl), [modelUrl]);
+    const loader = getLoader(modelUrl);
     const model: LoaderResult = useLoader(loader, modelUrl);
-    const clone = useMemo(() => {
-        if (isGltf(model)) {
-            return model.scene.clone();
-        } else {
-            return model.clone();
-        }
-    }, [model]);
-    return clone;
+
+    if (isGltf(model)) {
+        return model.scene.clone();
+    } else {
+        return model.clone();
+    }
 }
 
 function isGltf(result: LoaderResult): result is GLTF {
