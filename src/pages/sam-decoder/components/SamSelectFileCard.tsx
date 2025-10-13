@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { SelectFileButton } from "../../../common/input/SelectFileButton";
 import { Card, CardContent, Stack } from "@mui/material";
 
@@ -7,15 +8,16 @@ interface AboutCardProps {
 }
 
 export const AboutCard = (props: AboutCardProps) => {
+    const { t } = useTranslation();
     const { onFileChanged, disableSelection } = props;
     return (
         <Card>
             <CardContent>
-                <p>{"Sam decoder description"}</p>
+                <p>{t("sam-decoder.short-description")}</p>
 
                 <Stack direction="row" justifyContent="end">
                     <SelectFileButton onFileChanged={onFileChanged} accept=".sam" disabled={disableSelection}>
-                        {"SAM decoder button text"}
+                        {t("sam-decoder.select-file")}
                     </SelectFileButton>
                 </Stack>
             </CardContent>

@@ -6,11 +6,11 @@ export const SamDecoderCard = () => {
     const { t } = useTranslation();
     return (
         <HomeCard
-            description={"Sam decoder desctiption"}
+            description={t("sam-decoder.short-description")}
             imgUrl="img/extract-pck.png"
             linkDest={SAM_DECODER}
-            linkText={t("exe-patcher.start-extractor")}
-            title={"SAM_DECODER title"}
+            linkText={t("sam-decoder.start")}
+            title={t("sam-decoder.title")}
         />
     );
 };
