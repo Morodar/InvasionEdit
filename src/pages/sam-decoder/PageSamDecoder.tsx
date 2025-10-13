@@ -5,8 +5,8 @@ import { AboutCard } from "./components/AboutCard";
 import { delay } from "../../common/utils/delay";
 import { ParseFailedError } from "./components/ParseFailedError";
 import { usePageTitle } from "../../common/utils/usePageTitle";
-import { decodeFileAllBlocks } from "../../domain/SamUtils";
-import { coeffs } from "./AudioCoeffs";
+import { decodeFileAllBlocks } from "../../domain/sam/SamUtils";
+import { coeffs } from "../../domain/sam/AudioCoeffs";
 
 import saveAs from "file-saver";
 
