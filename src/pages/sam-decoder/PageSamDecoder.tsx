@@ -10,27 +10,6 @@ import { coeffs } from "./AudioCoeffs";
 
 import saveAs from "file-saver";
 
-import { Card, CardContent } from "@mui/material";
-import { H3 } from "../../common/header/Headers";
-
-interface SetSamData {
-    data: string;
-}
-export const SamData = (props: SetSamData) => {
-    const { data } = props;
-
-    return (
-        <Card>
-            <CardContent>
-                <H3 variant="h5">{"test"}</H3>
-                <div>{data}</div>
-            </CardContent>
-        </Card>
-    );
-};
-
-let samData = "";
-
 const PageSamDecoder = () => {
     const samDecoder = "SAM Decoder Title";
     usePageTitle(samDecoder);
@@ -45,13 +24,13 @@ const PageSamDecoder = () => {
             setIsParsing(true);
             try {
                 await delay(250); // wait for ui to update because parsing is resource intensive
-                // const pckTask = parsePckFile(file);
                 const content: ArrayBuffer = await file.arrayBuffer();
-                const dataArray = new Uint8Array(content, 0x200, content.byteLength - 0x200);
-                const output = decodeFileAllBlocks(dataArray, coeffs);
-                const blob = new Blob([output], { type: "text/plain" });
+                const view: DataView = new DataView(content, 0x200, content.byteLength - 0x200);
+                const output: Uint8Array<ArrayBuffer> = decodeFileAllBlocks(view, coeffs);
+                const blob = new Blob([output.buffer], { type: "text/plain" });
                 saveAs(blob, file.name + ".pcm");
             } catch (Error) {
+                console.error(Error);
                 setParseFailed(true);
             } finally {
                 setIsParsing(false);
@@ -68,7 +47,6 @@ const PageSamDecoder = () => {
             <Stack gap="16px">
                 <ParseFailedError failed={parseFailed} />
                 <AboutCard onFileChanged={handleFileChanged} disableSelection={isParsing} />
-                <SamData data={samData} />
             </Stack>
         </MainLayout>
     );

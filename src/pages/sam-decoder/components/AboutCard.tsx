@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { SelectFileButton } from "../../../common/input/SelectFileButton";
 import { Card, CardContent, Stack } from "@mui/material";
 
@@ -9,7 +8,6 @@ interface AboutCardProps {
 
 export const AboutCard = (props: AboutCardProps) => {
     const { onFileChanged, disableSelection } = props;
-    const { t } = useTranslation();
     return (
         <Card>
             <CardContent>
