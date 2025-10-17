@@ -7,6 +7,7 @@ import { FldEditorCard } from "./components/FldEditorCard";
 import { usePageTitle } from "../../common/utils/usePageTitle";
 import { LevelEditorCard } from "./components/LevelEditorCard";
 import { SamDecoderCard } from "./components/SamDecoderCard";
+import { FlmDecoderCard } from "./components/FlmDecoderCard";
 
 const PageHome = () => {
     const { t } = useTranslation();
@@ -20,6 +21,7 @@ const PageHome = () => {
             <Stack gap="32px" direction="row" flexWrap="wrap">
                 <PckExtractorCard />
                 <SamDecoderCard />
+                <FlmDecoderCard />
                 <FldEditorCard />
                 <LevelEditorCard />
             </Stack>
