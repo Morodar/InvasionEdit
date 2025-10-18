@@ -1,16 +1,16 @@
 import { useTranslation } from "react-i18next";
-import { SAM_DECODER } from "../../../conf/AppRoutes";
+import { FLM_DECODER } from "../../../conf/AppRoutes";
 import { HomeCard } from "./HomeCard";
 
-export const SamDecoderCard = () => {
+export const FlmDecoderCard = () => {
     const { t } = useTranslation();
     return (
         <HomeCard
-            description={"Sam decoder desctiption"}
+            description={"Flm decoder desctiption"}
             imgUrl="img/extract-pck.png"
-            linkDest={SAM_DECODER}
+            linkDest={FLM_DECODER}
             linkText={t("exe-patcher.start-extractor")}
-            title={"SAM_DECODER title"}
+            title={"FLM_DECODER title"}
         />
     );
 };
