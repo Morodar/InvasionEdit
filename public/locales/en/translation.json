@@ -34,6 +34,16 @@
         "pck-header": "PCK Header",
         "save-zip": "Save ZIP"
     },
+    "sam-decoder": {
+        "download-wav": "Download WAV",
+        "error": {
+            "parse-failed": "Failed to parse the .sam file."
+        },
+        "select-file": "Select .sam file",
+        "short-description": "Decodes \"SAM\" audio files to PCM and converts them into WAV. Files can be played within the browser.",
+        "start": " Start Decoder",
+        "title": "SAM Decoder"
+    },
     "common": {
         "cancel": "Cancel",
         "app_name": "Invasion Edit",
