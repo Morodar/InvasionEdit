@@ -1,18 +1,11 @@
 #include <std/mem.pat>
 import std.io;
 import std.core;
+import "{path}\\sam";
+import "{path}\\dates";
 
 #pragma pattern_limit 2000000
 
-struct Date1 {
-  u8 ss;
-  u8 mm;
-  u8 hh;
-  u8 none;
-  u8 dd;
-  u8 MM;
-  u16 yyyy;
-};
 
 
 struct FlmHeader {
@@ -44,8 +37,8 @@ struct FlmHeader {
 struct FlmFile {
     FlmHeader flmHeader;
     u8 videoData[flmHeader.DataSize];
-//    if(flmHeader.SamDataLength != 0)
-//        sam audioFile;
+    if(flmHeader.SamDataLength != 0)
+        sam audioFile;
 };
 
 

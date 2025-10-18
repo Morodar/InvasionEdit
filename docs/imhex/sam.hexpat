@@ -1,12 +1,5 @@
-struct Date1 {
-  u8 ss;
-  u8 mm;
-  u8 hh;
-  u8 none;
-  u8 dd;
-  u8 MM;
-  u16 yyyy;
-};
+
+import "{path}\\dates";
 
 struct Header {
   char fileExtension[0x04];
@@ -43,4 +36,4 @@ struct sam{
     samData data;
 };
 
-sam File@0x0;
+//sam File@0x0;
