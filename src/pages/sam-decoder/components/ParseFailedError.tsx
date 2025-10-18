@@ -5,13 +5,12 @@ interface ParseFailedErrorProps {
     failed: boolean;
 }
 
-export const ParseFailedError = (props: ParseFailedErrorProps) => {
-    const { failed } = props;
+export const ParseFailedError = ({ failed }: ParseFailedErrorProps) => {
     const { t } = useTranslation();
 
     if (!failed) {
         return <></>;
     }
 
-    return <Alert severity="warning">{t("exe-patcher.unknown-error")}</Alert>;
+    return <Alert severity="warning">{t("sam-decoder.error.parse-failed")}</Alert>;
 };
