@@ -30,19 +30,22 @@ struct FlmHeader {
   char16 pcname2[0x20];
   u32 VideoWidth;//width in pixels
   u32 VideoHeight;//height in pixels
-  u32 unknown0xb8;
-  u32 empty0xbc;
+  u32 FrameCount;
+  u32 unknown0xbc;//unknown, is checked in 0x004a870d possibly for audio content?
   u32 DataSize;//max size is 0x3c0000-0x200 as checked in 0x4A868A or maybe max is 0x3a2000, checked in 0x4A86C7
-  u8 empty2[0xfc-addressof(DataSize)-sizeof(DataSize)];
-  u32 unknown0xfc;
-  u8 empty3[0x200-addressof(unknown0xfc)-sizeof(unknown0xfc)];
+  u32 SamDataLength;
+  u8 empty2[0xfc-addressof(SamDataLength)-sizeof(SamDataLength)];
+  u32 framerate;
+  u8 empty3[0x200-addressof(framerate)-sizeof(framerate)];
 
 };
 
 
-
 struct FlmFile {
     FlmHeader flmHeader;
+    u8 videoData[flmHeader.DataSize];
+//    if(flmHeader.SamDataLength != 0)
+//        sam audioFile;
 };
 
 

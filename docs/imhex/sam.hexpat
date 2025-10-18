@@ -31,16 +31,16 @@ struct Header {
   
   u8 unknown1[0x4c];
   char16 filename[];//unknown length
-  u8 unknown2[0x200-addressof(filename)-sizeof(filename)];
+  u8 unknown2[0x200 -(addressof(filename) - addressof(fileExtension)) - sizeof(filename)];
   
 }; 
 
 struct samData{
-//
+ u8 samData[parent.header.fileSize - sizeof(parent)]; //continues until EOF
 };
 struct sam{
-Header header;
-samData data;
+    Header header;
+    samData data;
 };
 
 sam File@0x0;
