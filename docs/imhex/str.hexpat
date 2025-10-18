@@ -28,16 +28,16 @@ struct StrHeader {
 
   char16 pcname1[0x20];
   char16 pcname2[0x20];
-  u32 languageCount;
+  u32 languageCount;//number of "things"? Seems to be used by all standard file types, sound, mld, arm, eff
   u8 empty2[0x4c];
-  char16 path[0x80];
+  char16 path[0x80];//hetra path is longer, empty3 section is likely also path
 };
 
 
 struct IndexInfo {
    u32 totalSizeOfLanguage;
    u32 indexCount;
-   u32 c;
+   u32 c;//language? unique for each language and would still fit with winstr (different order since english is first and only)and hetra 
    u32 d;
 };
 
@@ -54,7 +54,10 @@ struct StrText {
     u32 end = parent.offsets[index].endOffset;
     u32 length = parent.offsets[index].length;
     std::print("index: {}; start: {}; end: {}; length: {}",index, start,end,length);
-    char16 text[length];
+    char16 text[length];//New lines are encoded as a single 0x8012 char. 
+    //Other special encodings are for text fomatting I believe, things like adding in variables and such.
+    //example canbe found @0x34f6 of menue.str
+    //that has 18 80 F0 7F F0 7F F0 7F F0 7F but a lot of the stings in that file have it.
 };
 
 struct Texts{

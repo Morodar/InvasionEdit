@@ -55,12 +55,18 @@ struct RGBA {
   u8 alpha;
 };
 
+struct fileArrayOffset{
+  u32 count;
+  u32 startOffset;
+};
+
 struct LevHeader {
   char fileExtension[0x04];
   u32 fileSize;
   
   // always 1,0,0,0,1,0,7,0?
-  u8 unknown0x008[0x08];
+  u8 unknown0x008[0x04]; //possibly version code? Always 1 it seems.
+  u8 FileIdentifier[0x04];//Always 700001 for .lev, code checks this too (seems like an alias for file type, tec has 20000)
   
   Date1 date1;
   Date1 date2;
@@ -73,30 +79,26 @@ struct LevHeader {
   char16 pcname2[0x20];
   
   // 0x0B0
-  u32 u0x0B0;
-  u32 u0x0B4;
-  u32 u0x0B8;
-  u32 u0x0BC;
+  u32 fldLinkOffset;
+  u32 gfxSoilOffset;
+  u32 gfxWaterOffset;
+  u32 gfxSkyOffset;
   
-  u32 u0x0C0;
-  u32 u0x0C4;
-  u32 u0x0C8;
-  u32 u0x0CC;
+  u32 mdlArmyOffset;
+  u32 gfxShotOffset;
+  u32 gfxEffectenOffset;
+  u32 flmOffset;
   
-  u32 u0x0D0;
-  u32 u0x0D4;
+  u32 soundOffset;
+  u32 techOffset;
   u32 entityCount;
-  u32 u0x0DC;
+  u32 entityArrayOffset;
   
-  u32 u0x0E0;
-  u32 u0x0E4;
-  u32 u0x0E8;
-  u32 u0x0EC;
-  
-  u32 u0x0F0;
-  u32 u0x0F4;
-  u32 u0x0F8;
-  u32 u0x0FC;
+  fileArrayOffset armFiles;
+  fileArrayOffset mldFiles;
+  fileArrayOffset effFiles;
+  fileArrayOffset shtFiles;
+  //0xe0,e8,f0,f8 are summed in 531562: Total number of files 
 
   char16 levelName[0x20];
 
@@ -208,7 +210,12 @@ struct Lev {
   Config3 config3;
   Config4 config4;
   Config5 config5;
-  MdlEntry entries[53];
+  MdlEntry entries[10 + //10 is sum of ones that aren't accessed through array
+  header.armFiles.count+
+  header.mldFiles.count+
+  header.effFiles.count+
+  header.shtFiles.count];
+  
   Entity entities[header.entityCount];
 };
 
