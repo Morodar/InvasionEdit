@@ -9,8 +9,8 @@ import { ParseFailedError } from "./components/ParseFailedError";
 import { usePageTitle } from "../../common/utils/usePageTitle";
 import { decodeFLMvideo } from "../../domain/FlmUtils";
 import { LUT } from "./LUT";
-import { decodeFileAllBlocks } from "../../domain/SamUtils";
-import { coeffs } from "../sam-decoder/AudioCoeffs";
+import { decodeFileAllBlocks } from "../../domain/sam/SamUtils";
+import { coeffs } from "../../domain/sam/AudioCoeffs";
 import saveAs from "file-saver";
 
 
