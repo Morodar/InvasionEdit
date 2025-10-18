@@ -9,8 +9,8 @@ import { ParseFailedError } from "./components/ParseFailedError";
 import { usePageTitle } from "../../common/utils/usePageTitle";
 import { decodeFLMvideo } from "../../domain/FlmUtils";
 import { LUT } from "./LUT";
-import { createVideoFromFrames } from "../../domain/VideoUtil";
-
+import { decodeFileAllBlocks } from "../../domain/SamUtils";
+import { coeffs } from "../sam-decoder/AudioCoeffs";
 import saveAs from "file-saver";
 
 
@@ -64,78 +64,41 @@ const PageFlmDecoder = () => {
             setSelectedFile(file);
             try {
                 await delay(250); // wait for ui to update because parsing is resource intensive
-                // const pckTask = parsePckFile(file);
                 const content: ArrayBuffer = await file.arrayBuffer();
                 const fileArray =new Uint32Array(content);
-                // const LUT =new Uint8Array(content);
-                // const offset = 0x200;
-                const dataArray =new Uint8Array(content, 0x200, content.byteLength - 0x200);
+
                 const width = fileArray[0xb0/4];
                 const height = fileArray[0xb4/4];
-                const outBuffer = new Uint32Array(height * width);
-                const lookupTable = LUT
-                let offset = 0;
                 const frames = fileArray[0xb8/4];
-                const outFile = new Uint32Array(outBuffer.byteLength/4 * frames);
+                const flmDataLength = fileArray[0xc0/4];
+                const samFileLength = fileArray[0xc4/4];
+                const fps = fileArray[0xfc/4];
 
-                const frames32: Uint32Array[] = [];
+                const outBuffer = new Uint32Array(height * width);
+                const dataArray =new Uint8Array(content, 0x200, flmDataLength);
+                const lookupTable = LUT;
+                let offset = 0;
+                const outFile = new Uint32Array(outBuffer.byteLength/4 * frames);
 
                 for(let i=0; i < frames; i++){
                     offset += decodeFLMvideo(height, width, outBuffer, dataArray, lookupTable, offset);
-                    //)
                     outFile.set(outBuffer, i * outBuffer.length);
-                    
-                    frames32.push(outBuffer.slice());
-
                 }
                 const blob = new Blob([outFile], { type: "text/plain" });
                 saveAs(blob, file.name + ".raw");
+
+
+                //Does file have audio? Parse it too
+                if(samFileLength > 0){
+                    const audioDataOffset = 0x200 + flmDataLength + 0x200;//0x200 from flm header + flm data + 0x200 from audio header
+                    const audioDataLength = samFileLength - 0x200;
+                    const audioDataArray = new Uint8Array(content, audioDataOffset, audioDataLength);
+
+                    const output = decodeFileAllBlocks(audioDataArray, coeffs);
+                    const blob = new Blob([output], { type: "text/plain" });
+                    saveAs(blob, file.name + ".pcm");
+                }
                 
-                // function convertFrame(frame32: Uint32Array): Uint8Array {
-                // return new Uint8Array(frame32.buffer);
-                // }
-                // const rgba8Frames = frames32.map(convertFrame);
-                // const frames8: Uint8Array[] = frames32.map(f32 => new Uint8Array(f32.buffer));
-                function convertFrameRGBA(frame32: Uint32Array): Uint8Array {
-                const out = new Uint8Array(frame32.length * 4);
-                for (let i = 0; i < frame32.length; i++) {
-                    const pixel = frame32[i];
-                    // adjust based on your packing:
-                    // this assumes pixel = 0xAARRGGBB (common format)
-                    const a = (pixel >>> 24) & 0xFF;
-                    const r = (pixel >>> 16) & 0xFF;
-                    const g = (pixel >>> 8) & 0xFF;
-                    const b = pixel & 0xFF;
-
-                    const j = i * 4;
-                    out[j + 0] = r;
-                    out[j + 1] = g;
-                    out[j + 2] = b;
-                    out[j + 3] = a;
-                }
-                return out;
-                }
-
-                // Convert all frames safely:
-                const frames8 = frames32.map(convertFrameRGBA);
-
-                // const outFileRGBA = new Uint8Array(outFile.buffer);
-                const blobVideo = await createVideoFromFrames(frames8, width, height, 30);
-                const url = URL.createObjectURL(blobVideo);
-                const video = document.createElement("video");
-                video.src = url;
-                video.controls = true;
-                document.body.appendChild(video);
-
-                // const output = decodeFileAllBlocks(dataArray, LUT);
-                // console.log("output: \n", outBuffer.toHex())
-                // FlmData = output.toHex();
-
-                // let newFile = new Blob([result['list'].join('\n')], {type: "text/plain", endings: 'native'});
-
-                // await delay(250); // reduces Layout shifting in short time
-                // const pck = await pckTask;
-                // setPckFile(pck);
             } catch (Error) {
                 setParseFailed(true);
             } finally {

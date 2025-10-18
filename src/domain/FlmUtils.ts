@@ -87,55 +87,18 @@ export function decodeFLMvideo(
           }
 
           // Take the Lookup for every 3 bits in uVar1 (eax in assembly)
-
-          // Top row (OutBuffer[0..3])
-          uVar1 = uVar1 >>> 5;
-          outBuffer[outIndex + 0] = tblLookup((uVar1) & 7);   // (uVar1 >>5 &7)
-          uVar1 = uVar1 >>> 3;
-          outBuffer[outIndex + 1] = tblLookup((uVar1) & 7);   // (uVar1 >>8 &7)
-          uVar1 = uVar1 >>> 3;
-          outBuffer[outIndex + 2] = tblLookup((uVar1) & 7);  // (uVar1 >>11 &7)
-          uVar1 = uVar1 >>> 3;
-          outBuffer[outIndex + 3] = tblLookup((uVar1) & 7);  // (uVar1 >>14 &7)
-
-          // next row (OutBuffer + width)
-          const row1Base = outIndex + width;
-          uVar1 = uVar1 >>> 3;
-          outBuffer[row1Base + 0] = tblLookup((uVar1) & 7);  // (uVar1 >>17 &7)
-          uVar1 = uVar1 >>> 3;
-          outBuffer[row1Base + 1] = tblLookup((uVar1) & 7);  // (uVar1 >>20 &7)
-          uVar1 = uVar1 >>> 3;
-          outBuffer[row1Base + 2] = tblLookup((uVar1) & 7);  // (uVar1 >>23 &7)
-          uVar1 = uVar1 >>> 3;
-          outBuffer[row1Base + 3] = tblLookup((uVar1) & 7);  // (uVar1 >>26 &7)
-
-          // Now use puVar8[1] (uVar2) to fill rows 2 and 3
-          const row2Base = outIndex + width * 2;
-          const row3Base = outIndex + width * 3;
-          //first val in row2 already seems incrorrect, I think it's uvar1 >>29 right?
-          // row2: four values
-          uVar1 = uVar1 >>> 3;
-          outBuffer[row2Base + 0] = tblLookup((uVar1) & 7);   // (uVar2 &7)
+          // Combine uVar1 and uVar2 into a single BigInt for easier shifting
+          let bigUvar1 = BigInt(uVar1);
+          const test = (BigInt(uVar2) << 32n);
+          bigUvar1 = (test + bigUvar1) >> 5n;// shift down to skip low 5 bits already used
           
-          uVar2 = uVar2 >>> 0;
-          outBuffer[row2Base + 1] = tblLookup((uVar2) & 7);   // (uVar2 >>3 &7)
-          uVar2 = uVar2 >>> 3;
-          outBuffer[row2Base + 2] = tblLookup((uVar2) & 7);   // (uVar2 >>6 &7)
-          uVar2 = uVar2 >>> 3;
-          outBuffer[row2Base + 3] = tblLookup((uVar2) & 7);   // (uVar2 >>9 &7)
-          
-          // row3: four values (uVar2 >>12, >>15, >>18, >>21)
-          uVar2 = uVar2 >>> 3;
-          outBuffer[row3Base + 0] = tblLookup((uVar2) & 7);
-          uVar2 = uVar2 >>> 3;
-          outBuffer[row3Base + 1] = tblLookup((uVar2) & 7);
-          
-          //asm does something different here???
-          uVar2 = uVar2 >>> 3;
-          outBuffer[row3Base + 2] = tblLookup((uVar2) & 7);
-          uVar2 = uVar2 >>> 3;
-          outBuffer[row3Base + 3] = tblLookup((uVar2) & 7);//5 bits are not used?
-
+          for (let i = 0; i < 4; i++) {//set each of the 4 rows of the 4x4 block
+            const rowBase = outIndex + width * i;
+            for (let i = 0; i < 4; i++) {// set each pixel in the row
+              outBuffer[rowBase + i] = tblLookup(Number((bigUvar1) & 7n));//do a lookup per 3 bits
+              bigUvar1 = bigUvar1 >> 3n;
+            }
+          }
           // advance puVar8 by 8 bytes (puVar8 = puVar8 + 2 in terms of uint*)
           puVar8_byte += 8;
         }

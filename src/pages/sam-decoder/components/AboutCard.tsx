@@ -16,7 +16,7 @@ export const AboutCard = (props: AboutCardProps) => {
                 <p>{"Sam decoder description"}</p>
 
                 <Stack direction="row" justifyContent="end">
-                    <SelectFileButton onFileChanged={onFileChanged} accept=".sam" disabled={disableSelection}>
+                    <SelectFileButton onFileChanged={onFileChanged} accept=".*" disabled={disableSelection}>
                         {"SAM decoder button text"}
                     </SelectFileButton>
                 </Stack>
