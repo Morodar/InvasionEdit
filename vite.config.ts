@@ -4,6 +4,9 @@ const BASE_DIR = "/InvasionEdit/";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    server: {
+        port: 5000,
+    },
     base: BASE_DIR,
     build: {
         chunkSizeWarningLimit: 1000,
