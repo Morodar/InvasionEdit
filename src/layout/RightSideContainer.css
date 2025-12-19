@@ -1,15 +1,20 @@
 .right-side-container {
     width: auto;
     max-height: calc(100vh - 64px);
-    height: calc(100vh - 64px);
     position: fixed;
     left: auto;
     right: 0;
     top: 0%;
 
     display: flex;
+    align-items: flex-start;
     margin-top: 64px;
     z-index: 200;
+    pointer-events: none;
+}
+
+.right-side-container * {
+    pointer-events: auto;
 }
 
 .right-side-container.vertical-center {
