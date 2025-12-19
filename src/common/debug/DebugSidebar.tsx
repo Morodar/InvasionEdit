@@ -51,9 +51,8 @@ const Sidebar = (props: SidebarProps) => {
     const x2 = newX * -1999;
     const z2 = newX * 1152 + z * 2305;
 
-    const newX3 = height - 1 - rawPoint.x;
-    const x3 = Math.floor(newX3 * -1999);
-    const z3 = Math.floor(newX3 * 1152 + rawPoint.z * 2305);
+    const x3 = Math.floor(rawPoint.x * 1000);
+    const z3 = Math.floor(rawPoint.z * 1000);
 
     return (
         <Card className="debug-sidebar">

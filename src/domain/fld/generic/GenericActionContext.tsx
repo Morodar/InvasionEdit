@@ -33,7 +33,7 @@ export const GenericActionContextProvider: React.FC<PropsWithChildren> = ({ chil
     const [activeAction, setActiveAction] = useState<GenericAction>("SMOOTH");
     const [size, setSize] = useState<number>(3);
     const [height, setHeight] = useState<number>(16);
-    const [speed, setSpeed] = useState<number>(8);
+    const [speed, setSpeed] = useState<number>(32);
     const [layer, setLayer] = useState<LayerIndex>(0);
 
     const contextValue = {

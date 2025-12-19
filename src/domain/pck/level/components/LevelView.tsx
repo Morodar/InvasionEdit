@@ -22,6 +22,7 @@ import "./LevelView.css";
 import { LevelRail } from "../../../../pages/edit/level/rail/LevelRail";
 import { EntityRender } from "../../../lev/entities/EntityRender";
 import { PreviewEntityRender } from "../../../lev/entities/PreviewEntityRender";
+import { ControlHints } from "../../../../common/controls/ControlHints";
 
 export const LevelView = (): ReactElement => {
     const orbitControlsRef = useRef<OrbitControls>(null);
@@ -58,6 +59,7 @@ export const LevelView = (): ReactElement => {
                 <PreviewEntityRender />
             </Canvas>
             <DebugSidebar />
+            <ControlHints />
             <PirmaryActionBar />
             <SecondaryActionBar />
             <LevelRail />

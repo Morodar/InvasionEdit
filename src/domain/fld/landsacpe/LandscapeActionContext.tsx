@@ -30,7 +30,7 @@ export const LandscapeActionContextProvider: React.FC<PropsWithChildren> = ({ ch
     const [activeAction, setActiveAction] = useState<LandscapeAction>("SMOOTH");
     const [size, setSize] = useState<number>(3);
     const [height, setHeight] = useState<number>(16);
-    const [speed, setSpeed] = useState<number>(8);
+    const [speed, setSpeed] = useState<number>(32);
 
     const contextValue = {
         activeAction,

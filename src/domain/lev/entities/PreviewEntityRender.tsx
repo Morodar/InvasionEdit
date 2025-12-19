@@ -60,8 +60,10 @@ export const EntityObject = ({
     lanscapeMap,
     dispatch,
 }: EntityObjectProps): ReactElement => {
-    const indexX = Math.floor(x / -1.999);
-    const indexZ = Math.floor((z - indexX * 1.152) / 2.305);
+    const rawIndexX = x / -1.999;
+    const indexX = Math.floor(rawIndexX);
+    const rawIndexZ = (z - rawIndexX * 1.152) / 2.305;
+    const indexZ = Math.floor(rawIndexZ);
     const index = (indexX + 1) * mapWidth + indexZ - mapWidth;
 
     const height = lanscapeMap.getUint8(index);
@@ -74,8 +76,8 @@ export const EntityObject = ({
     useKeyboardHoldDelayAction(() => setRotation((old) => old + 1000), "r", 20, []);
     useKeyboardHoldDelayAction(() => setRotation((old) => old - 1000), "t", 20, []);
 
-    const zPlacing = Math.floor(indexX * -1999);
-    const xPlacing = Math.floor(indexX * 1152 + indexZ * 2305);
+    const zPlacing = Math.floor(rawIndexX * -1999);
+    const xPlacing = Math.floor(rawIndexX * 1152 + rawIndexZ * 2305);
     const visualRotation = rotation * ((Math.PI * 2) / 65535) + Math.PI / 2;
 
     useLeftClickAction(() =>

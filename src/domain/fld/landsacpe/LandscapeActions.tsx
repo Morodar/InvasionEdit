@@ -72,7 +72,7 @@ export const LandscapeActions = () => {
                     <MinMaxNumberInput
                         label={t("landscape.speed")}
                         min={1}
-                        max={32}
+                        max={64}
                         onValueChanged={setSpeed}
                         value={speed}
                         maxWidth={80}
