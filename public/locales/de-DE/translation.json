@@ -1,65 +1,87 @@
 {
+  "fld-editor": {
+    "title": "FLD-Editor",
+    "short-description": "3D-Editor für FLD-Level-Dateien. Wähle vorhandene Level aus, um sie anzuzeigen und zu bearbeiten! (Editor ist WIP und Funktionen sind stark begrenzt)",
+    "start-editor": "Editor starten",
+    "debug": {
+      "mesh-point": "Mesh-Punkt",
+      "hovered-point": "Verweilter Punkt",
+      "selected-point": "Ausgewählter Punkt",
+      "cube": "Debug-Würfel",
+      "cursor-position": "Cursor-Position debuggen",
+      "settings": "Debug-Einstellungen",
+      "show-all-layers": "Alle Layer anzeigen",
+      "show-entities-list": "Entities-Liste anzeigen"
+    },
+    "select-fld-file": "Bitte wähle eine FLD-Datei aus.",
+    "choose-fld-file": "FLD-Datei wählen",
+    "load-fld": "FLD laden",
+    "save-fld": "FLD speichern"
+  },
+  "lvl-editor": {
+    "title": "Level-Editor",
+    "select-file": "Level-Datei",
+    "short-description": "3D-Editor für Level-Dateien. Wähle vorhandene Level aus, um sie anzuzeigen und zu bearbeiten! (Editor ist WIP und Funktionen sind stark begrenzt)",
+    "save-levels": "Level speichern"
+  },
   "pck-extractor": {
-    "short-description": "Thandors Spielressourcen, einschließlich Levels, befinden sich in sogenannten „PCK-Dateien“. \nPCK Extractor kann alle Spielressourcen dekomprimieren und extrahieren.",
-    "extract-pck-file": "PCK-Datei extrahieren",
-    "start-extractor": "PCK Extraktor starten",
+    "short-description": "Thandors Spielressourcen, einschließlich Level, befinden sich in sogenannten \"PCK-Dateien\". PCK Extractor kann alle Spielressourcen dekomprimieren und extrahieren.",
     "title": "PCK-Extraktor",
     "unknown-error": "Beim Lesen der PCK-Datei ist ein unbekannter Fehler aufgetreten.",
-    "pck-files": "PCK Dateien",
-    "pck-header": "PCK Header",
+    "extract-pck-file": "PCK-Datei extrahieren",
+    "start-extractor": "Extraktor starten",
+    "pck-files": "PCK-Dateien",
+    "pck-header": "PCK-Header",
     "save-zip": "ZIP speichern"
+  },
+  "sam-decoder": {
+    "download-wav": "WAV herunterladen",
+    "error": {
+      "parse-failed": "Fehler beim Analysieren der .sam-Datei."
+    },
+    "select-file": ".sam-Datei wählen",
+    "short-description": "Dekodiert \"SAM\" Audiodateien zu PCM und konvertiert sie in WAV. Dateien können im Browser abgespielt werden.",
+    "start": "Dekoder starten",
+    "title": "SAM-Dekoder"
   },
   "common": {
     "cancel": "Abbrechen",
     "app_name": "Invasion Edit",
-    "select-file": "Datei auswählen",
-    "confirm": "Bestätigen",
+    "home": "Startseite",
     "close": "Schließen",
-    "home": "Start",
+    "select-file": "Datei wählen",
+    "confirm": "Bestätigen",
     "date": "Datum",
-    "file-count": "Dateienanzahl",
-    "file-size": "Dateigröße",
-    "pc-name": "PC Name"
+    "pc-name": "PC-Name",
+    "file-count": "Dateianzahl",
+    "file-size": "Dateigröße"
   },
-  "fld-editor": {
-    "select-fld-file": "Bitte wähle eine FLD-Datei aus.",
-    "choose-fld-file": "FLD Dateiauswahl",
-    "load-fld": "FLD laden",
-    "debug": {
-      "cube": "Debug-Würfel",
-      "cursor-position": "Mausposition debuggen",
-      "hovered-point": "Maus Schwebepunkt",
-      "mesh-point": "Mesh-Punkt",
-      "selected-point": "Ausgewählter Punkt",
-      "settings": "Debug-Einstellungen"
-    },
-    "short-description": "3D-Editor für FLD-Level-Dateien. \nWähle vorhandene Karten aus, um sie anzuzeigen und zu bearbeiten! \n(Der Editor befindet sich in der Entwicklung. Daher sind die Funktionen im Umfang begrenzt.)",
-    "start-editor": "Editor starten",
-    "title": "FLD-Editor",
-    "save-fld": "FLD speichern"
+  "landscape": {
+    "fix": "Fixieren",
+    "smooth": "Glätten",
+    "up": "Hoch",
+    "down": "Runter",
+    "radius": "Radius",
+    "speed": "Geschwindigkeit",
+    "height": "Höhe",
+    "size": "Größe",
+    "layer": "Layer"
   },
   "action": {
     "primary": {
-      "clear-selection": "Auswahl zurücksetzen",
+      "clear-selection": "Auswahl löschen",
       "landscape": "Landschaft",
-      "xenit-and-tritium": "Xenit & Tritium"
+      "xenit-and-tritium": "Xenit & Tritium",
+      "generic": "Allgemein",
+      "water": "Wasser",
+      "buildings": "Gebäude"
     }
   },
   "actions": {
     "resource": {
-      "radius": "Radius",
-      "tritium": "Tritium",
+      "remove": "Entfernen",
       "xenit": "Xenit",
-      "remove": "Entfernen"
+      "tritium": "Tritium"
     }
-  },
-  "landscape": {
-    "down": "Runterziehen",
-    "height": "Höhe",
-    "smooth": "Glätten",
-    "up": "Hochziehen",
-    "speed": "Geschwindigkeit",
-    "radius": "Radius",
-    "fix": "Fixe Höhe"
   }
 }
