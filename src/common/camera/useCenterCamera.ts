@@ -1,6 +1,6 @@
 import { useThree } from "@react-three/fiber";
 import { useFldMapContext } from "../../domain/fld/FldMapContext";
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { Vector3 } from "three";
 import { OrbitControls } from "./OrbitControls";
 
@@ -9,21 +9,21 @@ export const useCenterCamera = (orbitControlsRef: RefObject<OrbitControls | null
     const { fldFile } = useFldMapContext();
     const { camera } = useThree();
 
-    const [prevName, setPrevName] = useState("");
+    const prevName = useRef("");
     const name = fldFile?.name;
 
     useEffect(() => {
         if (fldFile) {
             const name = fldFile.name;
-            if (prevName !== name && orbitControlsRef.current) {
+            if (prevName.current !== name && orbitControlsRef.current) {
                 const { width, height } = fldFile;
                 centerCamera(camera.position, orbitControlsRef.current.target, width, height);
                 orbitControlsRef.current.update();
             }
         }
         const updateName = fldFile ? fldFile.name : "";
-        setPrevName(updateName);
-    }, [camera, camera.position, fldFile, name, orbitControlsRef, prevName]);
+        prevName.current = updateName;
+    }, [camera, camera.position, fldFile, name, orbitControlsRef]);
 };
 
 export function centerCamera(camera: Vector3, target: Vector3, width: number, height: number) {
