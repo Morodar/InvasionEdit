@@ -3,7 +3,13 @@ import { HeaderUtils } from "../HeaderUtils";
 import { PckFileEntry } from "../pck/PckFileEntry";
 import { LevEntity } from "./LevEntity";
 import { LevFile } from "./LevFile";
-import { LevPlayerMeta } from "./LevPlayerMeta";
+import {
+    isLevPlayerMetaEmpty,
+    LEV_PLAYER_META_OFFSET,
+    LEV_PLAYER_META_SIZE,
+    LevPlayerMeta,
+    ZOOM_LEVEL,
+} from "./LevPlayerMeta";
 import { LevRGBA } from "./LevRGBA";
 
 const mdlLenght = 64;
@@ -66,8 +72,11 @@ export class LevUtils extends HeaderUtils {
     readLevPlayerMetas(): LevPlayerMeta[] {
         const result: LevPlayerMeta[] = [];
         for (let i = 0; i < 7; i++) {
-            const index = 0x200 + i * 0x20;
-            result.push(this.readLevPlayerMeta(index));
+            const offset = LEV_PLAYER_META_OFFSET + i * LEV_PLAYER_META_SIZE;
+            const meta = this.readLevPlayerMeta(offset);
+            if (!isLevPlayerMetaEmpty(meta)) {
+                result.push(meta);
+            }
         }
         return result;
     }
@@ -77,7 +86,7 @@ export class LevUtils extends HeaderUtils {
             camX: this.getUint32(index),
             camZ: this.getUint32(index + 4),
             camY: this.getUint32(index + 8),
-            zoomLevel: 2048,
+            zoomLevel: this.getUint32(index + 12),
             camRotation: this.getUint32(index + 16),
             startXenit: this.getUint32(index + 20),
             startTritium: this.getUint32(index + 24),
@@ -96,7 +105,9 @@ export class LevUtils extends HeaderUtils {
         this.writeUint32(index, meta.camX);
         this.writeUint32(index + 4, meta.camZ);
         this.writeUint32(index + 8, meta.camY);
-        this.writeUint32(index + 12, meta.zoomLevel);
+
+        // this.writeUint32(index + 12, meta.zoomLevel);
+        this.writeUint32(index + 12, ZOOM_LEVEL);
         this.writeUint32(index + 16, meta.camRotation);
         this.writeUint32(index + 20, meta.startXenit);
         this.writeUint32(index + 24, meta.startTritium);
@@ -128,6 +139,10 @@ async function parseLevFile(file: File): Promise<LevFile> {
     const view = new DataView(content);
     const util = new LevUtils(view);
     const entityCount = util.getUint32(0x0d8);
+
+    const playerCount1 = util.getUint32(0x310);
+    const playerCount2 = util.getUint32(0x314);
+    const playerCount = Math.max(playerCount1, playerCount2);
     return {
         name: file.name,
         fileSize: util.getUint32(0x04),
@@ -143,6 +158,8 @@ async function parseLevFile(file: File): Promise<LevFile> {
         entityCount: entityCount,
         mdls: util.readMdls(),
         entities: util.readEntities(entityCount),
+        playerCount1: playerCount,
+        playerCount2: playerCount,
         playerMeta: util.readLevPlayerMetas(),
         buildingFilter1: util.readRGBA(0x300),
         buildingFilter2: util.readRGBA(0x304),
@@ -240,8 +257,8 @@ export function buildLevPckFileEntry(levFile: LevFile): PckFileEntry {
     utils.writeUint32(0x2fc, 0);
 
     // player count
-    utils.writeUint32(0x310, 6);
-    utils.writeUint32(0x314, 6);
+    utils.writeUint32(0x310, levFile.playerCount1);
+    utils.writeUint32(0x314, levFile.playerCount2);
 
     utils.writeUint32(0x328, 3889176576);
     utils.writeUint32(0x32c, 3627032576);
