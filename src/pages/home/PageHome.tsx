@@ -11,19 +11,26 @@ import { FlmDecoderCard } from "./components/FlmDecoderCard";
 
 const PageHome = () => {
     const { t } = useTranslation();
-    const home = t("common.home");
+    const home = t("common.editors");
     usePageTitle(home);
     return (
         <MainLayout>
-            <Typography variant="h3" component="h2" gutterBottom>
-                {home}
-            </Typography>
-            <Stack gap="32px" direction="row" flexWrap="wrap">
-                <PckExtractorCard />
-                <SamDecoderCard />
-                <FlmDecoderCard />
-                <FldEditorCard />
-                <LevelEditorCard />
+            <Stack gap="32px" direction="column">
+                <Typography variant="h3" component="h2" gutterBottom>
+                    {home}
+                </Typography>
+                <Stack gap="32px" direction="row" flexWrap="wrap">
+                    <LevelEditorCard />
+                    <FldEditorCard />
+                </Stack>
+                <Typography variant="h3" component="h2" gutterBottom>
+                    {t("common.extractors")}
+                </Typography>
+                <Stack gap="32px" direction="row" flexWrap="wrap">
+                    <PckExtractorCard />
+                    <SamDecoderCard />
+                    <FlmDecoderCard />
+                </Stack>
             </Stack>
         </MainLayout>
     );

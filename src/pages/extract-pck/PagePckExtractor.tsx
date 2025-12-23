@@ -43,7 +43,7 @@ const PagePckExtractor = () => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout mainMaxWidth={900}>
             <Typography variant="h3" component="h2" display="block" gutterBottom>
                 {pckExtractor}
             </Typography>

@@ -7,7 +7,7 @@ export const SamDecoderCard = () => {
     return (
         <HomeCard
             description={t("sam-decoder.short-description")}
-            imgUrl="img/extract-pck.png"
+            imgUrl="img/extract-sam.png"
             linkDest={SAM_DECODER}
             linkText={t("sam-decoder.start")}
             title={t("sam-decoder.title")}

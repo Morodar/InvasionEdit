@@ -22,4 +22,5 @@ export class C {
 
     static SELECTED = "#ffca28";
     static HOVERING = "#ffeb3b";
+    static HOTKEY_BG = "#111";
 }

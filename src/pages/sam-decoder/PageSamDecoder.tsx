@@ -44,7 +44,7 @@ const PageSamDecoder = () => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout mainMaxWidth={900}>
             <Typography variant="h3" component="h2" display="block" gutterBottom>
                 {samDecoder}
             </Typography>

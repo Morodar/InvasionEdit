@@ -41,7 +41,7 @@ function writeLevelDatBytes(offset: number, fileUtils: HeaderUtils, level: Level
     offset += 0x40;
     fileUtils.writeString(offset, entry.fromPlayers);
     offset += 0x08;
-    fileUtils.writeString(offset, entry.fromPlayers);
+    fileUtils.writeString(offset, entry.toPlayers);
     offset += 0x08;
     fileUtils.writeUint32(offset, entry.planetName);
     offset += 0x10;

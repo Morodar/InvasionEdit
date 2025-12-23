@@ -15,11 +15,12 @@
     "select-file": "Datei auswählen",
     "confirm": "Bestätigen",
     "close": "Schließen",
-    "home": "Start",
     "date": "Datum",
     "file-count": "Dateienanzahl",
     "file-size": "Dateigröße",
-    "pc-name": "PC Name"
+    "pc-name": "PC Name",
+    "editors": "Start",
+    "extractors": "Extraktoren"
   },
   "fld-editor": {
     "select-fld-file": "Bitte wähle eine FLD-Datei aus.",
@@ -31,7 +32,9 @@
       "hovered-point": "Maus Schwebepunkt",
       "mesh-point": "Mesh-Punkt",
       "selected-point": "Ausgewählter Punkt",
-      "settings": "Debug-Einstellungen"
+      "settings": "Debug-Einstellungen",
+      "show-all-layers": "Alle Ebenen anzeigen",
+      "show-entities-list": "Entitätsliste anzeigen"
     },
     "short-description": "3D-Editor für FLD-Level-Dateien. \nWähle vorhandene Karten aus, um sie anzuzeigen und zu bearbeiten! \n(Der Editor befindet sich in der Entwicklung. Daher sind die Funktionen im Umfang begrenzt.)",
     "start-editor": "Editor starten",
@@ -42,15 +45,25 @@
     "primary": {
       "clear-selection": "Auswahl zurücksetzen",
       "landscape": "Landschaft",
-      "xenit-and-tritium": "Xenit & Tritium"
-    }
+      "xenit-and-tritium": "Xenit & Tritium",
+      "buildings": "Gebäude",
+      "generic": "Generisch",
+      "water": "Wasser"
+    },
+    "add-player": "Spieler hinzufügen",
+    "remove-player": "Spieler entfernen"
   },
   "actions": {
     "resource": {
       "radius": "Radius",
       "tritium": "Tritium",
       "xenit": "Xenit",
-      "remove": "Entfernen"
+      "remove": "Entfernen",
+      "size": "Größe"
+    },
+    "water": {
+      "remove": "Entfernen",
+      "water": "Wasser"
     }
   },
   "landscape": {
@@ -60,6 +73,50 @@
     "up": "Hochziehen",
     "speed": "Geschwindigkeit",
     "radius": "Radius",
-    "fix": "Fixe Höhe"
+    "fix": "Fixe Höhe",
+    "layer": "Schicht",
+    "size": "Größe"
+  },
+  "sam-decoder": {
+    "title": "SAM-Decoder",
+    "download-wav": "Download WAV",
+    "error": {
+      "parse-failed": "Die .sam-Datei konnte nicht analysiert werden."
+    },
+    "select-file": "Wählen Sie die .sam-Datei aus",
+    "short-description": "Dekodiert „SAM“-Audiodateien in PCM und wandelt sie in WAV um. \nDateien können im Browser abgespielt werden.",
+    "start": "Decoder starten"
+  },
+  "LAYER": {
+    "LANDSCAPE": "Landschaft",
+    "MOUNTAINS_1": "Berge 1",
+    "MOUNTAINS_2": "Berge 2",
+    "NOISE_1": "Rauschen 1",
+    "NOISE_2": "Rauschen 2",
+    "RESOURCES": "Ressourcen",
+    "TEXTURES": "Texturen 1",
+    "TEXTURES_2": "Texturen 2",
+    "UNKNOWN": "Unbekannt",
+    "WATER_1": "Wasser",
+    "WATER_2": "Wasser 2"
+  },
+  "LAYER_SETTINGS": {
+    "HEADER": "Schichten"
+  },
+  "flm-extractor": {
+    "description-short": "Extrahiert Bild und Audio (falls vorhanden) einer FLM-Datei in das Rohdateiformat.",
+    "select-file": "Wählen Sie die .flm-Datei aus",
+    "start-extractor": "Starten Sie den Extraktor",
+    "title": "FLM-Extraktor",
+    "description-video": "Nutze ffmpeg um die Rohdaten in ein Video umzuwandeln:",
+    "description": {
+      "audio": "Anschließend können Video und Audio zusammengeführt werden, sofern die FLM Datei Audio enthält."
+    }
+  },
+  "lvl-editor": {
+    "save-levels": "Level speichern",
+    "select-file": "Level-Datei",
+    "short-description": "3D-Editor für Level-Dateien. \nWähle vorhandene Levels aus, um sie anzuzeigen und zu ändern! \n(Der Editor ist in Bearbeitung und die Funktionen sind eingeschränkt)",
+    "title": "Level-Editor"
   }
 }

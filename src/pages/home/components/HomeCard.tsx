@@ -11,7 +11,7 @@ interface HomeCardProps {
 
 export const HomeCard = ({ description, imgUrl, linkDest, linkText, title }: HomeCardProps) => {
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card sx={{ width: 345, maxWidth: 345 }}>
             <CardMedia component="img" height="140" image={imgUrl} />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="h3">

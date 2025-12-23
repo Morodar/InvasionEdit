@@ -1,7 +1,7 @@
 {
     "fld-editor": {
         "title": "FLD Editor",
-        "short-description": "3D Editor for FLD Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
+        "short-description": "3D Editor for FLD Level files. Pick existing levels to view and modify terrain! (Features are very limited)",
         "start-editor": "Start Editor",
         "debug": {
             "mesh-point": "Mesh Point",
@@ -34,6 +34,16 @@
         "pck-header": "PCK Header",
         "save-zip": "Save ZIP"
     },
+    "flm-extractor": {
+        "title": "FLM Extractor",
+        "description-short": "Extracts image/videos and audio (if present) of a flm file to raw file format. Extra tools like ffmpeg are needed to convert raw them to mp4.",
+        "select-file": "Select .flm file",
+        "start-extractor": "Start Extractor",
+        "description-video": "Use ffmpeg to turn raw frames file into a video:",
+        "description": {
+            "audio": "Next, if the flm contained audio, combine the video file with the audio:"
+        }
+    },
     "sam-decoder": {
         "download-wav": "Download WAV",
         "error": {
@@ -47,14 +57,15 @@
     "common": {
         "cancel": "Cancel",
         "app_name": "Invasion Edit",
-        "home": "Home",
         "close": "Close",
         "select-file": "Select File",
         "confirm": "Confirm",
         "date": "Date",
         "pc-name": "PC Name",
         "file-count": "File count",
-        "file-size": "File size"
+        "file-size": "File size",
+        "extractors": "Extractors",
+        "editors": "Editors"
     },
     "landscape": {
         "fix": "Fix",
@@ -75,7 +86,9 @@
             "generic": "Generic",
             "water": "Water",
             "buildings": "Buildings"
-        }
+        },
+        "add-player": "Add player",
+        "remove-player": "Remove player"
     },
     "actions": {
         "resource": {

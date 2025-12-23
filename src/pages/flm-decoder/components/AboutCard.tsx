@@ -8,16 +8,16 @@ interface AboutCardProps {
 }
 
 export const AboutCard = (props: AboutCardProps) => {
-    const { onFileChanged, disableSelection } = props;
     const { t } = useTranslation();
+    const { onFileChanged, disableSelection } = props;
     return (
         <Card>
             <CardContent>
-                <p>{"Flm decoder description"}</p>
+                <p>{t("flm-extractor.description-short")}</p>
 
                 <Stack direction="row" justifyContent="end">
                     <SelectFileButton onFileChanged={onFileChanged} accept=".flm" disabled={disableSelection}>
-                        {"FLM decoder button text"}
+                        {t("flm-extractor.select-file")}
                     </SelectFileButton>
                 </Stack>
             </CardContent>

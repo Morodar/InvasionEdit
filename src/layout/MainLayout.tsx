@@ -11,9 +11,16 @@ interface MainLayoutProps extends PropsWithChildren {
     withPadding?: boolean;
     centerElements?: ReactElement;
     rightSideElements?: ReactElement;
+    mainMaxWidth?: number;
 }
 
-export const MainLayout = ({ withPadding = true, centerElements, rightSideElements, children }: MainLayoutProps) => {
+export const MainLayout = ({
+    mainMaxWidth,
+    withPadding = true,
+    centerElements,
+    rightSideElements,
+    children,
+}: MainLayoutProps) => {
     const { t } = useTranslation();
     const withPaddingClass = withPadding ? "with-padding" : "";
     const version = packageJson.version;
@@ -38,7 +45,7 @@ export const MainLayout = ({ withPadding = true, centerElements, rightSideElemen
                 </Toolbar>
             </AppBar>
             <main className={withPaddingClass}>
-                <div>{children}</div>
+                <div style={{ maxWidth: mainMaxWidth }}>{children}</div>
             </main>
         </Typography>
     );

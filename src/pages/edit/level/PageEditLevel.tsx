@@ -36,7 +36,7 @@ const EditLevel = (): ReactElement => {
     }
 
     return (
-        <MainLayout withPadding={true}>
+        <MainLayout withPadding={true} mainMaxWidth={900}>
             <LevelPckFileSelection />
         </MainLayout>
     );
