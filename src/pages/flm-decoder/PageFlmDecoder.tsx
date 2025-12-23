@@ -11,8 +11,8 @@ import { decodeFileAllBlocks } from "../../domain/sam/SamUtils";
 import { coeffs } from "../../domain/sam/AudioCoeffs";
 import saveAs from "file-saver";
 import { useTranslation } from "react-i18next";
-import { VideoFFmpegCard } from "./components/VideoFfmpegCard";
 import { AudioFFmpegCard } from "./components/AudioFFmpegCard";
+import { VideoFFmpegCard } from "./components/VideoFFmpegCard";
 
 async function decodeFlm(file: File): Promise<{ flm: Blob; pcm: Blob | undefined }> {
     const content: ArrayBuffer = await file.arrayBuffer();
