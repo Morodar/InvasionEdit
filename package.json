@@ -1,7 +1,7 @@
 {
     "name": "invasion-edit",
     "private": true,
-    "version": "v0.6.0-indev",
+    "version": "v0.7.0-indev",
     "type": "module",
     "packageManager": "pnpm@10.26.1",
     "scripts": {
