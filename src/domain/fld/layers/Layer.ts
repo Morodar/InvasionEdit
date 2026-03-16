@@ -12,13 +12,13 @@ export type Layers = Record<LayerIndex, LayerMeta>;
 export class Layer {
     static Unknown1: LayerIndex = 0;
     static Landscape: LayerIndex = 1;
-    static Unknown3: LayerIndex = 2;
-    static Unknown4: LayerIndex = 3;
-    static Unknown5: LayerIndex = 4;
+    static Mountains1: LayerIndex = 2;
+    static Mountains2: LayerIndex = 3;
+    static Noise2: LayerIndex = 4;
     static WaterHeight: LayerIndex = 5;
     static Water: LayerIndex = 6;
     static Water2: LayerIndex = 7;
-    static Unknown9: LayerIndex = 8;
+    static Textures1: LayerIndex = 8;
     static Resources: LayerIndex = 9;
     static Unknown11: LayerIndex = 10;
     static Unknown12: LayerIndex = 11;

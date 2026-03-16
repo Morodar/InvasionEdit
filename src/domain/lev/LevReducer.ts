@@ -2,6 +2,7 @@ import { useReducer } from "react";
 import { LevFile, MAX_PLAYER_COUNT, MIN_PLAYER_COUNT } from "./LevFile";
 import { Owner } from "../constants/Owner";
 import { LevEntity } from "./LevEntity";
+import { createDefaultLevPlayerMeta, LevPlayerMeta } from "./LevPlayerMeta";
 
 export type LevAction = SetLevFile | PlaceEntity | RemoveEntity | SetPlayerCount;
 
@@ -89,6 +90,24 @@ function setPlayerCount(state: LevFile, action: SetPlayerCount): LevFile {
     if (count < MIN_PLAYER_COUNT) {
         count = MIN_PLAYER_COUNT;
     }
-    const newState: LevFile = { ...state, playerCount1: count, playerCount2: count };
+
+    const newState: LevFile = {
+        ...state,
+        playerCount1: count,
+        playerCount2: count,
+        playerMeta: fillPlayerMeta(state.playerMeta, count),
+    };
+
     return newState;
+}
+
+function fillPlayerMeta(meta: LevPlayerMeta[], count: number): LevPlayerMeta[] {
+    if (meta.length >= count) {
+        return meta;
+    }
+    const updatedMeta = [...meta];
+    for (let i = meta.length; i < count; i++) {
+        updatedMeta.push(createDefaultLevPlayerMeta());
+    }
+    return updatedMeta;
 }

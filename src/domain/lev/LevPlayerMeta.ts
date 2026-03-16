@@ -29,3 +29,16 @@ export function isLevPlayerMetaEmpty(meta: LevPlayerMeta): boolean {
         meta.armyOffset == 0
     );
 }
+
+export function createDefaultLevPlayerMeta(): LevPlayerMeta {
+    return {
+        camX: 0,
+        camZ: 0,
+        camY: 65536,
+        zoomLevel: ZOOM_LEVEL,
+        camRotation: 0,
+        startXenit: 100_000,
+        startTritium: 100_000,
+        armyOffset: 0,
+    };
+}

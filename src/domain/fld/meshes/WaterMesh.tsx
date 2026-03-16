@@ -27,7 +27,7 @@ export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element =>
 
     const water = map.layers[Layer.Water];
     const landscape = map.layers[Layer.Landscape];
-    const mountains1 = map.layers[Layer.Unknown3];
+    const mountains1 = map.layers[Layer.Mountains1];
     const unknown6 = map.layers[Layer.WaterHeight];
 
     const width = map.width;

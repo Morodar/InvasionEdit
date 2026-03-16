@@ -7,6 +7,7 @@ import { LandscapeActions } from "../landsacpe/LandscapeActions";
 import { GenericActions } from "../generic/GenericActions";
 import { WaterActionButtons } from "../water/WaterActionButtons";
 import { PlaceEntitySelection } from "../../lev/entities/PlaceEntitySelection.tsx";
+import { TextureActions } from "../textures/TextureActions.tsx";
 
 export const SecondaryActionBar = () => {
     const { primaryAction } = useFldPrimaryActionContext();
@@ -41,6 +42,8 @@ const Action = () => {
             return <GenericActions />;
         case "WATER":
             return <WaterActionButtons />;
+        case "TEXTURES":
+            return <TextureActions />;
         default:
             return <></>;
     }

@@ -1,14 +1,31 @@
-import { Card, IconButton, Stack, Tooltip } from "@mui/material";
+import { Card, IconButton, Stack, SvgIconTypeMap, Tooltip } from "@mui/material";
 import "./PrimaryActionBar.css";
 import LandscapeIcon from "@mui/icons-material/Landscape";
 import ClearIcon from "@mui/icons-material/Clear";
-import DiamondIcon from "@mui/icons-material/Diamond";
 import WaterIcon from "@mui/icons-material/Water";
 import { FldPrimaryAction, useFldPrimaryActionContext } from "./FldPrimaryActionContext";
 import { useTranslation } from "react-i18next";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import { useDebugSettingsContext } from "../../../common/debug/DebugSettingsContext";
 import HouseIcon from "@mui/icons-material/House";
+import FormatPaintIcon from "@mui/icons-material/FormatPaint";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+import DiamondIcon from "@mui/icons-material/Diamond";
+
+type PrimaryAction = {
+    title: string;
+    action: FldPrimaryAction;
+    icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & { muiName: string };
+};
+
+const PRIMARY_ACTIONS: PrimaryAction[] = [
+    { title: "action.primary.clear-selection", action: "CLEAR", icon: ClearIcon },
+    { title: "action.primary.landscape", action: "LANDSCAPE", icon: LandscapeIcon },
+    { title: "action.primary.xenit-and-tritium", action: "RESOURCES", icon: DiamondIcon },
+    { title: "action.primary.water", action: "WATER", icon: WaterIcon },
+    { title: "action.primary.buildings", action: "BUILDING", icon: HouseIcon },
+    { title: "action.primary.buildings", action: "TEXTURES", icon: FormatPaintIcon },
+];
 
 export const PirmaryActionBar = () => {
     const { t } = useTranslation();
@@ -18,44 +35,16 @@ export const PirmaryActionBar = () => {
     return (
         <Card className="primary-action-bar">
             <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
-                <Tooltip title={t("action.primary.clear-selection")}>
-                    <IconButton onClick={() => setPrimaryAction("CLEAR")}>
-                        <ClearIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                </Tooltip>
-
-                <Tooltip title={t("action.primary.landscape")}>
-                    <IconButton
-                        color={getColor("LANDSCAPE", primaryAction)}
-                        onClick={() => setPrimaryAction("LANDSCAPE")}
-                    >
-                        <LandscapeIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                </Tooltip>
-
-                <Tooltip title={t("action.primary.xenit-and-tritium")}>
-                    <IconButton
-                        color={getColor("RESOURCES", primaryAction)}
-                        onClick={() => setPrimaryAction("RESOURCES")}
-                    >
-                        <DiamondIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                </Tooltip>
-
-                <Tooltip title={t("action.primary.water")}>
-                    <IconButton color={getColor("WATER", primaryAction)} onClick={() => setPrimaryAction("WATER")}>
-                        <WaterIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                </Tooltip>
-
-                <Tooltip title={t("action.primary.buildings")}>
-                    <IconButton
-                        color={getColor("BUILDING", primaryAction)}
-                        onClick={() => setPrimaryAction("BUILDING")}
-                    >
-                        <HouseIcon sx={{ fontSize: 32 }} />
-                    </IconButton>
-                </Tooltip>
+                {PRIMARY_ACTIONS.map((action) => (
+                    <PrimaryActionButton
+                        key={action.title}
+                        title={action.title}
+                        action={action.action}
+                        icon={action.icon}
+                        primaryAction={primaryAction}
+                        setPrimaryAction={setPrimaryAction}
+                    />
+                ))}
 
                 {debugSettings.showAllLayers && (
                     <Tooltip title={t("action.primary.generic")}>
@@ -72,5 +61,23 @@ export const PirmaryActionBar = () => {
     );
 };
 
-const getColor = (primaryAction: FldPrimaryAction, currentAction: FldPrimaryAction) =>
-    primaryAction === currentAction ? "primary" : "default";
+type PrimaryActionButtonProps = PrimaryAction & {
+    primaryAction: FldPrimaryAction;
+    setPrimaryAction: (action: FldPrimaryAction) => void;
+};
+
+const PrimaryActionButton = ({ title, primaryAction, icon, action, setPrimaryAction }: PrimaryActionButtonProps) => {
+    const { t } = useTranslation();
+    const Icon = icon;
+    return (
+        <Tooltip title={t(title)}>
+            <IconButton color={getColor(action, primaryAction)} onClick={() => setPrimaryAction(action)}>
+                <Icon sx={{ fontSize: 32 }} />
+            </IconButton>
+        </Tooltip>
+    );
+};
+
+function getColor(primaryAction: FldPrimaryAction, currentAction: FldPrimaryAction) {
+    return primaryAction === currentAction ? "primary" : "default";
+}

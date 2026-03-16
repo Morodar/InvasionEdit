@@ -5,8 +5,11 @@ import { useFldMapContext } from "../FldMapContext";
 import { Layer } from "../layers/Layer";
 import { useLayerViewContext } from "../layers/LayerViewContext";
 import { DataTexture, DoubleSide, Mesh, PlaneGeometry, RGBAFormat } from "three";
+import { FldPrimaryAction, useFldPrimaryActionContext } from "../action-bar/FldPrimaryActionContext";
+import { FLD_TEXTURE_FALLBACK, FLD_TEXTURE_MAP } from "../textures/FldTextureMap";
 
 export const LandscapeMesh = () => {
+    const { primaryAction } = useFldPrimaryActionContext();
     const { fldFile } = useFldMapContext();
     const { layerSettings } = useLayerViewContext();
     const { showWireframe, hide } = layerSettings[Layer.Landscape];
@@ -15,18 +18,22 @@ export const LandscapeMesh = () => {
         return <></>;
     }
 
-    return <LandscapeLayerMesh map={fldFile} showWireframe={showWireframe} />;
+    return <LandscapeLayerMesh map={fldFile} primaryAction={primaryAction} showWireframe={showWireframe} />;
 };
 
 interface LandscapeLayerMeshProps {
     map: FldMap;
+    primaryAction: FldPrimaryAction;
     showWireframe: boolean;
 }
 
-export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.Element => {
-    const { map, showWireframe } = props;
+export const LandscapeLayerMesh = ({
+    map,
+    primaryAction,
+    showWireframe,
+}: LandscapeLayerMeshProps): React.JSX.Element => {
     const landscape = map.layers[Layer.Landscape];
-    const mountains1 = map.layers[Layer.Unknown3];
+    const mountains1 = map.layers[Layer.Mountains1];
     const width = map.width;
     const height = map.height;
 
@@ -35,7 +42,7 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
 
     useCursorCapture(planeMesh);
 
-    const texture = createHeightTexture(map);
+    const texture = createTexture(map, primaryAction);
 
     useEffect(() => {
         if (planeGeo.current) {
@@ -78,8 +85,15 @@ export const LandscapeLayerMesh = (props: LandscapeLayerMeshProps): React.JSX.El
     );
 };
 
+function createTexture(layer: FldMap, primaryAction: FldPrimaryAction): DataTexture {
+    if (primaryAction === "TEXTURES" || primaryAction === "GENERIC") {
+        return createLandscapeTexture(layer);
+    }
+    return createHeightTexture(layer);
+}
+
 /** Create a texture based on the height values */
-const createHeightTexture = (layer: FldMap): DataTexture => {
+function createHeightTexture(layer: FldMap): DataTexture {
     const heightData = new Uint8Array(layer.width * layer.height * 4);
     const { width, height, layers } = layer;
     const landscape = layers[Layer.Landscape];
@@ -109,4 +123,34 @@ const createHeightTexture = (layer: FldMap): DataTexture => {
     const heightTexture = new DataTexture(heightData, layer.width, layer.height, RGBAFormat);
     heightTexture.needsUpdate = true;
     return heightTexture;
-};
+}
+
+function createLandscapeTexture(layer: FldMap): DataTexture {
+    const textureData = new Uint8Array(layer.width * layer.height * 4);
+    const { width, height, layers } = layer;
+    const landscape = layers[Layer.Landscape];
+    const textures = layers[Layer.Textures1];
+    let x = height;
+    let z = 0;
+
+    for (let i = 0; i < landscape.byteLength; i++) {
+        const rotated = x * width + z - width;
+        const p = textures.getUint8(rotated);
+        const color = FLD_TEXTURE_MAP.get(p) ?? FLD_TEXTURE_FALLBACK;
+        z++;
+        if (z >= width) {
+            z = 0;
+            x--;
+        }
+        const { r, g, b } = color;
+        const index = i * 4;
+        textureData[index] = r; // Red channel
+        textureData[index + 1] = g; // Green channel
+        textureData[index + 2] = b; // Blue channel
+        textureData[index + 3] = 255; // Alpha channel
+    }
+
+    const landscapeTexture = new DataTexture(textureData, layer.width, layer.height, RGBAFormat);
+    landscapeTexture.needsUpdate = true;
+    return landscapeTexture;
+}

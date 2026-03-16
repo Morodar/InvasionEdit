@@ -5,12 +5,12 @@ import { GenericMesh } from "./GenericMesh";
 
 const MESHES: LayerIndex[] = [
     Layer.Unknown1,
-    Layer.Unknown3,
-    Layer.Unknown4,
-    Layer.Unknown5,
+    Layer.Mountains1,
+    Layer.Mountains2,
+    Layer.Noise2,
     Layer.WaterHeight,
     Layer.Water2,
-    Layer.Unknown9,
+    Layer.Textures1,
     Layer.Unknown11,
     Layer.Unknown12,
     Layer.Unknown13,
