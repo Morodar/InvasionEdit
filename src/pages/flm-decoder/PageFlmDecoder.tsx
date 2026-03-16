@@ -8,7 +8,6 @@ import { usePageTitle } from "../../common/utils/usePageTitle";
 import { decodeFLMvideo } from "../../domain/FlmUtils";
 import { LUT } from "./LUT";
 import { decodeFileAllBlocks } from "../../domain/sam/SamUtils";
-import { coeffs } from "../../domain/sam/AudioCoeffs";
 import saveAs from "file-saver";
 import { useTranslation } from "react-i18next";
 import { AudioFFmpegCard } from "./components/AudioFFmpegCard";
@@ -42,7 +41,7 @@ async function decodeFlm(file: File): Promise<{ flm: Blob; pcm: Blob | undefined
         const audioDataOffset = 0x200 + flmDataLength + 0x200; //0x200 from flm header + flm data + 0x200 from audio header
         const audioDataLength = samFileLength - 0x200;
         const audioView = new DataView(content, audioDataOffset, audioDataLength);
-        const output = decodeFileAllBlocks(audioView, coeffs);
+        const output = decodeFileAllBlocks(audioView);
         pcm = new Blob([output], { type: "text/plain" });
     }
     return { flm, pcm };
