@@ -2,9 +2,9 @@ import { Card, CardContent } from "@mui/material";
 import { PckFileEntry } from "../../../domain/pck/PckFileEntry";
 import { H3 } from "../../../common/header/Headers";
 import { useTranslation } from "react-i18next";
-import { coeffs } from "../../../domain/sam/AudioCoeffs";
 import { decodeFileAllBlocks } from "../../../domain/sam/SamUtils";
 import SamPlayer from "../../sam-decoder/components/SamPlayer";
+import { buildCoeffs } from "../../../domain/sam/BuildCoeffs";
 
 interface PckEntryListProps {
     entries?: PckFileEntry[];
@@ -58,3 +58,5 @@ function convertToPcm(entry: PckFileEntry): DataView<ArrayBuffer> {
     const output: Uint8Array<ArrayBuffer> = decodeFileAllBlocks(offsetView, coeffs);
     return new DataView(output.buffer);
 }
+
+const coeffs = buildCoeffs();

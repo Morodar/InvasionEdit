@@ -6,10 +6,10 @@ import { delay } from "../../common/utils/delay";
 import { ParseFailedError } from "./components/ParseFailedError";
 import { usePageTitle } from "../../common/utils/usePageTitle";
 import { decodeFileAllBlocks } from "../../domain/sam/SamUtils";
-import { coeffs } from "../../domain/sam/AudioCoeffs";
 
 import { useTranslation } from "react-i18next";
 import SamPlayer from "./components/SamPlayer";
+import { buildCoeffs } from "../../domain/sam/BuildCoeffs";
 
 const PageSamDecoder = () => {
     const [pcmData, setPcmData] = useState<DataView<ArrayBuffer> | null>(null);
@@ -19,6 +19,7 @@ const PageSamDecoder = () => {
 
     const [parseFailed, setParseFailed] = useState(false);
     const [isParsing, setIsParsing] = useState(false);
+    const coeffs = buildCoeffs();
 
     const handleFileChanged = async (file?: File) => {
         // This is where the parsing would go
