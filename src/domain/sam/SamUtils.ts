@@ -1,3 +1,18 @@
+const idctMat = buildIdctMatrix();
+
+/**
+ * Builds flat 256x256 IDCT matrix, row-major (same formula as Python).
+ */
+function buildIdctMatrix(): Float32Array {
+    const mat = new Float32Array(256 * 256);
+    for (let row = 0; row < 256; row++) {
+        for (let col = 0; col < 256; col++) {
+            mat[row * 256 + col] = col === 0 ? 0x2d41 : 16384 * Math.cos((Math.PI / 256) * col * (0.5 + row));
+        }
+    }
+    return mat;
+}
+
 /** Port of FUN_0041a430
  * - samData: Uint8Array that begins at ESI
  * - tempOut: Uint8Array (512 bytes) where the function writes 256 signed shorts (little-endian)
@@ -88,129 +103,37 @@ function unpackBlock_FUN_0041a430(samData: DataView, tempOut: Uint8Array): numbe
     const consumed = puVar7 & 0xfffffffc;
     return consumed;
 }
-function packAndStore(acc0: number, acc1: number, acc2: number, acc3: number, out16: Int16Array, outBase: number) {
-    // Step 1–3: scale left << 5
-    const v0 = acc0 << 5;
-    const v1 = acc1 << 5;
-    const v2 = acc2 << 5;
-    const v3 = acc3 << 5;
 
-    // Step 4–5: shift/mask to carve out 16-bit pieces
-    // Equivalent to the MMX masks you posted
-    const m0 = (v0 >>> 16) & 0xffff;
-    const m1 = v1 & 0xffff0000;
-    const m2 = (v2 >>> 16) & 0xffff;
-    const m3 = v3 & 0xffff0000;
+function triggerShape(length: number, gate: number, trans: number, n: number): Float32Array {
+    const result = new Float32Array(length * n);
+    if (n < 2) return result;
 
-    // Combine: 32-bit low = m0 | m1, 32-bit high = m2 | m3
-    const packed0 = (m0 | m1) & 0xffffffff;
-    const packed1 = (m2 | m3) & 0xffffffff;
-
-    // Extract the four 16-bit signed words
-    const s0 = ((packed0 & 0xffff) << 16) >> 16;
-    const s1 = ((packed0 >>> 16) << 16) >> 16;
-    const s2 = ((packed1 & 0xffff) << 16) >> 16;
-    const s3 = ((packed1 >>> 16) << 16) >> 16;
-
-    // Step 7: PADDSW doubling with saturation
-    function sat16(x: number): number {
-        if (x > 32767) return 32767;
-        if (x < -32768) return -32768;
-        return x;
-    }
-    const d0 = sat16(s0 * 2);
-    const d1 = sat16(s1 * 2);
-    const d2 = sat16(s2 * 2);
-    const d3 = sat16(s3 * 2);
-
-    // Step 8: PUNPCKL + MOVQ → each sample duplicated for stereo.
-    out16[outBase + 0] = d0;
-    out16[outBase + 1] = d0;
-    out16[outBase + 2] = d1;
-    out16[outBase + 3] = d1;
-    out16[outBase + 4] = d2;
-    out16[outBase + 5] = d2;
-    out16[outBase + 6] = d3;
-    out16[outBase + 7] = d3;
-}
-
-/**
- * Port of FUN_00418560
- *
- * - coeffs: Uint8Array of coefficient table (expected layout like DAT_00417334)
- * - tempIn: Uint8Array of 512 bytes produced by unpackBlock_FUN_0041a430 (256 int16 values)
- *
- * returns Uint8Array of length 0x400 containing little-endian signed 16-bit PCM
- */
-function synthAndWrite_FUN_00418560(coeffs: Uint8Array, tempIn: Uint8Array): Uint8Array {
-    const COEFFS_MIN_BYTES = 0x20000; //For now not clear what the coeffs "are"
-    if (coeffs.byteLength < COEFFS_MIN_BYTES) {
-        throw new Error(`coeffs buffer too small; expect >= 0x20000 bytes`);
-    }
-    if (tempIn.byteLength < 512) {
-        throw new Error("tempIn must be at least 512 bytes");
+    // Smoothstep curve for transitions
+    const smv = new Float32Array(trans);
+    for (let i = 0; i < trans; i++) {
+        const x = (i + 1) / (trans + 1);
+        smv[i] = 3 * x * x - 2 * x * x * x;
     }
 
-    const temp16 = new Int16Array(tempIn.buffer, tempIn.byteOffset, 256);
-    const coeff16 = new Int16Array(coeffs.buffer, coeffs.byteOffset, Math.floor(coeffs.byteLength / 2));
+    // Build one "first" shape: [zeros | smoothstep rise | ones]
+    const first = new Float32Array(length);
+    for (let i = 0; i < trans; i++) first[length - gate - trans + i] = smv[i];
+    for (let i = length - gate; i < length; i++) first[i] = 1.0;
 
-    const outBytes = new Uint8Array(0x400);
-    const out16 = new Int16Array(outBytes.buffer);
+    // first block
+    result.set(first, 0);
 
-    // Compute four accumulators and write 8 samples
-    for (let tile = 0; tile < 64; tile++) {
-        // base index in 16-bit units (same mapping as DAT_00417334 + puVar1 + 0x100 increment)
-        const base16 = tile * 0x400; // 0x400 16-bit words per tile
-        let acc0 = 0 | 0;
-        let acc1 = 0 | 0;
-        let acc2 = 0 | 0;
-        let acc3 = 0 | 0;
+    // middle blocks: first + reverse(first)
+    const middle = new Float32Array(length);
+    for (let i = 0; i < length; i++) middle[i] = first[i] + first[length - 1 - i];
+    for (let b = 1; b < n - 1; b++) result.set(middle, b * length);
 
-        // iterate the 64 param vectors (k = 0..63), each vector is 4 int16s in temp16
-        for (let k = 0; k < 64; k++) {
-            const vOff = k * 4;
-            const v0 = temp16[vOff + 0] | 0;
-            const v1 = temp16[vOff + 1] | 0;
-            const v2 = temp16[vOff + 2] | 0;
-            const v3 = temp16[vOff + 3] | 0;
+    // last block: reverse(first)
+    const last = new Float32Array(length);
+    for (let i = 0; i < length; i++) last[i] = first[length - 1 - i];
+    result.set(last, (n - 1) * length);
 
-            // coefficient entry offsets (16-bit units)
-            const c0 = base16 + k * 4;
-            const c1 = c0 + 256; // (k+64)*4
-            const c2 = c0 + 512; // (k+128)*4
-            const c3 = c0 + 768; // (k+192)*4
-
-            // read 4 coeffs for each column (we assume coeff table is big enough)
-            const c0_0 = coeff16[c0 + 0] | 0;
-            const c0_1 = coeff16[c0 + 1] | 0;
-            const c0_2 = coeff16[c0 + 2] | 0;
-            const c0_3 = coeff16[c0 + 3] | 0;
-
-            const c1_0 = coeff16[c1 + 0] | 0;
-            const c1_1 = coeff16[c1 + 1] | 0;
-            const c1_2 = coeff16[c1 + 2] | 0;
-            const c1_3 = coeff16[c1 + 3] | 0;
-
-            const c2_0 = coeff16[c2 + 0] | 0;
-            const c2_1 = coeff16[c2 + 1] | 0;
-            const c2_2 = coeff16[c2 + 2] | 0;
-            const c2_3 = coeff16[c2 + 3] | 0;
-
-            const c3_0 = coeff16[c3 + 0] | 0;
-            const c3_1 = coeff16[c3 + 1] | 0;
-            const c3_2 = coeff16[c3 + 2] | 0;
-            const c3_3 = coeff16[c3 + 3] | 0;
-
-            // pmaddwd-like accumulation (4 products per column)
-            acc0 += v0 * c0_0 + v1 * c0_1 + v2 * c0_2 + v3 * c0_3;
-            acc1 += v0 * c1_0 + v1 * c1_1 + v2 * c1_2 + v3 * c1_3;
-            acc2 += v0 * c2_0 + v1 * c2_1 + v2 * c2_2 + v3 * c2_3;
-            acc3 += v0 * c3_0 + v1 * c3_1 + v2 * c3_2 + v3 * c3_3;
-        }
-        packAndStore(acc0, acc1, acc2, acc3, out16, tile * 8);
-    }
-
-    return outBytes;
+    return result;
 }
 
 /**
@@ -221,42 +144,86 @@ function synthAndWrite_FUN_00418560(coeffs: Uint8Array, tempIn: Uint8Array): Uin
  *
  * Returns a Uint8Array containing concatenated PCM blocks (each block is 0x400 bytes).
  */
-export function decodeFileAllBlocks(
-    fileView: DataView,
-    coeffs: Uint8Array,
-    maxBlocks?: number,
-): Uint8Array<ArrayBuffer> {
-    // Collect output blocks into an array and then concat
-    const outBlocks: Uint8Array[] = [];
-
+export function decodeFileAllBlocks(fileView: DataView, maxBlocks?: number): Uint8Array<ArrayBuffer> {
+    const rawBlocks: Int16Array[] = [];
     let pos = 0;
-    let blocksDecoded = 0;
     const tempOut = new Uint8Array(512);
 
     while (pos < fileView.byteLength) {
-        if (maxBlocks !== undefined && blocksDecoded >= maxBlocks) break;
-
-        // call unpacker: it writes 512 bytes to tempOut and returns consumed bytes
+        if (maxBlocks !== undefined && rawBlocks.length >= maxBlocks) break;
         const sliceForUnpack = new DataView(fileView.buffer, fileView.byteOffset + pos);
         const consumed = unpackBlock_FUN_0041a430(sliceForUnpack, tempOut);
-        if (consumed <= 0) break; // something is wrong???
-
-        // call synth+write -> produces 0x400 bytes PCM
-        const pcmBlock = synthAndWrite_FUN_00418560(coeffs, tempOut);
-        outBlocks.push(pcmBlock);
-
-        // advance ESI by consumed bytes, advance EDI by 0x400
+        if (consumed <= 0) break;
+        rawBlocks.push(new Int16Array(tempOut.buffer.slice(tempOut.byteOffset, tempOut.byteOffset + 512)));
         pos += consumed;
-        blocksDecoded += 1;
     }
 
-    // concat all output blocks
-    const totalBytes = outBlocks.reduce((s, b) => s + b.byteLength, 0);
-    const result = new Uint8Array(totalBytes);
-    let off = 0;
-    for (const b of outBlocks) {
-        result.set(b, off);
-        off += b.byteLength;
+    const n = rawBlocks.length;
+    if (n === 0) return new Uint8Array(0);
+
+    // Direct IDCT blocks
+    const directSamples: Float32Array[] = [];
+    for (let i = 0; i < n; i++) {
+        directSamples.push(idctBlock(idctMat, rawBlocks[i], +1));
     }
+
+    // Inbetween blocks: 128 zeros + (n-1) blocks + 128 zeros = n*256 total
+    const inbetweenSamples: Float32Array[] = [];
+    inbetweenSamples.push(new Float32Array(128)); // Fix #2: 128 not 256
+
+    for (let i = 0; i < n - 1; i++) {
+        // Fix #3: n-1 not n
+        const avgCoeffs = new Int16Array(256);
+        for (let c = 0; c < 256; c++) {
+            avgCoeffs[c] = (rawBlocks[i][c] + rawBlocks[i + 1][c]) / 2;
+        }
+        inbetweenSamples.push(idctBlock(idctMat, avgCoeffs, -1));
+    }
+
+    inbetweenSamples.push(new Float32Array(128)); // Fix #2: 128 not 256
+
+    const trigger = triggerShape(256, 16, 16, n);
+
+    const totalSamples = n * 256;
+    const audio = new Float32Array(totalSamples);
+    for (let i = 0; i < n; i++) {
+        audio.set(directSamples[i], i * 256);
+    }
+
+    // inbetween total: 128 + (n-1)*256 + 128 = n*256 ✓
+    const inbetween = new Float32Array(totalSamples);
+    let ibOffset = 0;
+    for (const seg of inbetweenSamples) {
+        inbetween.set(seg, ibOffset);
+        ibOffset += seg.length;
+    }
+
+    const result = new Uint8Array(totalSamples * 2 * 2);
+    const resultView = new DataView(result.buffer);
+
+    for (let i = 0; i < totalSamples; i++) {
+        const t = trigger[i];
+        const sample = audio[i] * (1 - t) + inbetween[i] * t;
+        const clamped = Math.max(-32768, Math.min(32767, Math.round(sample)));
+        resultView.setInt16(i * 4 + 0, clamped, true); // left
+        resultView.setInt16(i * 4 + 2, clamped, true); // right
+    }
+
     return result;
+}
+
+/**
+ * Applies IDCT matrix to one block of 256 int16 coefficients.
+ * sign: +1 for normal, -1 for phase-inverted (interpolated blocks)
+ */
+function idctBlock(mat: Float32Array, coeffs: Int16Array, sign: 1 | -1): Float32Array {
+    const out = new Float32Array(256);
+    for (let row = 0; row < 256; row++) {
+        let acc = 0;
+        for (let col = 0; col < 256; col++) {
+            acc += mat[row * 256 + col] * coeffs[col];
+        }
+        out[row] = (sign * acc) / 1024;
+    }
+    return out;
 }
