@@ -42,6 +42,7 @@ export function decodeFLMvideo(
     let local_24 = height >>> 2; // number of 4-pixel-high tile rows
     let local_1c = 0; // runlength counter / repeat counter
     let puVar8_byte = 0; // pointer into flmData (byte offset). corresponds to puVar8 pointer in C
+    let local_28: number;
     // outBuffer is a Uint32Array of pixels row-major
     // We'll access out buffer via an index variable (pixel count)
     // We'll write 4x4 blocks: writing rows of width stride
