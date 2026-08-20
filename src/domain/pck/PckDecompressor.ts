@@ -207,7 +207,8 @@ export class PckDecompressor {
             dest.setUint32(pDest + 18 * 4, unpacked.getUint32(pUnpacked + 1 * 4, true), true);
             dest.setUint32(pDest + 19 * 4, unpacked.getUint32(pUnpacked + 2 * 4, true), true);
             dest.setUint32(pDest + 20 * 4, unpacked.getUint32(pUnpacked + 3 * 4, true), true);
-            dest.setUint32(pDest + 21 * 4, unpacked.getUint32(pUnpacked + 0 * 4, true), true);
+            // pUnpacked + 0 * 4 --> pUnpacked
+            dest.setUint32(pDest + 21 * 4, unpacked.getUint32(pUnpacked , true), true);
             pUnpacked += 4 * 4;
             pDest += 32 * 4;
         }

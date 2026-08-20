@@ -1,7 +1,7 @@
 import { readFile } from "../../common/utils/readFile";
 import { HeaderUtils } from "../HeaderUtils";
 import { buildLevelDatPckFileEntry, LevelPck } from "../pck/level/LevelPck";
-import { LevelFile, LevelEntry as LevelEntry, LEVEL_ENTRY_SIZE } from "./LevelFile";
+import { LevelFile, LevelEntry, LEVEL_ENTRY_SIZE } from "./LevelFile";
 import packageJson from "../../../package.json";
 import { PckFileEntry, pckFileEntryToPckEntryBytes } from "../pck/PckFileEntry";
 import { buildFldPckFileEntry } from "../fld/FldUtils";
