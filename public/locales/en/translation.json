@@ -1,123 +1,123 @@
 {
-    "fld-editor": {
-        "title": "FLD Editor",
-        "short-description": "3D Editor for FLD Level files. Pick existing levels to view and modify terrain! (Features are very limited)",
-        "start-editor": "Start Editor",
-        "debug": {
-            "mesh-point": "Mesh Point",
-            "hovered-point": "Hovered Point",
-            "selected-point": "Selected Point",
-            "cube": "Debug Cube",
-            "cursor-position": "Debug Cursor Position",
-            "settings": "Debug Settings",
-            "show-all-layers": "Show all layers",
-            "show-entities-list": "Show entities list"
-        },
-        "select-fld-file": "Please select a FLD file.",
-        "choose-fld-file": "Choose FLD File",
-        "load-fld": "Load FLD",
-        "save-fld": "Save FLD"
+  "fld-editor": {
+    "title": "FLD Editor",
+    "short-description": "3D Editor for FLD Level files. Pick existing levels to view and modify terrain! (Features are very limited)",
+    "start-editor": "Start Editor",
+    "debug": {
+      "mesh-point": "Mesh Point",
+      "hovered-point": "Hovered Point",
+      "selected-point": "Selected Point",
+      "cube": "Debug Cube",
+      "cursor-position": "Debug Cursor Position",
+      "settings": "Debug Settings",
+      "show-all-layers": "Show all layers",
+      "show-entities-list": "Show entities list"
     },
-    "lvl-editor": {
-        "title": "Level Editor",
-        "select-file": "Level File",
-        "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
-        "save-levels": "Save Levels"
-    },
-    "pck-extractor": {
-        "short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
-        "title": "PCK Extractor",
-        "unknown-error": "An unknown error occured while reading the PCK file.",
-        "extract-pck-file": "Extract PCK file",
-        "start-extractor": "Start Extractor",
-        "pck-files": "PCK Files",
-        "pck-header": "PCK Header",
-        "save-zip": "Save ZIP"
-    },
-    "flm-extractor": {
-        "title": "FLM Extractor",
-        "description-short": "Extracts image/videos and audio (if present) of a flm file to raw file format. Extra tools like ffmpeg are needed to convert raw them to mp4.",
-        "select-file": "Select .flm file",
-        "start-extractor": "Start Extractor",
-        "description-video": "Use ffmpeg to turn raw frames file into a video:",
-        "description": {
-            "audio": "Next, if the flm contained audio, combine the video file with the audio:"
-        }
-    },
-    "sam-decoder": {
-        "download-wav": "Download WAV",
-        "error": {
-            "parse-failed": "Failed to parse the .sam file."
-        },
-        "select-file": "Select .sam file",
-        "short-description": "Decodes \"SAM\" audio files to PCM and converts them into WAV. Files can be played within the browser.",
-        "start": " Start Decoder",
-        "title": "SAM Decoder"
-    },
-    "common": {
-        "cancel": "Cancel",
-        "app_name": "Invasion Edit",
-        "close": "Close",
-        "select-file": "Select File",
-        "confirm": "Confirm",
-        "date": "Date",
-        "pc-name": "PC Name",
-        "file-count": "File count",
-        "file-size": "File size",
-        "extractors": "Extractors",
-        "editors": "Editors"
-    },
-    "landscape": {
-        "fix": "Fix",
-        "smooth": "Smooth",
-        "up": "Up",
-        "down": "Down",
-        "radius": "Radius",
-        "speed": "Speed",
-        "height": "Height",
-        "size": "Size",
-        "layer": "Layer"
-    },
-    "action": {
-        "primary": {
-            "clear-selection": "Clear selection",
-            "landscape": "Landscape",
-            "xenit-and-tritium": "Xenit & Tritium",
-            "generic": "Generic",
-            "water": "Water",
-            "buildings": "Buildings",
-            "textures": "Textures"
-        },
-        "add-player": "Add player",
-        "remove-player": "Remove player"
-    },
-    "actions": {
-        "resource": {
-            "remove": "Remove",
-            "xenit": "Xenit",
-            "tritium": "Tritium",
-            "radius": "Radius",
-            "size": "Size"
-        },
-        "water": {
-            "remove": "Remove",
-            "water": "Water"
-        }
-    },
-    "LAYER": {
-        "UNKNOWN": "Unknown",
-        "RESOURCES": "Resources",
-        "LANDSCAPE": "Landscape",
-        "NOISE_1": "Noise 1",
-        "NOISE_2": "Noise 2",
-        "MOUNTAINS_1": "Mountains 1",
-        "MOUNTAINS_2": "Mountains 2",
-        "WATER_1": "Water",
-        "WATER_2": "Water 2",
-        "TEXTURES": "Textures 1",
-        "TEXTURES_2": "Textures 2"
-    },
-    "LAYER_SETTINGS": {
-        "HEADER": "Layers"
+    "select-fld-file": "Please select a FLD file.",
+    "choose-fld-file": "Choose FLD File",
+    "load-fld": "Load FLD",
+    "save-fld": "Save FLD"
+  },
+  "lvl-editor": {
+    "title": "Level Editor",
+    "select-file": "Level File",
+    "short-description": "3D Editor for Level files. Pick existing levels to view and modify them! (Editor is WIP and Features are very limited)",
+    "save-levels": "Save Levels"
+  },
+  "pck-extractor": {
+    "short-description": "Thandor's game assets, including levels, reside in so called \"PCK-Files\". PCK Extractor can decompress and extract all game assets.",
+    "title": "PCK Extractor",
+    "unknown-error": "An unknown error occured while reading the PCK file.",
+    "extract-pck-file": "Extract PCK file",
+    "start-extractor": "Start Extractor",
+    "pck-files": "PCK Files",
+    "pck-header": "PCK Header",
+    "save-zip": "Save ZIP"
+  },
+  "flm-extractor": {
+    "title": "FLM Extractor",
+    "description-short": "Extracts image/videos and audio (if present) of a flm file to raw file format. Extra tools like ffmpeg are needed to convert raw them to mp4.",
+    "select-file": "Select .flm file",
+    "start-extractor": "Start Extractor",
+    "description-video": "Use ffmpeg to turn raw frames file into a video:",
+    "description": {
+      "audio": "Next, if the flm contained audio, combine the video file with the audio:"
     }
+  },
+  "sam-decoder": {
+    "download-wav": "Download WAV",
+    "error": {
+      "parse-failed": "Failed to parse the .sam file."
+    },
+    "select-file": "Select .sam file",
+    "short-description": "Decodes \"SAM\" audio files to PCM and converts them into WAV. Files can be played within the browser.",
+    "start": " Start Decoder",
+    "title": "SAM Decoder"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "app_name": "Invasion Edit",
+    "close": "Close",
+    "select-file": "Select File",
+    "confirm": "Confirm",
+    "date": "Date",
+    "pc-name": "PC Name",
+    "file-count": "File count",
+    "file-size": "File size",
+    "extractors": "Extractors",
+    "editors": "Editors"
+  },
+  "landscape": {
+    "fix": "Fix",
+    "smooth": "Smooth",
+    "up": "Up",
+    "down": "Down",
+    "radius": "Radius",
+    "speed": "Speed",
+    "height": "Height",
+    "size": "Size",
+    "layer": "Layer"
+  },
+  "action": {
+    "primary": {
+      "clear-selection": "Clear selection",
+      "landscape": "Landscape",
+      "xenit-and-tritium": "Xenit & Tritium",
+      "generic": "Generic",
+      "water": "Water",
+      "buildings": "Buildings",
+      "textures": "Textures"
+    },
+    "add-player": "Add player",
+    "remove-player": "Remove player"
+  },
+  "actions": {
+    "resource": {
+      "remove": "Remove",
+      "xenit": "Xenit",
+      "tritium": "Tritium",
+      "radius": "Radius",
+      "size": "Size"
+    },
+    "water": {
+      "remove": "Remove",
+      "water": "Water"
+    }
+  },
+  "LAYER": {
+    "UNKNOWN": "Unknown",
+    "RESOURCES": "Resources",
+    "LANDSCAPE": "Landscape",
+    "NOISE_1": "Noise 1",
+    "NOISE_2": "Noise 2",
+    "MOUNTAINS_1": "Mountains 1",
+    "MOUNTAINS_2": "Mountains 2",
+    "WATER_1": "Water",
+    "WATER_2": "Water 2",
+    "TEXTURES": "Textures 1",
+    "TEXTURES_2": "Textures 2"
+  },
+  "LAYER_SETTINGS": {
+    "HEADER": "Layers"
+  }
 }

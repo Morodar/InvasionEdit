@@ -12,73 +12,79 @@ import { Xenit } from "./Xenit";
 import { Tritium } from "./Tritium";
 
 export const ResourceActionPreview = () => {
-    const { fldFile, dispatch } = useFldMapContext();
-    const { primaryAction } = useFldPrimaryActionContext();
-    const { hoveredPoint } = useCursorContext();
+  const { fldFile, dispatch } = useFldMapContext();
+  const { primaryAction } = useFldPrimaryActionContext();
+  const { hoveredPoint } = useCursorContext();
 
-    if (primaryAction !== "RESOURCES" || !hoveredPoint || !fldFile) {
-        return <></>;
-    }
+  if (primaryAction !== "RESOURCES" || !hoveredPoint || !fldFile) {
+    return <></>;
+  }
 
-    return <Preview hoveredPoint={hoveredPoint} fldFile={fldFile} dispatch={dispatch} />;
+  return <Preview hoveredPoint={hoveredPoint} fldFile={fldFile} dispatch={dispatch} />;
 };
 
 const ACTION_COLOR: { [key in ActiveResource]: Color } = {
-    DELETE: "#ff0000",
-    XENIT: Xenit.COLOR,
-    TRITIUM: Tritium.COLOR,
+  DELETE: "#ff0000",
+  XENIT: Xenit.COLOR,
+  TRITIUM: Tritium.COLOR,
 };
 
 interface PreviewProps {
-    hoveredPoint: number;
-    fldFile: FldFile;
-    dispatch: Dispatch<FldAction>;
+  hoveredPoint: number;
+  fldFile: FldFile;
+  dispatch: Dispatch<FldAction>;
 }
 
 const Preview = (props: PreviewProps) => {
-    const { hoveredPoint, fldFile, dispatch } = props;
-    const { width, height } = fldFile;
-    const { activeResource, size } = useResourceActionContext();
-    const points = useMemo(() => getRelativePoints(fldFile, hoveredPoint, size, size), [fldFile, hoveredPoint, size]);
-    const instancedMeshRef = useRef<InstancedMesh>(null!);
+  const { hoveredPoint, fldFile, dispatch } = props;
+  const { width, height } = fldFile;
+  const { activeResource, size } = useResourceActionContext();
+  const points = useMemo(
+    () => getRelativePoints(fldFile, hoveredPoint, size, size),
+    [fldFile, hoveredPoint, size],
+  );
+  const instancedMeshRef = useRef<InstancedMesh>(null!);
 
-    const color = ACTION_COLOR[activeResource];
+  const color = ACTION_COLOR[activeResource];
 
-    useLeftClickHoldAction(() => dispatch({ type: "RESOURCE", points, resource: activeResource }), [points]);
+  useLeftClickHoldAction(
+    () => dispatch({ type: "RESOURCE", points, resource: activeResource }),
+    [points],
+  );
 
-    useEffect(() => {
-        points.forEach((p, i) => {
-            const z = p.index % width;
-            const x = Math.floor(p.index / width);
+  useEffect(() => {
+    points.forEach((p, i) => {
+      const z = p.index % width;
+      const x = Math.floor(p.index / width);
 
-            // rotate map 45° and stretch using values from decompression algorithm
-            const x2 = x * -1.999;
-            const z2 = x * 1.152 + z * 2.305;
+      // rotate map 45° and stretch using values from decompression algorithm
+      const x2 = x * -1.999;
+      const z2 = x * 1.152 + z * 2.305;
 
-            temp.position.set(x2, p.value / 4, z2);
-            temp.updateMatrix();
-            instancedMeshRef.current.setMatrixAt(i, temp.matrix);
-        });
+      temp.position.set(x2, p.value / 4, z2);
+      temp.updateMatrix();
+      instancedMeshRef.current.setMatrixAt(i, temp.matrix);
+    });
 
-        // Update the instance
-        instancedMeshRef.current.instanceMatrix.needsUpdate = true;
-        instancedMeshRef.current.computeBoundingBox();
-        instancedMeshRef.current.computeBoundingSphere();
-    }, [height, points, width]);
+    // Update the instance
+    instancedMeshRef.current.instanceMatrix.needsUpdate = true;
+    instancedMeshRef.current.computeBoundingBox();
+    instancedMeshRef.current.computeBoundingSphere();
+  }, [height, points, width]);
 
-    return (
-        <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, size * size]}>
-            <sphereGeometry args={[0.25, 8, 8]} />
-            <meshStandardMaterial
-                color={color}
-                roughness={0.5}
-                side={DoubleSide}
-                transparent={true}
-                wireframe={false}
-                opacity={0.7}
-            />
-        </instancedMesh>
-    );
+  return (
+    <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, size * size]}>
+      <sphereGeometry args={[0.25, 8, 8]} />
+      <meshStandardMaterial
+        color={color}
+        roughness={0.5}
+        side={DoubleSide}
+        transparent={true}
+        wireframe={false}
+        opacity={0.7}
+      />
+    </instancedMesh>
+  );
 };
 
 const temp = new Object3D();

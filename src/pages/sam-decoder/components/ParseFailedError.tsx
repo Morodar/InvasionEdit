@@ -2,15 +2,15 @@ import { Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 interface ParseFailedErrorProps {
-    failed: boolean;
+  failed: boolean;
 }
 
 export const ParseFailedError = ({ failed }: ParseFailedErrorProps) => {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
-    if (!failed) {
-        return <></>;
-    }
+  if (!failed) {
+    return <></>;
+  }
 
-    return <Alert severity="warning">{t("sam-decoder.error.parse-failed")}</Alert>;
+  return <Alert severity="warning">{t("sam-decoder.error.parse-failed")}</Alert>;
 };

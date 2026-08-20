@@ -24,55 +24,55 @@ import { WaterActionPreview } from "../../../domain/fld/water/WaterActionPreview
 import { RightSideContainer } from "../../../layout/RightSideContainer";
 
 export const FldView = (): React.JSX.Element => {
-    const orbitControlsRef = useRef<OrbitControls>(null);
+  const orbitControlsRef = useRef<OrbitControls>(null);
 
-    return (
-        <div className="map-view">
-            <Canvas className="map">
-                <ambientLight intensity={3} />
-                <directionalLight position={[0, 100, 0]} intensity={2} />
+  return (
+    <div className="map-view">
+      <Canvas className="map">
+        <ambientLight intensity={3} />
+        <directionalLight position={[0, 100, 0]} intensity={2} />
 
-                <DreiObitControls
-                    target={[60, 0, 60]}
-                    ref={orbitControlsRef}
-                    mouseButtons={{ RIGHT: MOUSE.RIGHT }}
-                    minDistance={5}
-                    maxDistance={120}
-                />
-                <MapViewUtil orbitControlsRef={orbitControlsRef} />
+        <DreiObitControls
+          target={[60, 0, 60]}
+          ref={orbitControlsRef}
+          mouseButtons={{ RIGHT: MOUSE.RIGHT }}
+          minDistance={5}
+          maxDistance={120}
+        />
+        <MapViewUtil orbitControlsRef={orbitControlsRef} />
 
-                <Stats className="fps-counter" />
-                <DebugBox />
-                <Debug3x3Box />
+        <Stats className="fps-counter" />
+        <DebugBox />
+        <Debug3x3Box />
 
-                <ResourceActionPreview />
-                <LandscapeActionPreview />
-                <WaterActionPreview />
-                <GenericActionPreview />
+        <ResourceActionPreview />
+        <LandscapeActionPreview />
+        <WaterActionPreview />
+        <GenericActionPreview />
 
-                <ResourceMeshes />
-                <LandscapeMesh />
-                <WaterMesh />
-                <UnknownMeshes />
-            </Canvas>
-            <DebugSidebar />
-            <PirmaryActionBar />
-            <SecondaryActionBar />
-            <RightSideContainer verticalCenter>
-                <LayerSettings />
-            </RightSideContainer>
-        </div>
-    );
+        <ResourceMeshes />
+        <LandscapeMesh />
+        <WaterMesh />
+        <UnknownMeshes />
+      </Canvas>
+      <DebugSidebar />
+      <PirmaryActionBar />
+      <SecondaryActionBar />
+      <RightSideContainer verticalCenter>
+        <LayerSettings />
+      </RightSideContainer>
+    </div>
+  );
 };
 
 interface MapViewUtilProps {
-    orbitControlsRef: React.RefObject<OrbitControls>;
+  orbitControlsRef: React.RefObject<OrbitControls>;
 }
 
 const MapViewUtil = (props: MapViewUtilProps) => {
-    useInitFld();
-    useCenterCamera(props.orbitControlsRef);
-    useKeyboardControls(props.orbitControlsRef);
+  useInitFld();
+  useCenterCamera(props.orbitControlsRef);
+  useKeyboardControls(props.orbitControlsRef);
 
-    return <></>;
+  return <></>;
 };

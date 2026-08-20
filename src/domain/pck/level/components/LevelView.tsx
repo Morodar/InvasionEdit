@@ -25,55 +25,55 @@ import { PreviewEntityRender } from "../../../lev/entities/PreviewEntityRender";
 import { ControlHints } from "../../../../common/controls/ControlHints";
 
 export const LevelView = (): ReactElement => {
-    const orbitControlsRef = useRef<OrbitControls>(null);
+  const orbitControlsRef = useRef<OrbitControls>(null);
 
-    return (
-        <div className="map-view">
-            <Canvas className="map">
-                <ambientLight intensity={3} />
-                <directionalLight position={[0, 100, 0]} intensity={2} />
+  return (
+    <div className="map-view">
+      <Canvas className="map">
+        <ambientLight intensity={3} />
+        <directionalLight position={[0, 100, 0]} intensity={2} />
 
-                <DreiOrbitControls
-                    ref={orbitControlsRef}
-                    target={[60, 0, 60]}
-                    mouseButtons={{ RIGHT: MOUSE.RIGHT }}
-                    minDistance={20}
-                    maxDistance={200}
-                />
-                <MapViewUtil orbitControlsRef={orbitControlsRef} />
+        <DreiOrbitControls
+          ref={orbitControlsRef}
+          target={[60, 0, 60]}
+          mouseButtons={{ RIGHT: MOUSE.RIGHT }}
+          minDistance={20}
+          maxDistance={200}
+        />
+        <MapViewUtil orbitControlsRef={orbitControlsRef} />
 
-                <Stats className="fps-counter" />
-                <DebugBox />
-                <Debug3x3Box />
+        <Stats className="fps-counter" />
+        <DebugBox />
+        <Debug3x3Box />
 
-                <ResourceActionPreview />
-                <LandscapeActionPreview />
-                <WaterActionPreview />
-                <GenericActionPreview />
+        <ResourceActionPreview />
+        <LandscapeActionPreview />
+        <WaterActionPreview />
+        <GenericActionPreview />
 
-                <ResourceMeshes />
-                <LandscapeMesh />
-                <WaterMesh />
-                <UnknownMeshes />
-                <EntityRender />
-                <PreviewEntityRender />
-            </Canvas>
-            <DebugSidebar />
-            <ControlHints />
-            <PirmaryActionBar />
-            <SecondaryActionBar />
-            <LevelRail />
-        </div>
-    );
+        <ResourceMeshes />
+        <LandscapeMesh />
+        <WaterMesh />
+        <UnknownMeshes />
+        <EntityRender />
+        <PreviewEntityRender />
+      </Canvas>
+      <DebugSidebar />
+      <ControlHints />
+      <PirmaryActionBar />
+      <SecondaryActionBar />
+      <LevelRail />
+    </div>
+  );
 };
 
 interface MapViewUtilProps {
-    orbitControlsRef: RefObject<OrbitControls | null>;
+  orbitControlsRef: RefObject<OrbitControls | null>;
 }
 
 const MapViewUtil = ({ orbitControlsRef }: MapViewUtilProps) => {
-    useCenterCamera(orbitControlsRef);
-    useKeyboardControls(orbitControlsRef);
+  useCenterCamera(orbitControlsRef);
+  useKeyboardControls(orbitControlsRef);
 
-    return <></>;
+  return <></>;
 };

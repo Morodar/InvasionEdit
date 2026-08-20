@@ -10,41 +10,41 @@ import { PlaceEntitySelection } from "../../lev/entities/PlaceEntitySelection.ts
 import { TextureActions } from "../textures/TextureActions.tsx";
 
 export const SecondaryActionBar = () => {
-    const { primaryAction } = useFldPrimaryActionContext();
+  const { primaryAction } = useFldPrimaryActionContext();
 
-    if (primaryAction == "CLEAR") {
-        return <></>;
-    }
+  if (primaryAction == "CLEAR") {
+    return <></>;
+  }
 
-    if (primaryAction == "BUILDING") {
-        return (
-            <Card className="secondary-action-bar place-entity">
-                <PlaceEntitySelection />
-            </Card>
-        );
-    }
-
+  if (primaryAction == "BUILDING") {
     return (
-        <Card className="secondary-action-bar">
-            <Action />
-        </Card>
+      <Card className="secondary-action-bar place-entity">
+        <PlaceEntitySelection />
+      </Card>
     );
+  }
+
+  return (
+    <Card className="secondary-action-bar">
+      <Action />
+    </Card>
+  );
 };
 
 const Action = () => {
-    const { primaryAction } = useFldPrimaryActionContext();
-    switch (primaryAction) {
-        case "LANDSCAPE":
-            return <LandscapeActions />;
-        case "RESOURCES":
-            return <ResourceActionButtons />;
-        case "GENERIC":
-            return <GenericActions />;
-        case "WATER":
-            return <WaterActionButtons />;
-        case "TEXTURES":
-            return <TextureActions />;
-        default:
-            return <></>;
-    }
+  const { primaryAction } = useFldPrimaryActionContext();
+  switch (primaryAction) {
+    case "LANDSCAPE":
+      return <LandscapeActions />;
+    case "RESOURCES":
+      return <ResourceActionButtons />;
+    case "GENERIC":
+      return <GenericActions />;
+    case "WATER":
+      return <WaterActionButtons />;
+    case "TEXTURES":
+      return <TextureActions />;
+    default:
+      return <></>;
+  }
 };

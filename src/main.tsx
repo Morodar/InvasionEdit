@@ -13,7 +13,7 @@ import "./domain/constants/Colors.css";
 void setupI18n();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <AppRoutes />
-    </React.StrictMode>,
+  <React.StrictMode>
+    <AppRoutes />
+  </React.StrictMode>,
 );

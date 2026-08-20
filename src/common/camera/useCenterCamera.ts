@@ -6,36 +6,36 @@ import { OrbitControls } from "./OrbitControls";
 
 /** Centers the camera whenever the current fld file changes */
 export const useCenterCamera = (orbitControlsRef: RefObject<OrbitControls | null>) => {
-    const { fldFile } = useFldMapContext();
-    const { camera } = useThree();
+  const { fldFile } = useFldMapContext();
+  const { camera } = useThree();
 
-    const prevName = useRef("");
-    const name = fldFile?.name;
+  const prevName = useRef("");
+  const name = fldFile?.name;
 
-    useEffect(() => {
-        if (fldFile) {
-            const name = fldFile.name;
-            if (prevName.current !== name && orbitControlsRef.current) {
-                const { width, height } = fldFile;
-                centerCamera(camera.position, orbitControlsRef.current.target, width, height);
-                orbitControlsRef.current.update();
-            }
-        }
-        const updateName = fldFile ? fldFile.name : "";
-        prevName.current = updateName;
-    }, [camera, camera.position, fldFile, name, orbitControlsRef]);
+  useEffect(() => {
+    if (fldFile) {
+      const name = fldFile.name;
+      if (prevName.current !== name && orbitControlsRef.current) {
+        const { width, height } = fldFile;
+        centerCamera(camera.position, orbitControlsRef.current.target, width, height);
+        orbitControlsRef.current.update();
+      }
+    }
+    const updateName = fldFile ? fldFile.name : "";
+    prevName.current = updateName;
+  }, [camera, camera.position, fldFile, name, orbitControlsRef]);
 };
 
 export function centerCamera(camera: Vector3, target: Vector3, width: number, height: number) {
-    const centerH = height / 2;
-    const centerW = width / 2;
+  const centerH = height / 2;
+  const centerW = width / 2;
 
-    // rotate map 45° and stretch using values from decompression algorithm
-    const x2 = centerW * -1.999;
-    const z2 = centerW * 1.152 + centerH * 2.305;
+  // rotate map 45° and stretch using values from decompression algorithm
+  const x2 = centerW * -1.999;
+  const z2 = centerW * 1.152 + centerH * 2.305;
 
-    // update camera position
-    camera.set(x2 + 200, 500, z2 + 200);
-    // update where camera looks
-    target.set(x2 + 20, 0, z2);
+  // update camera position
+  camera.set(x2 + 200, 500, z2 + 200);
+  // update where camera looks
+  target.set(x2 + 20, 0, z2);
 }

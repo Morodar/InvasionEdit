@@ -1,10 +1,10 @@
 export async function readFile(blob: Blob | File): Promise<ArrayBuffer> {
-    if ("arrayBuffer" in blob) return await blob.arrayBuffer();
+  if ("arrayBuffer" in blob) return await blob.arrayBuffer();
 
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as ArrayBuffer);
-        reader.onerror = () => reject(new Error("failed to read blob"));
-        reader.readAsArrayBuffer(blob);
-    });
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as ArrayBuffer);
+    reader.onerror = () => reject(new Error("failed to read blob"));
+    reader.readAsArrayBuffer(blob);
+  });
 }

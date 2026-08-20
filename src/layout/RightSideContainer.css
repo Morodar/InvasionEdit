@@ -1,28 +1,28 @@
 .right-side-container {
-    width: auto;
-    max-height: calc(100vh - 64px);
-    height: calc(100vh - 64px);
-    position: fixed;
-    left: auto;
-    right: 0;
-    top: 0%;
+  width: auto;
+  max-height: calc(100vh - 64px);
+  height: calc(100vh - 64px);
+  position: fixed;
+  left: auto;
+  right: 0;
+  top: 0%;
 
-    display: flex;
-    align-items: flex-start;
-    margin-top: 64px;
-    z-index: 200;
-    pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  margin-top: 64px;
+  z-index: 200;
+  pointer-events: none;
 }
 
 .right-side-container * {
-    pointer-events: auto;
+  pointer-events: auto;
 }
 
 .right-side-container.vertical-center {
-    position: absolute;
-    z-index: 100;
+  position: absolute;
+  z-index: 100;
 
-    top: calc(50%);
-    transform: translateY(-50%);
-    right: 16px;
+  top: calc(50%);
+  transform: translateY(-50%);
+  right: 16px;
 }

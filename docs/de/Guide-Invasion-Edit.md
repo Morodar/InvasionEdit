@@ -12,56 +12,56 @@
 
 ## Schritt 0 - Finde dein Spielverzeichnis
 
--   Suche nach dem Ordner, in dem sich die `thandor.exe` befindet.
--   Dieser Ordner sollte eine `LEVEL.PCK` enthalten.
+- Suche nach dem Ordner, in dem sich die `thandor.exe` befindet.
+- Dieser Ordner sollte eine `LEVEL.PCK` enthalten.
 
 <img src="../img/installation.png">
 
 ## Schritt 1 - Backup erstellen
 
--   Kopiere das Spielverzeichnis, um ein Backup zu erstellen.
+- Kopiere das Spielverzeichnis, um ein Backup zu erstellen.
 
 <img src="../img/create-backup.png">
 
 ## Schritt 2 - Start PCK-Extractor
 
--   Besuche <https://morodar.github.io/InvasionEdit> und starte den `PCK Extractor`
+- Besuche <https://morodar.github.io/InvasionEdit> und starte den `PCK Extractor`
 
 ## Schritt 3 - Extrahiere LEVEL.PCK
 
--   Klicke auf `PCK-DATEI EXTRAHIEREN`
--   Wähle deine `LEVEL.PCK` aus
--   Klicke auf `ZIP SPEICHERN`, um die extrahierte Datei zu als Archiv zu speichern.
+- Klicke auf `PCK-DATEI EXTRAHIEREN`
+- Wähle deine `LEVEL.PCK` aus
+- Klicke auf `ZIP SPEICHERN`, um die extrahierte Datei zu als Archiv zu speichern.
 
 <img src="../img/extract-level-pck.png">
 
 ## Schritt 4 - Extrahiere LEVEL.PCK.zip
 
--   Öffne `LEVEL.PCK.zip` und extrahiere den `level`-Ordner in dein Thandor Verzeichnis.
+- Öffne `LEVEL.PCK.zip` und extrahiere den `level`-Ordner in dein Thandor Verzeichnis.
 
 <img src="../img/extract-level-pck-zip.png">
 
 ## Schritt 5 - Lösche LEVEL.PCK
 
--   Lösche `LEVEL.PCK`
--   _Thandor wird die Levels aus dem `level`-Verzeichnis laden_
+- Lösche `LEVEL.PCK`
+- _Thandor wird die Levels aus dem `level`-Verzeichnis laden_
 
 <img src="../img/delete-lvl-pck.png">
 
 ## Schritt 6 - (Optional) Erstelle ein Backup für die FLD Dateien
 
--   Im `level`-Verzeichnis findest du alle Thandor-Levels.
--   Erstelle ggf. eine Sicherung der FLD-Dateien. Kopiere beispielsweise `asgard.fld` und bennene die Kopie in `asgard.bak.fld` um.
+- Im `level`-Verzeichnis findest du alle Thandor-Levels.
+- Erstelle ggf. eine Sicherung der FLD-Dateien. Kopiere beispielsweise `asgard.fld` und bennene die Kopie in `asgard.bak.fld` um.
 
 <img src="../img/backup-fld.png">
 
 ## Schritt 7 - Edit, Download, Play
 
--   Verwende den FLD-Editor, um die FLD-Dateien zu editieren.
--   Speichere und lade die überarbeite FLD Dateien nach dem Editieren herunter.
--   Verschiebe und ersetze die existierenden FLD Dateien im `level`-Ordner, um die überarbeitete Levels in Thandor zu spielen!
-    -   Wenn du `asgard.fld` überarbeitet hast, ersetze die `asgard.fld` Datei.
-    -   Thandor wird keine anderen Dateinamen laden!
+- Verwende den FLD-Editor, um die FLD-Dateien zu editieren.
+- Speichere und lade die überarbeite FLD Dateien nach dem Editieren herunter.
+- Verschiebe und ersetze die existierenden FLD Dateien im `level`-Ordner, um die überarbeitete Levels in Thandor zu spielen!
+  - Wenn du `asgard.fld` überarbeitet hast, ersetze die `asgard.fld` Datei.
+  - Thandor wird keine anderen Dateinamen laden!
 
 _In der Zukunft wird es eventuell möglich sein, neue Levels zu erstellen. Fürs Erste aber, können wir existierende Levels überarbeiten!_
 
