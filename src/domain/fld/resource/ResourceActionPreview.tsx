@@ -1,9 +1,9 @@
 import { Color } from "@react-three/fiber";
 import { useFldPrimaryActionContext } from "../action-bar/FldPrimaryActionContext";
 import { ActiveResource, useResourceActionContext } from "./ResourceActionContext";
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { Dispatch, useEffect, useMemo, useRef } from "react";
 import { useCursorContext } from "../../../common/controls/CursorContext";
-import { FldFile, IndexValue, getRelativePoints } from "../FldFile";
+import { FldFile, getRelativePoints } from "../FldFile";
 import { useFldMapContext } from "../FldMapContext";
 import { useLeftClickHoldAction } from "../../../common/controls/useLeftClickHoldAction";
 import { FldAction } from "../FldReducer";
@@ -39,17 +39,12 @@ const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
     const { width, height } = fldFile;
     const { activeResource, size } = useResourceActionContext();
-    const [points, setPoints] = useState<IndexValue[]>([]);
+    const points = useMemo(() => getRelativePoints(fldFile, hoveredPoint, size, size), [fldFile, hoveredPoint, size]);
     const instancedMeshRef = useRef<InstancedMesh>(null!);
 
     const color = ACTION_COLOR[activeResource];
 
     useLeftClickHoldAction(() => dispatch({ type: "RESOURCE", points, resource: activeResource }), [points]);
-
-    useEffect(() => {
-        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size);
-        setPoints(relativePoints);
-    }, [fldFile, hoveredPoint, size]);
 
     useEffect(() => {
         points.forEach((p, i) => {

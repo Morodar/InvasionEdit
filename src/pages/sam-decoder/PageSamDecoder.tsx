@@ -44,10 +44,14 @@ const PageSamDecoder = () => {
 
     return (
         <MainLayout mainMaxWidth={900}>
-            <Typography variant="h3" component="h2" display="block" gutterBottom>
+            <Typography variant="h3" component="h2" gutterBottom sx={{
+                display: "block"
+            }}>
                 {samDecoder}
             </Typography>
-            <Stack gap="16px">
+            <Stack sx={{
+                gap: "16px"
+            }}>
                 <ParseFailedError failed={parseFailed} />
                 <AboutCard onFileChanged={handleFileChanged} disableSelection={isParsing} />
                 {pcmData && <SamPlayer pcmDataView={pcmData} />}

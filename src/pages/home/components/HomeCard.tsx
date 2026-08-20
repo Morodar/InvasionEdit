@@ -17,7 +17,9 @@ export const HomeCard = ({ description, imgUrl, linkDest, linkText, title }: Hom
                 <Typography gutterBottom variant="h5" component="h3">
                     {title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" sx={{
+                    color: "text.secondary"
+                }}>
                     {description}
                 </Typography>
             </CardContent>

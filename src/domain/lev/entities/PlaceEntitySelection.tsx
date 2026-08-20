@@ -29,7 +29,12 @@ const Content = ({ playerCount, dispatch }: { playerCount: PlayerCount; dispatch
 
     return (
         <div>
-            <Stack direction="row" gap="16px" justifyContent="space-between">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    justifyContent: "space-between"
+                }}>
                 <Stack className="owner-selection" direction="row">
                     {placeablePlayers.map((o) => (
                         <div
@@ -41,7 +46,9 @@ const Content = ({ playerCount, dispatch }: { playerCount: PlayerCount; dispatch
                         </div>
                     ))}
                 </Stack>
-                <Stack direction="row" gap="4px">
+                <Stack direction="row" sx={{
+                    gap: "4px"
+                }}>
                     <Tooltip title={t("action.remove-player")}>
                         <IconButton onClick={() => dispatch({ type: "SET_PLAYER_COUNT", count: playerCount - 1 })}>
                             <RemoveIcon sx={{ fontSize: 16 }} />
@@ -54,7 +61,9 @@ const Content = ({ playerCount, dispatch }: { playerCount: PlayerCount; dispatch
                     </Tooltip>
                 </Stack>
             </Stack>
-            <Stack className="place-entity-container" direction="row" gap="8px">
+            <Stack className="place-entity-container" direction="row" sx={{
+                gap: "8px"
+            }}>
                 {buildings.map((b) => (
                     <Stack
                         key={b}

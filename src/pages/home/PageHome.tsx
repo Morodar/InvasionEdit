@@ -15,18 +15,30 @@ const PageHome = () => {
     usePageTitle(home);
     return (
         <MainLayout>
-            <Stack gap="32px" direction="column">
+            <Stack direction="column" sx={{
+                gap: "32px"
+            }}>
                 <Typography variant="h3" component="h2" gutterBottom>
                     {home}
                 </Typography>
-                <Stack gap="32px" direction="row" flexWrap="wrap">
+                <Stack
+                    direction="row"
+                    sx={{
+                        gap: "32px",
+                        flexWrap: "wrap"
+                    }}>
                     <LevelEditorCard />
                     <FldEditorCard />
                 </Stack>
                 <Typography variant="h3" component="h2" gutterBottom>
                     {t("common.extractors")}
                 </Typography>
-                <Stack gap="32px" direction="row" flexWrap="wrap">
+                <Stack
+                    direction="row"
+                    sx={{
+                        gap: "32px",
+                        flexWrap: "wrap"
+                    }}>
                     <PckExtractorCard />
                     <SamDecoderCard />
                     <FlmDecoderCard />

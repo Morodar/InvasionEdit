@@ -24,7 +24,7 @@ const PRIMARY_ACTIONS: PrimaryAction[] = [
     { title: "action.primary.xenit-and-tritium", action: "RESOURCES", icon: DiamondIcon },
     { title: "action.primary.water", action: "WATER", icon: WaterIcon },
     { title: "action.primary.buildings", action: "BUILDING", icon: HouseIcon },
-    { title: "action.primary.buildings", action: "TEXTURES", icon: FormatPaintIcon },
+    { title: "action.primary.textures", action: "TEXTURES", icon: FormatPaintIcon },
 ];
 
 export const PirmaryActionBar = () => {
@@ -34,7 +34,14 @@ export const PirmaryActionBar = () => {
 
     return (
         <Card className="primary-action-bar">
-            <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center",
+                    height: "100%",
+                    width: "auto"
+                }}>
                 {PRIMARY_ACTIONS.map((action) => (
                     <PrimaryActionButton
                         key={action.title}

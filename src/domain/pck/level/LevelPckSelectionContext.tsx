@@ -39,16 +39,17 @@ export const LevelPckSelectionContextProvider: React.FC<PropsWithChildren> = ({ 
         [fldDispatch, levDispatch, levelPck?.levels],
     );
 
+    if (levelPck && selectedLevelIndex == undefined && levelPck.levels.length > 0) {
+        setSelectedLevelIndex(0);
+    }
+
     useEffect(() => {
-        // select first level when levelPck changes
-        if (levelPck && selectedLevelIndex == undefined && levelPck.levels.length > 0) {
-            const firstLevel = levelPck.levels[0];
-            selectLevel(firstLevel);
-            setSelectedLevelIndex(0);
-        } else if (!levelPck) {
-            setSelectedLevelIndex(undefined);
+        if (levelPck && selectedLevelIndex != undefined && levelPck.levels.length > 0) {
+            const level = levelPck.levels[selectedLevelIndex];
+            fldDispatch({ type: "SET_FLD", fldFile: level.fld });
+            levDispatch({ type: "SET_LEV", levFile: level.lev });
         }
-    }, [levelPck, selectLevel, selectedLevelIndex]);
+    }, [levelPck, selectedLevelIndex, fldDispatch, levDispatch]);
 
     useEffect(() => {
         if (selectedLevelIndex == undefined || levFile == undefined) {

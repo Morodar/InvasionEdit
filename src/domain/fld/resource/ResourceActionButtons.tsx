@@ -11,7 +11,14 @@ export const ResourceActionButtons = () => {
     const { activeResource, setActiveResource, size, setSize } = useResourceActionContext();
 
     return (
-        <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
+        <Stack
+            direction="row"
+            sx={{
+                gap: "16px",
+                alignItems: "center",
+                height: "100%",
+                width: "auto"
+            }}>
             <Tooltip title={t("actions.resource.remove")}>
                 <IconButton
                     color={getActionColor("DELETE", activeResource)}

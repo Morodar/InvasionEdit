@@ -1,8 +1,8 @@
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { Dispatch, useEffect, useMemo, useRef } from "react";
 import { useCursorContext } from "../../../common/controls/CursorContext";
 import { useFldMapContext } from "../FldMapContext";
 import { useFldPrimaryActionContext } from "../action-bar/FldPrimaryActionContext";
-import { FldFile, IndexValue, getRelativePoints } from "../FldFile";
+import { FldFile, getRelativePoints } from "../FldFile";
 import { FldAction } from "../FldReducer";
 import { useLandscapeActionContext } from "./LandscapeActionContext";
 import { useLeftClickHoldDelayAction } from "../../../common/controls/useLeftClickHoldDelayAction";
@@ -29,9 +29,9 @@ interface PreviewProps {
 const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
     const { activeAction, size, height: absoluteHeight, speed: stepsize } = useLandscapeActionContext();
-    const [points, setPoints] = useState<IndexValue[]>([]);
-    const [width, setWidth] = useState<number>(0);
-    const [height, setHeight] = useState<number>(0);
+    const points = useMemo(() => getRelativePoints(fldFile, hoveredPoint, size, size), [fldFile, hoveredPoint, size]);
+    const width = useMemo(() => new Set(points.map((p) => p.index % fldFile.width)).size, [points, fldFile.width]);
+    const height = useMemo(() => new Set(points.map((p) => fldFile.height - 1 - Math.floor(p.index / fldFile.width))).size, [points, fldFile.height, fldFile.width]);
 
     const planeMesh = useRef<Mesh>(null);
     const planeGeo = useRef<PlaneGeometry>(null);
@@ -42,13 +42,6 @@ const Preview = (props: PreviewProps) => {
         speed,
         [points],
     );
-
-    useEffect(() => {
-        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size);
-        setPoints(relativePoints);
-        setWidth(new Set(relativePoints.map((p) => p.index % fldFile.width)).size);
-        setHeight(new Set(relativePoints.map((p) => fldFile.height - 1 - Math.floor(p.index / fldFile.width))).size);
-    }, [fldFile, hoveredPoint, size]);
 
     useEffect(() => {
         if (planeGeo.current) {

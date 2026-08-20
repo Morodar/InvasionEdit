@@ -1,4 +1,4 @@
-import { DependencyList, EffectCallback, useEffect, useState } from "react";
+import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
 export const useKeyboardHoldDelayAction = (
     effect: EffectCallback,
@@ -6,45 +6,41 @@ export const useKeyboardHoldDelayAction = (
     cooldownMs: number,
     deps: DependencyList,
 ) => {
-    const [isKeyHeld, setIsKeyHeld] = useState(false);
-    const [isCooldown, setIsCooldown] = useState(false);
+    const isCooldownRef = useRef(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const effectRef = useRef(effect);
 
     useEffect(() => {
-        const handleMouseDown = (e: KeyboardEvent) => {
-            if (e.key === key) {
-                setIsKeyHeld(true);
+        effectRef.current = effect;
+    });
+
+    useEffect(() => {
+        const clearCooldown = () => {
+            if (timeoutRef.current != null) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+            isCooldownRef.current = false;
+        };
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === key && !isCooldownRef.current) {
+                effectRef.current();
+                isCooldownRef.current = true;
+                timeoutRef.current = setTimeout(() => {
+                    isCooldownRef.current = false;
+                    timeoutRef.current = null;
+                }, cooldownMs);
             }
         };
 
-        const handleMouseUp = (e: KeyboardEvent) => {
-            if (e.key === key) {
-                setIsKeyHeld(false);
-            }
-        };
-
-        window.addEventListener("keydown", handleMouseDown);
-        window.addEventListener("keyup", handleMouseUp);
+        window.addEventListener("keydown", handleKeyDown);
 
         return () => {
-            window.removeEventListener("keydown", handleMouseDown);
-            window.removeEventListener("keyup", handleMouseUp);
+            window.removeEventListener("keydown", handleKeyDown);
+            clearCooldown();
         };
-    }, [key]);
-
-    useEffect(() => {
-        if (!isCooldown) {
-            return;
-        }
-        const task = setTimeout(() => setIsCooldown(false), cooldownMs);
-        return () => {
-            clearTimeout(task);
-        };
-    }, [cooldownMs, isCooldown]);
-
-    useEffect(() => {
-        if (isKeyHeld && !isCooldown) {
-            effect();
-            setIsCooldown(true);
-        }
-    }, [effect, deps, isKeyHeld, isCooldown]);
+        // user needs control of deps. Ignoring the rule is okay here.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [key, cooldownMs, ...deps]);
 };

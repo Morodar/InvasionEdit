@@ -36,17 +36,23 @@ export const LevelPckFileSelection = (props: PropsWithChildren) => {
 
     return (
         <>
-            <Typography variant="h4" component="h2" display="block" gutterBottom>
+            <Typography variant="h4" component="h2" gutterBottom sx={{
+                display: "block"
+            }}>
                 {title}
             </Typography>
-            <Stack gap="16px">
+            <Stack sx={{
+                gap: "16px"
+            }}>
                 <Card>
                     <CardContent>
                         <H2 variant="h5">{t("lvl-editor.select-file")}</H2>
                         <span>
                             Choose your existing <em>level.pck</em> or <em>level00.pck</em> to get started.
                         </span>
-                        <Stack direction="row" justifyContent="end">
+                        <Stack direction="row" sx={{
+                            justifyContent: "end"
+                        }}>
                             <SelectFileButton onFileChanged={parsePckFile} accept=".pck" disabled={isParsing}>
                                 Select
                             </SelectFileButton>

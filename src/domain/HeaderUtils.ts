@@ -60,6 +60,6 @@ export class HeaderUtils {
         toIndex++;
         this.view.setUint8(toIndex++, date.getDate());
         this.view.setUint8(toIndex++, date.getMonth() + 1); // JavaScript Months start at 0
-        this.view.setUint16(toIndex++, date.getFullYear(), true);
+        this.view.setUint16(toIndex, date.getFullYear(), true);
     }
 }

@@ -9,7 +9,14 @@ export const WaterActionButtons = () => {
     const { activeAction, setActiveAction } = useWaterActionContext();
 
     return (
-        <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
+        <Stack
+            direction="row"
+            sx={{
+                gap: "16px",
+                alignItems: "center",
+                height: "100%",
+                width: "auto"
+            }}>
             <Tooltip title={t("actions.water.remove")}>
                 <IconButton color={getActionColor("DELETE", activeAction)} onClick={() => setActiveAction("DELETE")}>
                     <InvertColorsOffIcon sx={{ fontSize: 32 }} />

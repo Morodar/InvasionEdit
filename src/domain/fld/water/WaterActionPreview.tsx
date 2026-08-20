@@ -1,4 +1,4 @@
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { Dispatch, useEffect, useMemo, useRef } from "react";
 import { FldFile, IndexValue } from "../FldFile";
 import { FldAction } from "../FldReducer";
 import { useFldMapContext } from "../FldMapContext";
@@ -38,7 +38,7 @@ const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
     const { width, height } = fldFile;
     const { activeAction } = useWaterActionContext();
-    const [points, setPoints] = useState<IndexValue[]>([]);
+    const points = useMemo(() => getWaterPuddlePoints(fldFile, hoveredPoint), [fldFile, hoveredPoint]);
     const instancedMeshRef = useRef<InstancedMesh>(null!);
     const speed = 8;
     const color = ACTION_COLOR[activeAction];
@@ -54,11 +54,6 @@ const Preview = (props: PreviewProps) => {
         speed,
         [points],
     );
-
-    useEffect(() => {
-        const relativePoints = getWaterPuddlePoints(fldFile, hoveredPoint);
-        setPoints(relativePoints);
-    }, [fldFile, hoveredPoint]);
 
     useEffect(() => {
         points.forEach((p, i) => {
