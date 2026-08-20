@@ -66,7 +66,9 @@ const ShowFileInfo = (props: ShowFileInfo) => {
     const { fldFile } = props;
     if (!fldFile) {
         return (
-            <Typography variant="body1" display="block" gutterBottom>
+            <Typography variant="body1" gutterBottom sx={{
+                display: "block"
+            }}>
                 {t("fld-editor.select-fld-file")}
             </Typography>
         );

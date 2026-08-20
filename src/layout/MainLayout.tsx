@@ -29,7 +29,9 @@ export const MainLayout = ({
         <Typography component="div" className="main-layout">
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" component="h1" mr={2}>
+                    <Typography variant="h6" component="h1" sx={{
+                        mr: 2
+                    }}>
                         <Link to={HOME} className="link-no-decoration">
                             {t("common.app_name")}
                         </Link>

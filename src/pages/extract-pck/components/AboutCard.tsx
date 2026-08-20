@@ -15,7 +15,9 @@ export const AboutCard = (props: AboutCardProps) => {
             <CardContent>
                 <p>{t("pck-extractor.short-description")}</p>
 
-                <Stack direction="row" justifyContent="end">
+                <Stack direction="row" sx={{
+                    justifyContent: "end"
+                }}>
                     <SelectFileButton onFileChanged={onFileChanged} accept=".pck" disabled={disableSelection}>
                         {t("pck-extractor.extract-pck-file")}
                     </SelectFileButton>

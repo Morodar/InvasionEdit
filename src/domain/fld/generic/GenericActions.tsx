@@ -16,13 +16,21 @@ export const GenericActions = () => {
     return (
         <Stack
             direction="row"
-            gap="16px"
-            alignItems="center"
-            justifyContent="space-between"
-            height="100%"
-            width="550px"
+            sx={{
+                gap: "16px",
+                alignItems: "center",
+                justifyContent: "space-between",
+                height: "100%",
+                width: "550px",
+            }}
         >
-            <Stack direction="row" gap="16px" alignItems="center">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center",
+                }}
+            >
                 <MinMaxNumberInput
                     label={t("landscape.layer")}
                     min={0}
@@ -32,7 +40,13 @@ export const GenericActions = () => {
                 />
             </Stack>
 
-            <Stack direction="row" gap="16px" alignItems="center">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center",
+                }}
+            >
                 <Divider orientation="vertical" flexItem />
                 <Tooltip title={t("landscape.fix")}>
                     <IconButton color={getActionColor("FIX", activeAction)} onClick={() => setActiveAction("FIX")}>
@@ -69,7 +83,13 @@ export const GenericActions = () => {
                 <Divider orientation="vertical" flexItem />
             </Stack>
 
-            <Stack direction="row" gap="16px" alignItems="center">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center",
+                }}
+            >
                 {activeAction === "FIX" && (
                     <MinMaxNumberInput
                         label={t("landscape.height")}

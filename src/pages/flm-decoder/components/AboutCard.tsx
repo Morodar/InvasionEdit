@@ -15,7 +15,9 @@ export const AboutCard = (props: AboutCardProps) => {
             <CardContent>
                 <p>{t("flm-extractor.description-short")}</p>
 
-                <Stack direction="row" justifyContent="end">
+                <Stack direction="row" sx={{
+                    justifyContent: "end"
+                }}>
                     <SelectFileButton onFileChanged={onFileChanged} accept=".flm" disabled={disableSelection}>
                         {t("flm-extractor.select-file")}
                     </SelectFileButton>

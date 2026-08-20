@@ -58,7 +58,9 @@ export const PckHeaderInfo = (props: PckHeaderInfoProps) => {
                     )}
                 </ul>
                 {isLoading && (
-                    <Stack direction="row" justifyContent="center">
+                    <Stack direction="row" sx={{
+                        justifyContent: "center"
+                    }}>
                         <CircularProgress disableShrink />
                     </Stack>
                 )}

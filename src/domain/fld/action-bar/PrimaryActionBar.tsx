@@ -34,7 +34,14 @@ export const PirmaryActionBar = () => {
 
     return (
         <Card className="primary-action-bar">
-            <Stack direction="row" gap="16px" alignItems="center" height="100%" width="auto">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center",
+                    height: "100%",
+                    width: "auto"
+                }}>
                 {PRIMARY_ACTIONS.map((action) => (
                     <PrimaryActionButton
                         key={action.title}

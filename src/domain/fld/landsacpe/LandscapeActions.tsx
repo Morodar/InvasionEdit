@@ -15,13 +15,19 @@ export const LandscapeActions = () => {
     return (
         <Stack
             direction="row"
-            gap="16px"
-            alignItems="center"
-            justifyContent="space-between"
-            height="100%"
-            width="450px"
-        >
-            <Stack direction="row" gap="16px" alignItems="center">
+            sx={{
+                gap: "16px",
+                alignItems: "center",
+                justifyContent: "space-between",
+                height: "100%",
+                width: "450px"
+            }}>
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center"
+                }}>
                 <Tooltip title={t("landscape.fix")}>
                     <IconButton color={getActionColor("FIX", activeAction)} onClick={() => setActiveAction("FIX")}>
                         <GetAppIcon sx={{ fontSize: 32 }} />
@@ -57,7 +63,12 @@ export const LandscapeActions = () => {
                 <Divider orientation="vertical" flexItem />
             </Stack>
 
-            <Stack direction="row" gap="16px" alignItems="center">
+            <Stack
+                direction="row"
+                sx={{
+                    gap: "16px",
+                    alignItems: "center"
+                }}>
                 {activeAction === "FIX" && (
                     <MinMaxNumberInput
                         label={t("landscape.height")}

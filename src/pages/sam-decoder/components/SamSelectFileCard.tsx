@@ -15,7 +15,9 @@ export const AboutCard = (props: AboutCardProps) => {
             <CardContent>
                 <p>{t("sam-decoder.short-description")}</p>
 
-                <Stack direction="row" justifyContent="end">
+                <Stack direction="row" sx={{
+                    justifyContent: "end"
+                }}>
                     <SelectFileButton onFileChanged={onFileChanged} accept=".sam" disabled={disableSelection}>
                         {t("sam-decoder.select-file")}
                     </SelectFileButton>
