@@ -24,7 +24,7 @@ const PRIMARY_ACTIONS: PrimaryAction[] = [
     { title: "action.primary.xenit-and-tritium", action: "RESOURCES", icon: DiamondIcon },
     { title: "action.primary.water", action: "WATER", icon: WaterIcon },
     { title: "action.primary.buildings", action: "BUILDING", icon: HouseIcon },
-    { title: "action.primary.buildings", action: "TEXTURES", icon: FormatPaintIcon },
+    { title: "action.primary.textures", action: "TEXTURES", icon: FormatPaintIcon },
 ];
 
 export const PirmaryActionBar = () => {

@@ -85,7 +85,8 @@
             "xenit-and-tritium": "Xenit & Tritium",
             "generic": "Generic",
             "water": "Water",
-            "buildings": "Buildings"
+            "buildings": "Buildings",
+            "textures": "Textures"
         },
         "add-player": "Add player",
         "remove-player": "Remove player"
