@@ -20,29 +20,29 @@ export const SAM_DECODER = "/patch/sam";
 export const FLM_DECODER = "/patch/flm";
 
 export const AppRoutes = () => {
-    return (
-        <ThemeProvider theme={darkTheme}>
-            <HashRouter>
-                <Suspense fallback={<LoadingBar />}>
-                    <Routes>
-                        <Route path={EXTRACT_PCK} element={<PagePckExtractor />} />
-                        <Route path={EDIT_FLD} element={<PageEditFld />} />
-                        <Route path={EDIT_LVL} element={<PageEditLevel />} />
-                        <Route path={SAM_DECODER} element={<PageSamDecoder />} />
-                        <Route path={FLM_DECODER} element={<PageFlmDecoder />} />
-                        <Route path={HOME} element={<PageHome />} />
-                        <Route path="/*" element={<Navigate to={HOME} />} />
-                    </Routes>
-                </Suspense>
-            </HashRouter>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <HashRouter>
+        <Suspense fallback={<LoadingBar />}>
+          <Routes>
+            <Route path={EXTRACT_PCK} element={<PagePckExtractor />} />
+            <Route path={EDIT_FLD} element={<PageEditFld />} />
+            <Route path={EDIT_LVL} element={<PageEditLevel />} />
+            <Route path={SAM_DECODER} element={<PageSamDecoder />} />
+            <Route path={FLM_DECODER} element={<PageFlmDecoder />} />
+            <Route path={HOME} element={<PageHome />} />
+            <Route path="/*" element={<Navigate to={HOME} />} />
+          </Routes>
+        </Suspense>
+      </HashRouter>
+    </ThemeProvider>
+  );
 };
 
 const LoadingBar = () => {
-    return (
-        <MainLayout withPadding={false}>
-            <LinearProgress />
-        </MainLayout>
-    );
+  return (
+    <MainLayout withPadding={false}>
+      <LinearProgress />
+    </MainLayout>
+  );
 };

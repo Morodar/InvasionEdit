@@ -17,46 +17,46 @@ import { GenericActionContextProvider } from "../../../domain/fld/generic/Generi
 import { WaterActionContextProvider } from "../../../domain/fld/water/WaterActionContext";
 
 const PageEditFld = (): React.JSX.Element => {
-    const { t } = useTranslation();
-    const fldEditor = t("fld-editor.title");
-    usePageTitle(fldEditor);
+  const { t } = useTranslation();
+  const fldEditor = t("fld-editor.title");
+  usePageTitle(fldEditor);
 
-    return (
-        <LayerViewContextProvider>
-            <DebugSettingsContextProvider>
-                <CursorContextProvider>
-                    <FldPrimaryActionContextProvider>
-                        <LandscapeActionContextProvider>
-                            <ResourceActionContextProvider>
-                                <WaterActionContextProvider>
-                                    <GenericActionContextProvider>
-                                        <FldMapContextProvider>
-                                            <MainLayout
-                                                withPadding={false}
-                                                centerElements={<FldName />}
-                                                rightSideElements={<RightSideElements />}
-                                            >
-                                                <FldView />
-                                            </MainLayout>
-                                        </FldMapContextProvider>
-                                    </GenericActionContextProvider>
-                                </WaterActionContextProvider>
-                            </ResourceActionContextProvider>
-                        </LandscapeActionContextProvider>
-                    </FldPrimaryActionContextProvider>
-                </CursorContextProvider>
-            </DebugSettingsContextProvider>
-        </LayerViewContextProvider>
-    );
+  return (
+    <LayerViewContextProvider>
+      <DebugSettingsContextProvider>
+        <CursorContextProvider>
+          <FldPrimaryActionContextProvider>
+            <LandscapeActionContextProvider>
+              <ResourceActionContextProvider>
+                <WaterActionContextProvider>
+                  <GenericActionContextProvider>
+                    <FldMapContextProvider>
+                      <MainLayout
+                        withPadding={false}
+                        centerElements={<FldName />}
+                        rightSideElements={<RightSideElements />}
+                      >
+                        <FldView />
+                      </MainLayout>
+                    </FldMapContextProvider>
+                  </GenericActionContextProvider>
+                </WaterActionContextProvider>
+              </ResourceActionContextProvider>
+            </LandscapeActionContextProvider>
+          </FldPrimaryActionContextProvider>
+        </CursorContextProvider>
+      </DebugSettingsContextProvider>
+    </LayerViewContextProvider>
+  );
 };
 export default PageEditFld;
 
 const RightSideElements = () => {
-    return (
-        <>
-            <DebugSettingsButton />
-            <ChooseFldButton />
-            <SaveFldButton />
-        </>
-    );
+  return (
+    <>
+      <DebugSettingsButton />
+      <ChooseFldButton />
+      <SaveFldButton />
+    </>
+  );
 };

@@ -2,16 +2,16 @@ import { Alert } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 interface ParseFailedErrorProps {
-    failed: boolean;
+  failed: boolean;
 }
 
 export const ParseFailedError = (props: ParseFailedErrorProps) => {
-    const { failed } = props;
-    const { t } = useTranslation();
+  const { failed } = props;
+  const { t } = useTranslation();
 
-    if (!failed) {
-        return <></>;
-    }
+  if (!failed) {
+    return <></>;
+  }
 
-    return <Alert severity="warning">{t("exe-patcher.unknown-error")}</Alert>;
+  return <Alert severity="warning">{t("exe-patcher.unknown-error")}</Alert>;
 };

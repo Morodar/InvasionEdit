@@ -6,22 +6,22 @@ import { useEditLevelContext } from "../../../pages/edit/level/EditLevelContext"
 import { LevelUtils } from "../../level/LevelUtils";
 
 export const SaveLevelButton = () => {
-    const { t } = useTranslation();
-    const { levelPck } = useEditLevelContext();
+  const { t } = useTranslation();
+  const { levelPck } = useEditLevelContext();
 
-    const downloadFile = () => {
-        if (levelPck) {
-            const file: File = LevelUtils.buildLevelFile(levelPck);
-            const blob = new Blob([file], { type: file.type });
-            saveAs(blob, file.name);
-        }
-    };
+  const downloadFile = () => {
+    if (levelPck) {
+      const file: File = LevelUtils.buildLevelFile(levelPck);
+      const blob = new Blob([file], { type: file.type });
+      saveAs(blob, file.name);
+    }
+  };
 
-    return (
-        <IconButton disabled={!levelPck} onClick={downloadFile}>
-            <Tooltip title={t("lvl-editor.save-levels")}>
-                <SaveIcon />
-            </Tooltip>
-        </IconButton>
-    );
+  return (
+    <IconButton disabled={!levelPck} onClick={downloadFile}>
+      <Tooltip title={t("lvl-editor.save-levels")}>
+        <SaveIcon />
+      </Tooltip>
+    </IconButton>
+  );
 };

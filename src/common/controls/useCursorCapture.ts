@@ -8,77 +8,77 @@ import { Mesh, Raycaster } from "three";
 const raycaster = new Raycaster();
 
 export const useCursorCapture = (meshRef: RefObject<Mesh | null>) => {
-    const { camera, pointer, gl } = useThree();
-    const { hoveredPoint, setHoveredPoint, setMeshPoint, setRawPoint } = useCursorContext();
-    const { fldFile } = useFldMapContext();
+  const { camera, pointer, gl } = useThree();
+  const { hoveredPoint, setHoveredPoint, setMeshPoint, setRawPoint } = useCursorContext();
+  const { fldFile } = useFldMapContext();
 
-    const [lastIndex, setLastIndex] = useState<number>();
-    const [lastX, setLastX] = useState(0);
-    const [lastY, setLastY] = useState(0);
-    const [lastCamX, setLastCamX] = useState(0);
-    const [lastCamZ, setLastCamZ] = useState(0);
-    const [isMouseOver, setIsMouseOver] = useState(false);
+  const [lastIndex, setLastIndex] = useState<number>();
+  const [lastX, setLastX] = useState(0);
+  const [lastY, setLastY] = useState(0);
+  const [lastCamX, setLastCamX] = useState(0);
+  const [lastCamZ, setLastCamZ] = useState(0);
+  const [isMouseOver, setIsMouseOver] = useState(false);
 
-    useFrame(() => {
-        if (!isMouseOver) {
-            if (hoveredPoint !== undefined) {
-                setHoveredPoint(undefined);
-                setMeshPoint(undefined);
-                setRawPoint(undefined);
-            }
-            return;
+  useFrame(() => {
+    if (!isMouseOver) {
+      if (hoveredPoint !== undefined) {
+        setHoveredPoint(undefined);
+        setMeshPoint(undefined);
+        setRawPoint(undefined);
+      }
+      return;
+    }
+
+    if (
+      lastX === pointer.x &&
+      lastY === pointer.y &&
+      camera.position.x === lastCamX &&
+      camera.position.z === lastCamZ
+    ) {
+      return;
+    }
+
+    setLastX(pointer.x);
+    setLastY(pointer.y);
+    setLastCamX(camera.position.x);
+    setLastCamZ(camera.position.z);
+
+    if (meshRef.current && fldFile) {
+      const { width, layers } = fldFile;
+      const points = layers[Layer.Landscape];
+      raycaster.setFromCamera(pointer, camera);
+      const intersects = raycaster.intersectObject(meshRef.current);
+      if (intersects.length > 0) {
+        const point = intersects[0].point;
+        const x = Math.floor(point.x / -1.999);
+        const z = Math.floor((point.z - x * 1.152) / 2.305);
+        const index = (x + 1) * width + z - width;
+        if (index !== lastIndex && index < points.byteLength) {
+          setMeshPoint({ x, z, value: Math.round(point.y) });
+          setHoveredPoint(index);
+          setLastIndex(index);
         }
-
-        if (
-            lastX === pointer.x &&
-            lastY === pointer.y &&
-            camera.position.x === lastCamX &&
-            camera.position.z === lastCamZ
-        ) {
-            return;
+        setRawPoint({ x: point.x, z: point.z, value: point.y });
+      } else {
+        if (hoveredPoint !== undefined) {
+          setHoveredPoint(undefined);
+          setMeshPoint(undefined);
+          setRawPoint(undefined);
         }
+      }
+    }
+  });
 
-        setLastX(pointer.x);
-        setLastY(pointer.y);
-        setLastCamX(camera.position.x);
-        setLastCamZ(camera.position.z);
+  useEffect(() => {
+    const handleMouseEnter = () => setIsMouseOver(true);
+    const handleMouseLeave = () => setIsMouseOver(false);
 
-        if (meshRef.current && fldFile) {
-            const { width, layers } = fldFile;
-            const points = layers[Layer.Landscape];
-            raycaster.setFromCamera(pointer, camera);
-            const intersects = raycaster.intersectObject(meshRef.current);
-            if (intersects.length > 0) {
-                const point = intersects[0].point;
-                const x = Math.floor(point.x / -1.999);
-                const z = Math.floor((point.z - x * 1.152) / 2.305);
-                const index = (x + 1) * width + z - width;
-                if (index !== lastIndex && index < points.byteLength) {
-                    setMeshPoint({ x, z, value: Math.round(point.y) });
-                    setHoveredPoint(index);
-                    setLastIndex(index);
-                }
-                setRawPoint({ x: point.x, z: point.z, value: point.y });
-            } else {
-                if (hoveredPoint !== undefined) {
-                    setHoveredPoint(undefined);
-                    setMeshPoint(undefined);
-                    setRawPoint(undefined);
-                }
-            }
-        }
-    });
+    gl.domElement.addEventListener("mouseenter", handleMouseEnter);
+    gl.domElement.addEventListener("mouseleave", handleMouseLeave);
 
-    useEffect(() => {
-        const handleMouseEnter = () => setIsMouseOver(true);
-        const handleMouseLeave = () => setIsMouseOver(false);
-
-        gl.domElement.addEventListener("mouseenter", handleMouseEnter);
-        gl.domElement.addEventListener("mouseleave", handleMouseLeave);
-
-        return () => {
-            gl.domElement.removeEventListener("mouseenter", handleMouseEnter);
-            gl.domElement.removeEventListener("mouseleave", handleMouseLeave);
-        };
-    }, [gl]);
+    return () => {
+      gl.domElement.removeEventListener("mouseenter", handleMouseEnter);
+      gl.domElement.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [gl]);
 };

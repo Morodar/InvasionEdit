@@ -1,3 +1,3 @@
 export const SamSaveCard = () => {
-    return <></>;
+  return <></>;
 };

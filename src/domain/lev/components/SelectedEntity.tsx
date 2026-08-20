@@ -9,33 +9,33 @@ import { useSelectedEntityContext } from "../entities/SelectedEntityContext";
 import { entityTypeToImage, entityTypeToName } from "../constants/Entities";
 
 interface EntityInfoProps {
-    entity?: LevEntity;
+  entity?: LevEntity;
 }
 
 export const EntityInfo = ({ entity }: EntityInfoProps) => {
-    const { dispatch } = useLevContext();
-    const { setSelectedEntity } = useSelectedEntityContext();
-    if (!entity) {
-        return <></>;
-    }
+  const { dispatch } = useLevContext();
+  const { setSelectedEntity } = useSelectedEntityContext();
+  if (!entity) {
+    return <></>;
+  }
 
-    return (
-        <div className="selected-entity">
-            <div className="title">
-                <OwnerColor owner={entity.owner} />
-                <H2 variant="subtitle1">{entityTypeToName(entity.type)}</H2>
-                <IconButton
-                    onClick={() => {
-                        dispatch({ type: "REMOVE_ENTITY", entity });
-                        setSelectedEntity(undefined);
-                    }}
-                >
-                    <DeleteIcon />
-                </IconButton>
-            </div>
-            <div className="image">
-                <img src={entityTypeToImage(entity.type)} width={128} height={128} />
-            </div>
-        </div>
-    );
+  return (
+    <div className="selected-entity">
+      <div className="title">
+        <OwnerColor owner={entity.owner} />
+        <H2 variant="subtitle1">{entityTypeToName(entity.type)}</H2>
+        <IconButton
+          onClick={() => {
+            dispatch({ type: "REMOVE_ENTITY", entity });
+            setSelectedEntity(undefined);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </div>
+      <div className="image">
+        <img src={entityTypeToImage(entity.type)} width={128} height={128} />
+      </div>
+    </div>
+  );
 };

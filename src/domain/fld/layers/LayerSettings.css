@@ -1,8 +1,8 @@
 .map-view .layer-settings {
-    width: 250px;
+  width: 250px;
 }
 
 .map-view .layer-settings .list-container {
-    max-height: calc(80vh - 80px);
-    overflow-y: auto;
+  max-height: calc(80vh - 80px);
+  overflow-y: auto;
 }

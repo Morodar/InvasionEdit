@@ -14,70 +14,94 @@ import RemoveIcon from "@mui/icons-material/Remove";
 const buildings: number[] = [300, 301, 310, 330, 331, 332, 333, 382, 381, 380];
 
 export const PlaceEntitySelection = () => {
-    const { levFile, dispatch } = useLevContext();
-    if (levFile == null) {
-        return <></>;
-    }
+  const { levFile, dispatch } = useLevContext();
+  if (levFile == null) {
+    return <></>;
+  }
 
-    return <Content playerCount={levFile.playerCount1 as PlayerCount} dispatch={dispatch} />;
+  return <Content playerCount={levFile.playerCount1 as PlayerCount} dispatch={dispatch} />;
 };
 
-const Content = ({ playerCount, dispatch }: { playerCount: PlayerCount; dispatch: Dispatch<LevAction> }) => {
-    const { t } = useTranslation();
-    const { placingEntity, setPlacingEntity, owner, setOwner } = usePlaceEntityContext();
-    const placeablePlayers = usePlaceablePlayers(playerCount);
+const Content = ({
+  playerCount,
+  dispatch,
+}: {
+  playerCount: PlayerCount;
+  dispatch: Dispatch<LevAction>;
+}) => {
+  const { t } = useTranslation();
+  const { placingEntity, setPlacingEntity, owner, setOwner } = usePlaceEntityContext();
+  const placeablePlayers = usePlaceablePlayers(playerCount);
 
-    return (
-        <div>
-            <Stack
-                direction="row"
-                sx={{
-                    gap: "16px",
-                    justifyContent: "space-between"
-                }}>
-                <Stack className="owner-selection" direction="row">
-                    {placeablePlayers.map((o) => (
-                        <div
-                            key={o}
-                            onClick={() => setOwner(o)}
-                            className={o == owner ? "owner-item selected" : "owner-item"}
-                        >
-                            <OwnerColor owner={o} />
-                        </div>
-                    ))}
-                </Stack>
-                <Stack direction="row" sx={{
-                    gap: "4px"
-                }}>
-                    <Tooltip title={t("action.remove-player")}>
-                        <IconButton onClick={() => dispatch({ type: "SET_PLAYER_COUNT", count: playerCount - 1 })}>
-                            <RemoveIcon sx={{ fontSize: 16 }} />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title={t("action.add-player")}>
-                        <IconButton onClick={() => dispatch({ type: "SET_PLAYER_COUNT", count: playerCount + 1 })}>
-                            <AddIcon sx={{ fontSize: 16 }} />
-                        </IconButton>
-                    </Tooltip>
-                </Stack>
-            </Stack>
-            <Stack className="place-entity-container" direction="row" sx={{
-                gap: "8px"
-            }}>
-                {buildings.map((b) => (
-                    <Stack
-                        key={b}
-                        className={b == placingEntity ? "entity selected" : "entity"}
-                        onClick={() => setPlacingEntity(b)}
-                    >
-                        <img alt="" title={entityTypeToName(b)} src={entityTypeToImage(b)} width={64} height={64} />
-                    </Stack>
-                ))}
-            </Stack>
-        </div>
-    );
+  return (
+    <div>
+      <Stack
+        direction="row"
+        sx={{
+          gap: "16px",
+          justifyContent: "space-between",
+        }}
+      >
+        <Stack className="owner-selection" direction="row">
+          {placeablePlayers.map((o) => (
+            <div
+              key={o}
+              onClick={() => setOwner(o)}
+              className={o == owner ? "owner-item selected" : "owner-item"}
+            >
+              <OwnerColor owner={o} />
+            </div>
+          ))}
+        </Stack>
+        <Stack
+          direction="row"
+          sx={{
+            gap: "4px",
+          }}
+        >
+          <Tooltip title={t("action.remove-player")}>
+            <IconButton
+              onClick={() => dispatch({ type: "SET_PLAYER_COUNT", count: playerCount - 1 })}
+            >
+              <RemoveIcon sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t("action.add-player")}>
+            <IconButton
+              onClick={() => dispatch({ type: "SET_PLAYER_COUNT", count: playerCount + 1 })}
+            >
+              <AddIcon sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Stack>
+      <Stack
+        className="place-entity-container"
+        direction="row"
+        sx={{
+          gap: "8px",
+        }}
+      >
+        {buildings.map((b) => (
+          <Stack
+            key={b}
+            className={b == placingEntity ? "entity selected" : "entity"}
+            onClick={() => setPlacingEntity(b)}
+          >
+            <img
+              alt=""
+              title={entityTypeToName(b)}
+              src={entityTypeToImage(b)}
+              width={64}
+              height={64}
+            />
+          </Stack>
+        ))}
+      </Stack>
+    </div>
+  );
 };
 
 function usePlaceablePlayers(count: PlayerCount): Owner[] {
-    return PlaceablePlayers.slice(0, count);
+  return PlaceablePlayers.slice(0, count);
 }

@@ -13,78 +13,85 @@ import { OverridableComponent } from "@mui/material/OverridableComponent";
 import DiamondIcon from "@mui/icons-material/Diamond";
 
 type PrimaryAction = {
-    title: string;
-    action: FldPrimaryAction;
-    icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & { muiName: string };
+  title: string;
+  action: FldPrimaryAction;
+  icon: OverridableComponent<SvgIconTypeMap<object, "svg">> & { muiName: string };
 };
 
 const PRIMARY_ACTIONS: PrimaryAction[] = [
-    { title: "action.primary.clear-selection", action: "CLEAR", icon: ClearIcon },
-    { title: "action.primary.landscape", action: "LANDSCAPE", icon: LandscapeIcon },
-    { title: "action.primary.xenit-and-tritium", action: "RESOURCES", icon: DiamondIcon },
-    { title: "action.primary.water", action: "WATER", icon: WaterIcon },
-    { title: "action.primary.buildings", action: "BUILDING", icon: HouseIcon },
-    { title: "action.primary.textures", action: "TEXTURES", icon: FormatPaintIcon },
+  { title: "action.primary.clear-selection", action: "CLEAR", icon: ClearIcon },
+  { title: "action.primary.landscape", action: "LANDSCAPE", icon: LandscapeIcon },
+  { title: "action.primary.xenit-and-tritium", action: "RESOURCES", icon: DiamondIcon },
+  { title: "action.primary.water", action: "WATER", icon: WaterIcon },
+  { title: "action.primary.buildings", action: "BUILDING", icon: HouseIcon },
+  { title: "action.primary.textures", action: "TEXTURES", icon: FormatPaintIcon },
 ];
 
 export const PirmaryActionBar = () => {
-    const { t } = useTranslation();
-    const { primaryAction, setPrimaryAction } = useFldPrimaryActionContext();
-    const { debugSettings } = useDebugSettingsContext();
+  const { t } = useTranslation();
+  const { primaryAction, setPrimaryAction } = useFldPrimaryActionContext();
+  const { debugSettings } = useDebugSettingsContext();
 
-    return (
-        <Card className="primary-action-bar">
-            <Stack
-                direction="row"
-                sx={{
-                    gap: "16px",
-                    alignItems: "center",
-                    height: "100%",
-                    width: "auto"
-                }}>
-                {PRIMARY_ACTIONS.map((action) => (
-                    <PrimaryActionButton
-                        key={action.title}
-                        title={action.title}
-                        action={action.action}
-                        icon={action.icon}
-                        primaryAction={primaryAction}
-                        setPrimaryAction={setPrimaryAction}
-                    />
-                ))}
+  return (
+    <Card className="primary-action-bar">
+      <Stack
+        direction="row"
+        sx={{
+          gap: "16px",
+          alignItems: "center",
+          height: "100%",
+          width: "auto",
+        }}
+      >
+        {PRIMARY_ACTIONS.map((action) => (
+          <PrimaryActionButton
+            key={action.title}
+            title={action.title}
+            action={action.action}
+            icon={action.icon}
+            primaryAction={primaryAction}
+            setPrimaryAction={setPrimaryAction}
+          />
+        ))}
 
-                {debugSettings.showAllLayers && (
-                    <Tooltip title={t("action.primary.generic")}>
-                        <IconButton
-                            color={getColor("GENERIC", primaryAction)}
-                            onClick={() => setPrimaryAction("GENERIC")}
-                        >
-                            <MiscellaneousServicesIcon sx={{ fontSize: 32 }} />
-                        </IconButton>
-                    </Tooltip>
-                )}
-            </Stack>
-        </Card>
-    );
+        {debugSettings.showAllLayers && (
+          <Tooltip title={t("action.primary.generic")}>
+            <IconButton
+              color={getColor("GENERIC", primaryAction)}
+              onClick={() => setPrimaryAction("GENERIC")}
+            >
+              <MiscellaneousServicesIcon sx={{ fontSize: 32 }} />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Stack>
+    </Card>
+  );
 };
 
 type PrimaryActionButtonProps = PrimaryAction & {
-    primaryAction: FldPrimaryAction;
-    setPrimaryAction: (action: FldPrimaryAction) => void;
+  primaryAction: FldPrimaryAction;
+  setPrimaryAction: (action: FldPrimaryAction) => void;
 };
 
-const PrimaryActionButton = ({ title, primaryAction, icon, action, setPrimaryAction }: PrimaryActionButtonProps) => {
-    const { t } = useTranslation();
-    const Icon = icon;
-    return (
-        <Tooltip title={t(title)}>
-            <IconButton color={getColor(action, primaryAction)} onClick={() => setPrimaryAction(action)}>
-                <Icon sx={{ fontSize: 32 }} />
-            </IconButton>
-        </Tooltip>
-    );
+const PrimaryActionButton = ({
+  title,
+  primaryAction,
+  icon,
+  action,
+  setPrimaryAction,
+}: PrimaryActionButtonProps) => {
+  const { t } = useTranslation();
+  const Icon = icon;
+  return (
+    <Tooltip title={t(title)}>
+      <IconButton color={getColor(action, primaryAction)} onClick={() => setPrimaryAction(action)}>
+        <Icon sx={{ fontSize: 32 }} />
+      </IconButton>
+    </Tooltip>
+  );
 };
 
 function getColor(primaryAction: FldPrimaryAction, currentAction: FldPrimaryAction) {
-    return primaryAction === currentAction ? "primary" : "default";
+  return primaryAction === currentAction ? "primary" : "default";
 }

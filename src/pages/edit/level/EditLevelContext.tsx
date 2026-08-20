@@ -16,54 +16,56 @@ import { SelectedEntityContextProvider } from "../../../domain/lev/entities/Sele
 import { PlaceEntityContextProvider } from "../../../domain/lev/entities/PlaceEntityContext";
 
 export interface EditLevelContextProps {
-    levelPck?: LevelPck;
-    setLevelPck: React.Dispatch<SetStateAction<LevelPck | undefined>>;
+  levelPck?: LevelPck;
+  setLevelPck: React.Dispatch<SetStateAction<LevelPck | undefined>>;
 }
 
 export const EditLevelContext = createContext<EditLevelContextProps | undefined>(undefined);
 
 export const useEditLevelContext = (): EditLevelContextProps => {
-    const context = useContext(EditLevelContext);
-    if (!context) {
-        throw new Error("EditLevelContext not initialized");
-    }
-    return context;
+  const context = useContext(EditLevelContext);
+  if (!context) {
+    throw new Error("EditLevelContext not initialized");
+  }
+  return context;
 };
 
-export const EditLevelContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
-    const [levelPck, setLevelPck] = useState<LevelPck>();
+export const EditLevelContextProvider: React.FC<PropsWithChildren> = ({
+  children,
+}: PropsWithChildren) => {
+  const [levelPck, setLevelPck] = useState<LevelPck>();
 
-    const value: EditLevelContextProps = { setLevelPck, levelPck };
+  const value: EditLevelContextProps = { setLevelPck, levelPck };
 
-    return (
-        <EditLevelContext.Provider value={value}>
-            <LayerViewContextProvider>
-                <DebugSettingsContextProvider>
-                    <CursorContextProvider>
-                        <FldPrimaryActionContextProvider>
-                            <LandscapeActionContextProvider>
-                                <ResourceActionContextProvider>
-                                    <WaterActionContextProvider>
-                                        <GenericActionContextProvider>
-                                            <FldMapContextProvider>
-                                                <SelectedEntityContextProvider>
-                                                    <LevContextProvider>
-                                                        <PlaceEntityContextProvider>
-                                                            <LevelPckSelectionContextProvider>
-                                                                {children}
-                                                            </LevelPckSelectionContextProvider>
-                                                        </PlaceEntityContextProvider>
-                                                    </LevContextProvider>
-                                                </SelectedEntityContextProvider>
-                                            </FldMapContextProvider>
-                                        </GenericActionContextProvider>
-                                    </WaterActionContextProvider>
-                                </ResourceActionContextProvider>
-                            </LandscapeActionContextProvider>
-                        </FldPrimaryActionContextProvider>
-                    </CursorContextProvider>
-                </DebugSettingsContextProvider>
-            </LayerViewContextProvider>
-        </EditLevelContext.Provider>
-    );
+  return (
+    <EditLevelContext.Provider value={value}>
+      <LayerViewContextProvider>
+        <DebugSettingsContextProvider>
+          <CursorContextProvider>
+            <FldPrimaryActionContextProvider>
+              <LandscapeActionContextProvider>
+                <ResourceActionContextProvider>
+                  <WaterActionContextProvider>
+                    <GenericActionContextProvider>
+                      <FldMapContextProvider>
+                        <SelectedEntityContextProvider>
+                          <LevContextProvider>
+                            <PlaceEntityContextProvider>
+                              <LevelPckSelectionContextProvider>
+                                {children}
+                              </LevelPckSelectionContextProvider>
+                            </PlaceEntityContextProvider>
+                          </LevContextProvider>
+                        </SelectedEntityContextProvider>
+                      </FldMapContextProvider>
+                    </GenericActionContextProvider>
+                  </WaterActionContextProvider>
+                </ResourceActionContextProvider>
+              </LandscapeActionContextProvider>
+            </FldPrimaryActionContextProvider>
+          </CursorContextProvider>
+        </DebugSettingsContextProvider>
+      </LayerViewContextProvider>
+    </EditLevelContext.Provider>
+  );
 };

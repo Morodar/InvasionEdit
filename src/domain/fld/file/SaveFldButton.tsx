@@ -6,22 +6,22 @@ import { useTranslation } from "react-i18next";
 import { FldUtils } from "../FldUtils";
 
 export const SaveFldButton = () => {
-    const { t } = useTranslation();
-    const { fldFile } = useFldMapContext();
+  const { t } = useTranslation();
+  const { fldFile } = useFldMapContext();
 
-    const downloadFile = () => {
-        if (fldFile) {
-            const file: File = FldUtils.buildFldFile(fldFile);
-            const blob = new Blob([file], { type: file.type });
-            saveAs(blob, file.name);
-        }
-    };
+  const downloadFile = () => {
+    if (fldFile) {
+      const file: File = FldUtils.buildFldFile(fldFile);
+      const blob = new Blob([file], { type: file.type });
+      saveAs(blob, file.name);
+    }
+  };
 
-    return (
-        <IconButton disabled={!fldFile} onClick={downloadFile}>
-            <Tooltip title={t("fld-editor.save-fld")}>
-                <SaveIcon />
-            </Tooltip>
-        </IconButton>
-    );
+  return (
+    <IconButton disabled={!fldFile} onClick={downloadFile}>
+      <Tooltip title={t("fld-editor.save-fld")}>
+        <SaveIcon />
+      </Tooltip>
+    </IconButton>
+  );
 };

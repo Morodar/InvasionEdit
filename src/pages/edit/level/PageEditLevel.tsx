@@ -8,38 +8,38 @@ import { DebugSettingsButton } from "../../../common/debug/DebugSettingsButton";
 import { SaveLevelButton } from "../../../domain/pck/level/SaveLevelButton";
 
 const PageEditLevel = (): ReactElement => {
-    return (
-        <EditLevelContextProvider>
-            <EditLevel />
-        </EditLevelContextProvider>
-    );
+  return (
+    <EditLevelContextProvider>
+      <EditLevel />
+    </EditLevelContextProvider>
+  );
 };
 
 const EditLevel = (): ReactElement => {
-    const { levelPck } = useEditLevelContext();
+  const { levelPck } = useEditLevelContext();
 
-    if (levelPck) {
-        return (
-            <MainLayout
-                withPadding={false}
-                centerElements={<FldName />}
-                rightSideElements={
-                    <>
-                        <DebugSettingsButton />
-                        <SaveLevelButton />
-                    </>
-                }
-            >
-                <LevelView />
-            </MainLayout>
-        );
-    }
-
+  if (levelPck) {
     return (
-        <MainLayout withPadding={true} mainMaxWidth={900}>
-            <LevelPckFileSelection />
-        </MainLayout>
+      <MainLayout
+        withPadding={false}
+        centerElements={<FldName />}
+        rightSideElements={
+          <>
+            <DebugSettingsButton />
+            <SaveLevelButton />
+          </>
+        }
+      >
+        <LevelView />
+      </MainLayout>
     );
+  }
+
+  return (
+    <MainLayout withPadding={true} mainMaxWidth={900}>
+      <LevelPckFileSelection />
+    </MainLayout>
+  );
 };
 
 export default PageEditLevel;

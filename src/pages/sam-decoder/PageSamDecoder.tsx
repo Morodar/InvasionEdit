@@ -11,53 +11,60 @@ import { useTranslation } from "react-i18next";
 import SamPlayer from "./components/SamPlayer";
 
 const PageSamDecoder = () => {
-    const [pcmData, setPcmData] = useState<DataView<ArrayBuffer> | null>(null);
-    const { t } = useTranslation();
-    const samDecoder = t("sam-decoder.title");
-    usePageTitle(samDecoder);
+  const [pcmData, setPcmData] = useState<DataView<ArrayBuffer> | null>(null);
+  const { t } = useTranslation();
+  const samDecoder = t("sam-decoder.title");
+  usePageTitle(samDecoder);
 
-    const [parseFailed, setParseFailed] = useState(false);
-    const [isParsing, setIsParsing] = useState(false);
+  const [parseFailed, setParseFailed] = useState(false);
+  const [isParsing, setIsParsing] = useState(false);
 
-    const handleFileChanged = async (file?: File) => {
-        // This is where the parsing would go
-        setParseFailed(false);
-        if (file && !isParsing) {
-            setIsParsing(true);
-            try {
-                await delay(250); // wait for ui to update because parsing is resource intensive
-                const content: ArrayBuffer = await file.arrayBuffer();
-                const view: DataView = new DataView(content, 0x200, content.byteLength - 0x200);
-                const output: Uint8Array<ArrayBuffer> = decodeFileAllBlocks(view);
-                setPcmData(new DataView(output.buffer));
-                // const blob = new Blob([output.buffer], { type: "text/plain" });
-                // saveAs(blob, file.name + ".pcm");
-            } catch (Error) {
-                console.error(Error);
-                setParseFailed(true);
-            } finally {
-                setIsParsing(false);
-            }
-        }
-        return;
-    };
+  const handleFileChanged = async (file?: File) => {
+    // This is where the parsing would go
+    setParseFailed(false);
+    if (file && !isParsing) {
+      setIsParsing(true);
+      try {
+        await delay(250); // wait for ui to update because parsing is resource intensive
+        const content: ArrayBuffer = await file.arrayBuffer();
+        const view: DataView = new DataView(content, 0x200, content.byteLength - 0x200);
+        const output: Uint8Array<ArrayBuffer> = decodeFileAllBlocks(view);
+        setPcmData(new DataView(output.buffer));
+        // const blob = new Blob([output.buffer], { type: "text/plain" });
+        // saveAs(blob, file.name + ".pcm");
+      } catch (Error) {
+        console.error(Error);
+        setParseFailed(true);
+      } finally {
+        setIsParsing(false);
+      }
+    }
+    return;
+  };
 
-    return (
-        <MainLayout mainMaxWidth={900}>
-            <Typography variant="h3" component="h2" gutterBottom sx={{
-                display: "block"
-            }}>
-                {samDecoder}
-            </Typography>
-            <Stack sx={{
-                gap: "16px"
-            }}>
-                <ParseFailedError failed={parseFailed} />
-                <AboutCard onFileChanged={handleFileChanged} disableSelection={isParsing} />
-                {pcmData && <SamPlayer pcmDataView={pcmData} />}
-            </Stack>
-        </MainLayout>
-    );
+  return (
+    <MainLayout mainMaxWidth={900}>
+      <Typography
+        variant="h3"
+        component="h2"
+        gutterBottom
+        sx={{
+          display: "block",
+        }}
+      >
+        {samDecoder}
+      </Typography>
+      <Stack
+        sx={{
+          gap: "16px",
+        }}
+      >
+        <ParseFailedError failed={parseFailed} />
+        <AboutCard onFileChanged={handleFileChanged} disableSelection={isParsing} />
+        {pcmData && <SamPlayer pcmDataView={pcmData} />}
+      </Stack>
+    </MainLayout>
+  );
 };
 
 export default PageSamDecoder;

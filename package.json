@@ -1,11 +1,12 @@
 {
     "name": "invasion-edit",
-    "private": true,
     "version": "v0.7.0-indev",
+    "private": true,
     "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
+        "format": "oxfmt",
         "lint": "oxlint",
         "test": "vitest -w",
         "test-cli": "vitest run",
@@ -46,7 +47,6 @@
         "jsdom": "^30.0.1",
         "oxfmt": "^0.64.0",
         "oxlint": "^1.79.0",
-        "prettier": "^3.9.6",
         "typescript": "~5.9.3",
         "vite": "^8.2.2",
         "vitest": "^4.1.11",

@@ -6,29 +6,29 @@ import { useState } from "react";
 import { FldHeaderDialog } from "./FldHeaderDialog";
 
 interface FldHeaderInfoIconProps {
-    fldFile?: FldFile;
+  fldFile?: FldFile;
 }
 
 export const FldHeaderInfoIcon = (props: FldHeaderInfoIconProps) => {
-    const { t } = useTranslation();
-    const { fldFile } = props;
+  const { t } = useTranslation();
+  const { fldFile } = props;
 
-    const [showDialog, setShowDialog] = useState(false);
-    const onShowDialog = () => setShowDialog(true);
-    const onHideDialog = () => setShowDialog(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const onShowDialog = () => setShowDialog(true);
+  const onHideDialog = () => setShowDialog(false);
 
-    if (!fldFile) {
-        return <></>;
-    }
+  if (!fldFile) {
+    return <></>;
+  }
 
-    return (
-        <>
-            <Tooltip title={t("fld-editor.debug.settings")}>
-                <IconButton onClick={onShowDialog}>
-                    <InfoIcon />
-                </IconButton>
-            </Tooltip>
-            <FldHeaderDialog open={showDialog} fldFile={fldFile} onClose={onHideDialog} />
-        </>
-    );
+  return (
+    <>
+      <Tooltip title={t("fld-editor.debug.settings")}>
+        <IconButton onClick={onShowDialog}>
+          <InfoIcon />
+        </IconButton>
+      </Tooltip>
+      <FldHeaderDialog open={showDialog} fldFile={fldFile} onClose={onHideDialog} />
+    </>
+  );
 };

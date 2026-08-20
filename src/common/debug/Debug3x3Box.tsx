@@ -7,57 +7,60 @@ import { Layer } from "../../domain/fld/layers/Layer";
 import { InstancedMesh, Object3D } from "three";
 
 export const Debug3x3Box = () => {
-    const { hoveredPoint } = useCursorContext();
-    const { debugSettings } = useDebugSettingsContext();
-    const { fldFile } = useFldMapContext();
+  const { hoveredPoint } = useCursorContext();
+  const { debugSettings } = useDebugSettingsContext();
+  const { fldFile } = useFldMapContext();
 
-    if (!debugSettings.showDebugCube3x3 || !hoveredPoint || !fldFile) {
-        return;
-    }
+  if (!debugSettings.showDebugCube3x3 || !hoveredPoint || !fldFile) {
+    return;
+  }
 
-    return <Render fldFile={fldFile} hoveredPoint={hoveredPoint} />;
+  return <Render fldFile={fldFile} hoveredPoint={hoveredPoint} />;
 };
 
 interface RenderProps {
-    fldFile: FldFile;
-    hoveredPoint: number;
+  fldFile: FldFile;
+  hoveredPoint: number;
 }
 
 const Render = (props: RenderProps) => {
-    const { fldFile, hoveredPoint } = props;
-    const { height, width } = fldFile;
-    const landscape = fldFile.layers[Layer.Landscape];
-    const instancedMeshRef = useRef<InstancedMesh>(null!);
+  const { fldFile, hoveredPoint } = props;
+  const { height, width } = fldFile;
+  const landscape = fldFile.layers[Layer.Landscape];
+  const instancedMeshRef = useRef<InstancedMesh>(null!);
 
-    const points = useMemo(() => getRelativePoints(fldFile, hoveredPoint, 3, 3), [fldFile, hoveredPoint]);
+  const points = useMemo(
+    () => getRelativePoints(fldFile, hoveredPoint, 3, 3),
+    [fldFile, hoveredPoint],
+  );
 
-    useEffect(() => {
-        const mesh = instancedMeshRef.current;
-        const temp = new Object3D();
-        points.forEach((point, i) => {
-            const p = landscape.getUint8(point.index);
-            const y = p / 4 + 0.01;
-            const z = point.index % width;
-            const x = (point.index - z) / width;
+  useEffect(() => {
+    const mesh = instancedMeshRef.current;
+    const temp = new Object3D();
+    points.forEach((point, i) => {
+      const p = landscape.getUint8(point.index);
+      const y = p / 4 + 0.01;
+      const z = point.index % width;
+      const x = (point.index - z) / width;
 
-            // rotate map 45° and stretch using values from decompression algorithm
-            const x2 = x * -1.999;
-            const z2 = x * 1.152 + z * 2.305;
+      // rotate map 45° and stretch using values from decompression algorithm
+      const x2 = x * -1.999;
+      const z2 = x * 1.152 + z * 2.305;
 
-            temp.position.set(x2, y, z2);
-            temp.updateMatrix();
-            mesh.setMatrixAt(i, temp.matrix);
-        });
-        mesh.instanceMatrix.needsUpdate = true;
-        mesh.updateMatrix();
-        mesh.computeBoundingBox();
-        mesh.computeBoundingSphere();
-    }, [height, landscape, points, width]);
+      temp.position.set(x2, y, z2);
+      temp.updateMatrix();
+      mesh.setMatrixAt(i, temp.matrix);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.updateMatrix();
+    mesh.computeBoundingBox();
+    mesh.computeBoundingSphere();
+  }, [height, landscape, points, width]);
 
-    return (
-        <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, 9]}>
-            <meshStandardMaterial color={"hotpink"} />
-            <sphereGeometry args={[0.5, 8, 8]} />
-        </instancedMesh>
-    );
+  return (
+    <instancedMesh ref={instancedMeshRef} args={[undefined, undefined, 9]}>
+      <meshStandardMaterial color={"hotpink"} />
+      <sphereGeometry args={[0.5, 8, 8]} />
+    </instancedMesh>
+  );
 };
