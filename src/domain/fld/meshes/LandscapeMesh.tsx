@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import { useCursorCapture } from "../../../common/controls/useCursorCapture";
-import { FldMap } from "../FldFile";
 import { useFldMapContext } from "../FldMapContext";
 import { Layer } from "../layers/Layer";
 import { useLayerViewContext } from "../layers/LayerViewContext";
@@ -18,25 +17,28 @@ export const LandscapeMesh = () => {
         return <></>;
     }
 
-    return <LandscapeLayerMesh map={fldFile} primaryAction={primaryAction} showWireframe={showWireframe} />;
+    return <LandscapeLayerMesh landscape={landscape} mountains1={mountains1} textures1={textures1} width={fldFile.width} height={fldFile.height} primaryAction={primaryAction} showWireframe={showWireframe} />;
 };
 
 interface LandscapeLayerMeshProps {
-    map: FldMap;
+    landscape: DataView;
+    mountains1: DataView;
+    textures1: DataView;
+    width: number;
+    height: number;
     primaryAction: FldPrimaryAction;
     showWireframe: boolean;
 }
 
-export const LandscapeLayerMesh = ({
-    map,
+export const LandscapeLayerMesh = memo(({
+    landscape,
+    mountains1,
+    textures1,
+    width,
+    height,
     primaryAction,
     showWireframe,
 }: LandscapeLayerMeshProps): React.JSX.Element => {
-    const landscape = map.layers[Layer.Landscape];
-    const mountains1 = map.layers[Layer.Mountains1];
-    const textures1 = map.layers[Layer.Textures1];
-    const width = map.width;
-    const height = map.height;
 
     const planeMesh = useRef<Mesh>(null);
     const planeGeo = useRef<PlaneGeometry>(null);
@@ -86,7 +88,7 @@ export const LandscapeLayerMesh = ({
             />
         </mesh>
     );
-};
+});
 
 function createTexture(
     landscape: DataView,

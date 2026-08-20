@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Layer, LayerIndex } from "../layers/Layer";
 import { useFldMapContext } from "../FldMapContext";
 import { useLayerViewContext } from "../layers/LayerViewContext";
@@ -23,14 +24,22 @@ export const UnknownMeshes = () => {
     const { fldFile } = useFldMapContext();
     const { layerSettings } = useLayerViewContext();
 
+    const width = fldFile?.width ?? 0;
+    const height = fldFile?.height ?? 0;
+
+    const layers = useMemo(
+        () => (fldFile ? MESHES.map((layer) => fldFile.layers[layer]) : []),
+        [fldFile],
+    );
+
     if (!fldFile) {
         return <></>;
     }
 
     return (
         <>
-            {MESHES.map((layer) => (
-                <GenericMesh key={layer} layer={fldFile.layers[layer]} map={fldFile} settings={layerSettings[layer]} />
+            {MESHES.map((layer, i) => (
+                <GenericMesh key={layer} width={width} height={height} layer={layers[i]} settings={layerSettings[layer]} />
             ))}
         </>
     );

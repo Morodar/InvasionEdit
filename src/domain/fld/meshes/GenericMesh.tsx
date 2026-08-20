@@ -1,35 +1,34 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { useCursorCapture } from "../../../common/controls/useCursorCapture";
-import { FldMap } from "../FldFile";
 import { LayerSetting } from "../layers/LayerViewContext";
 import { DoubleSide, Mesh, PlaneGeometry } from "three";
 
 interface GenericMeshProps {
-    map: FldMap;
+    width: number;
+    height: number;
     layer: DataView;
     settings: LayerSetting;
 }
 
-export const GenericMesh = (props: GenericMeshProps) => {
-    const { settings, map, layer } = props;
+export const GenericMesh = memo((props: GenericMeshProps) => {
+    const { settings, width, height, layer } = props;
 
     if (settings.hide) {
         return <></>;
     }
 
-    return <GenericLayerMesh layer={layer} map={map} showWireframe={settings.showWireframe} />;
-};
+    return <GenericLayerMesh layer={layer} width={width} height={height} showWireframe={settings.showWireframe} />;
+});
 
 interface GenericLayerMeshProps {
-    map: FldMap;
+    width: number;
+    height: number;
     layer: DataView;
     showWireframe: boolean;
 }
 
 export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Element => {
-    const { map, layer, showWireframe } = props;
-    const width = map.width;
-    const height = map.height;
+    const { width, height, layer, showWireframe } = props;
 
     const planeMesh = useRef<Mesh>(null);
     const planeGeo = useRef<PlaneGeometry>(null);

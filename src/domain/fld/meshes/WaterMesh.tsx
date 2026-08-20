@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { FldMap } from "../FldFile";
+import { memo, useEffect, useRef } from "react";
 import { Layer } from "../layers/Layer";
 import { useFldMapContext } from "../FldMapContext";
 import { useLayerViewContext } from "../layers/LayerViewContext";
@@ -14,24 +13,37 @@ export const WaterMesh = () => {
     if (!fldFile || hide) {
         return <></>;
     }
-    return <WaterLayerMesh map={fldFile} showWireframe={showWireframe} />;
+
+    const landscape = fldFile.layers[Layer.Landscape];
+    const water = fldFile.layers[Layer.Water];
+    const mountains1 = fldFile.layers[Layer.Mountains1];
+    const waterHeight = fldFile.layers[Layer.WaterHeight];
+
+    return (
+        <WaterLayerMesh
+            landscape={landscape}
+            water={water}
+            mountains1={mountains1}
+            waterHeight={waterHeight}
+            width={fldFile.width}
+            height={fldFile.height}
+            showWireframe={showWireframe}
+        />
+    );
 };
 
 interface WaterLayerMeshProps {
-    map: FldMap;
+    landscape: DataView;
+    water: DataView;
+    mountains1: DataView;
+    waterHeight: DataView;
+    width: number;
+    height: number;
     showWireframe: boolean;
 }
 
-export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element => {
-    const { map, showWireframe } = props;
-
-    const water = map.layers[Layer.Water];
-    const landscape = map.layers[Layer.Landscape];
-    const mountains1 = map.layers[Layer.Mountains1];
-    const unknown6 = map.layers[Layer.WaterHeight];
-
-    const width = map.width;
-    const height = map.height;
+export const WaterLayerMesh = memo((props: WaterLayerMeshProps): React.JSX.Element => {
+    const { landscape, water, mountains1, waterHeight, width, height, showWireframe } = props;
 
     const planeMesh = useRef<Mesh>(null);
     const planeGeo = useRef<PlaneGeometry>(null);
@@ -44,7 +56,7 @@ export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element =>
                 const w = water.getUint8(i);
                 const value = landscape.getUint8(i);
                 const m = mountains1.getUint8(i);
-                const u6 = unknown6.getUint8(i);
+                const u6 = waterHeight.getUint8(i);
                 const hasWater = w === 0;
                 const y = hasWater ? (value - m + u6) / 4 : (value - m - 4) / 4;
                 const z = i % width;
@@ -63,7 +75,7 @@ export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element =>
             geo.computeBoundingBox();
             geo.computeBoundingSphere();
         }
-    }, [height, landscape, mountains1, unknown6, water, width]);
+    }, [height, landscape, mountains1, waterHeight, water, width]);
 
     return (
         <mesh ref={planeMesh} castShadow={true} receiveShadow={true} visible>
@@ -78,4 +90,4 @@ export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element =>
             />
         </mesh>
     );
-};
+});
