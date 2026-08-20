@@ -1,12 +1,12 @@
-import { EffectCallback, useEffect, useState } from "react";
+import { EffectCallback, useEffect, useRef } from "react";
 
 export const useLeftClickAction = (effect: EffectCallback) => {
-    const [click, setClick] = useState(false);
+    const clickRef = useRef(false);
 
     useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
             if (e.button === 0) {
-                setClick(true);
+                clickRef.current = true;
             }
         };
 
@@ -18,9 +18,9 @@ export const useLeftClickAction = (effect: EffectCallback) => {
     }, []);
 
     useEffect(() => {
-        if (click) {
+        if (clickRef.current) {
             effect();
-            setClick(false);
+            clickRef.current = false;
         }
-    }, [effect, click]);
+    }, [effect]);
 };

@@ -27,12 +27,8 @@ export class PckDecompressor {
         const pTab1 = 16;
         const pTab2 = 16 + 0x100 * 4;
         const pTab3 = 16 + 0x100 * 4 + 0x400 * 4;
-        let a = 0;
         let pB = pTab2;
-        let d = 0;
         let pT = pTab3;
-        let pP = 0;
-        let c = 0;
         const pByteOut = 0;
         let pByteO = 0;
         const pByteInl = compressed.byteLength;

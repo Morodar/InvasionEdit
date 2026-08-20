@@ -1,4 +1,4 @@
-import { DependencyList, EffectCallback, useEffect, useState } from "react";
+import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
 export const useKeyboardHoldDelayAction = (
     effect: EffectCallback,
@@ -6,45 +6,29 @@ export const useKeyboardHoldDelayAction = (
     cooldownMs: number,
     deps: DependencyList,
 ) => {
-    const [isKeyHeld, setIsKeyHeld] = useState(false);
-    const [isCooldown, setIsCooldown] = useState(false);
+    const isKeyHeldRef = useRef(false);
+    const isCooldownRef = useRef(false);
 
     useEffect(() => {
-        const handleMouseDown = (e: KeyboardEvent) => {
-            if (e.key === key) {
-                setIsKeyHeld(true);
-            }
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === key) { isKeyHeldRef.current = true; }
         };
-
-        const handleMouseUp = (e: KeyboardEvent) => {
-            if (e.key === key) {
-                setIsKeyHeld(false);
-            }
+        const handleKeyUp = (e: KeyboardEvent) => {
+            if (e.key === key) { isKeyHeldRef.current = false; }
         };
-
-        window.addEventListener("keydown", handleMouseDown);
-        window.addEventListener("keyup", handleMouseUp);
-
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
         return () => {
-            window.removeEventListener("keydown", handleMouseDown);
-            window.removeEventListener("keyup", handleMouseUp);
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
         };
     }, [key]);
 
     useEffect(() => {
-        if (!isCooldown) {
-            return;
-        }
-        const task = setTimeout(() => setIsCooldown(false), cooldownMs);
-        return () => {
-            clearTimeout(task);
-        };
-    }, [cooldownMs, isCooldown]);
-
-    useEffect(() => {
-        if (isKeyHeld && !isCooldown) {
+        if (isKeyHeldRef.current && !isCooldownRef.current) {
             effect();
-            setIsCooldown(true);
+            isCooldownRef.current = true;
+            setTimeout(() => { isCooldownRef.current = false; }, cooldownMs);
         }
-    }, [effect, deps, isKeyHeld, isCooldown]);
+    }, [effect, deps, cooldownMs]);
 };

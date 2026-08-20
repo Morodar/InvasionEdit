@@ -1,7 +1,7 @@
 import { useFldPrimaryActionContext } from "../action-bar/FldPrimaryActionContext";
-import { Dispatch, useEffect, useRef, useState } from "react";
+import { Dispatch, useEffect, useMemo, useRef } from "react";
 import { useCursorContext } from "../../../common/controls/CursorContext";
-import { FldFile, IndexValue, getRelativePoints } from "../FldFile";
+import { FldFile, getRelativePoints } from "../FldFile";
 import { useFldMapContext } from "../FldMapContext";
 import { FldAction } from "../FldReducer";
 import { useGenericActionContext } from "./GenericActionContext";
@@ -30,7 +30,7 @@ const Preview = (props: PreviewProps) => {
     const { hoveredPoint, fldFile, dispatch } = props;
     const { width, height } = fldFile;
     const { size, layer, height: absoluteHeight, speed: stepsize, activeAction } = useGenericActionContext();
-    const [points, setPoints] = useState<IndexValue[]>([]);
+    const points = useMemo(() => getRelativePoints(fldFile, hoveredPoint, size, size, layer), [fldFile, hoveredPoint, layer, size]);
     const instancedMeshRef = useRef<InstancedMesh>(null!);
     const speed = activeAction === "FIX" ? 8 : 1000 / stepsize;
 
@@ -39,11 +39,6 @@ const Preview = (props: PreviewProps) => {
         speed,
         [points],
     );
-
-    useEffect(() => {
-        const relativePoints = getRelativePoints(fldFile, hoveredPoint, size, size, layer);
-        setPoints(relativePoints);
-    }, [fldFile, hoveredPoint, layer, size]);
 
     useEffect(() => {
         points.forEach((p, i) => {

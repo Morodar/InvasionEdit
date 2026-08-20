@@ -1,29 +1,19 @@
-import { DependencyList, EffectCallback, useEffect, useState } from "react";
+import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
 export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: number, deps: DependencyList) => {
-    const [isMouseHeld, setIsMouseHeld] = useState(false);
-    const [isCooldown, setIsCooldown] = useState(false);
-
-    useEffect(() => {
-        if (!isCooldown) {
-            return;
-        }
-        const task = setTimeout(() => setIsCooldown(false), cooldownMs);
-        return () => {
-            clearTimeout(task);
-        };
-    }, [cooldownMs, isCooldown]);
+    const isMouseHeldRef = useRef(false);
+    const isCooldownRef = useRef(false);
 
     useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
             if (e.button === 0) {
-                setIsMouseHeld(true);
+                isMouseHeldRef.current = true;
             }
         };
 
         const handleMouseUp = (e: MouseEvent) => {
             if (e.button === 0) {
-                setIsMouseHeld(false);
+                isMouseHeldRef.current = false;
             }
         };
 
@@ -37,9 +27,10 @@ export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: 
     }, []);
 
     useEffect(() => {
-        if (isMouseHeld && !isCooldown) {
+        if (isMouseHeldRef.current && !isCooldownRef.current) {
             effect();
-            setIsCooldown(true);
+            isCooldownRef.current = true;
+            setTimeout(() => { isCooldownRef.current = false; }, cooldownMs);
         }
-    }, [effect, deps, isMouseHeld, isCooldown]);
+    }, [effect, deps, cooldownMs]);
 };

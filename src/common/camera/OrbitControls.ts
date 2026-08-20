@@ -389,7 +389,6 @@ class OrbitControls extends EventDispatcher {
 
                     lastPosition.copy(scope.object.position);
                     lastQuaternion.copy(scope.object.quaternion);
-                    zoomChanged = false;
 
                     return true;
                 }

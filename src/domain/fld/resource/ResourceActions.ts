@@ -11,8 +11,8 @@ export interface ResourcePayload {
     points: IndexValue[];
 }
 
-const addXenit = (oldValue: number): number => (oldValue |= Xenit.LAYER_VALUE);
-const addTritium = (oldValue: number): number => (oldValue |= Tritium.LAYER_VALUE);
+const addXenit = (oldValue: number): number => oldValue | Xenit.LAYER_VALUE;
+const addTritium = (oldValue: number): number => oldValue | Tritium.LAYER_VALUE;
 const removeResource = (): number => 0;
 const RESOURCE_OPERATION: { [key in ActiveResource]: (oldValue: number) => number } = {
     DELETE: removeResource,

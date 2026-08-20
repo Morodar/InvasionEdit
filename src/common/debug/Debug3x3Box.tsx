@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { FldFile, IndexValue, getRelativePoints } from "../../domain/fld/FldFile";
+import { useEffect, useMemo, useRef } from "react";
+import { FldFile, getRelativePoints } from "../../domain/fld/FldFile";
 import { useCursorContext } from "../controls/CursorContext";
 import { useDebugSettingsContext } from "./DebugSettingsContext";
 import { useFldMapContext } from "../../domain/fld/FldMapContext";
@@ -24,16 +24,12 @@ interface RenderProps {
 }
 
 const Render = (props: RenderProps) => {
-    const [points, setPoints] = useState<IndexValue[]>([]);
-
     const { fldFile, hoveredPoint } = props;
     const { height, width } = fldFile;
     const landscape = fldFile.layers[Layer.Landscape];
     const instancedMeshRef = useRef<InstancedMesh>(null!);
 
-    useEffect(() => {
-        setPoints(getRelativePoints(fldFile, hoveredPoint, 3, 3));
-    }, [landscape, hoveredPoint, fldFile]);
+    const points = useMemo(() => getRelativePoints(fldFile, hoveredPoint, 3, 3), [fldFile, hoveredPoint]);
 
     useEffect(() => {
         const mesh = instancedMeshRef.current;
