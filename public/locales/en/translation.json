@@ -119,5 +119,19 @@
     },
     "LAYER_SETTINGS": {
         "HEADER": "Layers"
+    },
+    "str-parser": {
+        "title": "STR Parser",
+        "short-description": "Parses and displays Thandor .str text resource files containing localized strings.",
+        "select-file": "Select .str file",
+        "start": "Start Parser",
+        "error": {
+            "parse-failed": "Failed to parse the .str file."
+        },
+        "locale-count": "Locale Count",
+        "locales": "Locales",
+        "strings": "strings",
+        "string-index": "Index",
+        "string-content": "String"
     }
 }

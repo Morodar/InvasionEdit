@@ -8,6 +8,7 @@ import { usePageTitle } from "../../common/utils/usePageTitle";
 import { LevelEditorCard } from "./components/LevelEditorCard";
 import { SamDecoderCard } from "./components/SamDecoderCard";
 import { FlmDecoderCard } from "./components/FlmDecoderCard";
+import { StrParserCard } from "./components/StrParserCard";
 
 const PageHome = () => {
     const { t } = useTranslation();
@@ -42,6 +43,7 @@ const PageHome = () => {
                     <PckExtractorCard />
                     <SamDecoderCard />
                     <FlmDecoderCard />
+                    <StrParserCard />
                 </Stack>
             </Stack>
         </MainLayout>
