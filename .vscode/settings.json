@@ -13,5 +13,8 @@
     },
     "[javascriptreact]": {
         "editor.defaultFormatter": "oxc.oxc-vscode"
-    }
+    },
+    "i18n-ally.localesPaths": [
+        "public/locales"
+    ]
 }
