@@ -1,41 +1,37 @@
-import { DependencyList, EffectCallback, useEffect, useRef } from "react";
+import { DependencyList, EffectCallback, useEffect, useState } from "react";
 
 export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: number, deps: DependencyList) => {
-    const isCooldownRef = useRef(false);
-    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const effectRef = useRef(effect);
+    const [isMouseHeld, setIsMouseHeld] = useState(false);
 
     useEffect(() => {
-        effectRef.current = effect;
-    });
-
-    useEffect(() => {
-        const clearCooldown = () => {
-            if (timeoutRef.current != null) {
-                clearTimeout(timeoutRef.current);
-                timeoutRef.current = null;
+        const handleMouseDown = (e: MouseEvent) => {
+            if (e.button === 0) {
+                setIsMouseHeld(true);
             }
-            isCooldownRef.current = false;
         };
 
-        const handleMouseDown = (e: MouseEvent) => {
-            if (e.button === 0 && !isCooldownRef.current) {
-                effectRef.current();
-                isCooldownRef.current = true;
-                timeoutRef.current = setTimeout(() => {
-                    isCooldownRef.current = false;
-                    timeoutRef.current = null;
-                }, cooldownMs);
+        const handleMouseUp = (e: MouseEvent) => {
+            if (e.button === 0) {
+                setIsMouseHeld(false);
             }
         };
 
         window.addEventListener("mousedown", handleMouseDown);
+        window.addEventListener("mouseup", handleMouseUp);
 
         return () => {
             window.removeEventListener("mousedown", handleMouseDown);
-            clearCooldown();
+            window.removeEventListener("mouseup", handleMouseUp);
         };
-        // user needs control of deps. Ignoring the rule is okay here.
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cooldownMs, ...deps]);
+    }, []);
+
+    useEffect(() => {
+        if (!isMouseHeld) return;
+
+        effect();
+
+        const interval = setInterval(effect, cooldownMs);
+
+        return () => clearInterval(interval);
+    }, [isMouseHeld, effect, cooldownMs, deps]);
 };
