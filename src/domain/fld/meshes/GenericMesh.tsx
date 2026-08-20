@@ -55,7 +55,6 @@ export const GenericLayerMesh = (props: GenericLayerMeshProps): React.JSX.Elemen
             planeGeo.current.computeVertexNormals();
             planeGeo.current.computeBoundingBox();
             planeGeo.current.computeBoundingSphere();
-            planeGeo.current.computeTangents();
         }
     }, [height, layer.byteLength, layer, width]);
 

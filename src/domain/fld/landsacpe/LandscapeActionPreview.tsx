@@ -63,7 +63,6 @@ const Preview = (props: PreviewProps) => {
             planeGeo.current.computeVertexNormals();
             planeGeo.current.computeBoundingBox();
             planeGeo.current.computeBoundingSphere();
-            planeGeo.current.computeTangents();
         }
     }, [fldFile.height, fldFile.width, points]);
 

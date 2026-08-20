@@ -62,7 +62,6 @@ export const WaterLayerMesh = (props: WaterLayerMeshProps): React.JSX.Element =>
             geo.computeVertexNormals();
             geo.computeBoundingBox();
             geo.computeBoundingSphere();
-            geo.computeTangents();
         }
     }, [height, landscape, mountains1, unknown6, water, width]);
 

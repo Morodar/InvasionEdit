@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { Dispatch, useContext, PropsWithChildren, createContext } from "react";
+import { Dispatch, useCallback, useContext, useMemo, PropsWithChildren, createContext } from "react";
 import { FldFile } from "./FldFile";
 import { ResourceDefinition, ResourceLayerUtil } from "./resource/ResourceLayerUtil";
 
@@ -29,14 +29,23 @@ export const useFldMapContext = (): FldMapContextProps => {
 export const FldMapContextProvider: React.FC<PropsWithChildren> = ({ children }: PropsWithChildren) => {
     const [fldFile, dispatch] = useFldReducer();
 
-    const resourceLayer: ResourceDefinition | null = fldFile ? ResourceLayerUtil.fromFldFile(fldFile) : null;
+    const resourceLayer: ResourceDefinition | null = useMemo(
+        () => (fldFile ? ResourceLayerUtil.fromFldFile(fldFile) : null),
+        [fldFile],
+    );
 
-    const tryUseFldFile = async (file: File) => {
-        const result = await FldUtils.parseFldFile(file);
-        dispatch({ type: "SET_FLD", fldFile: result });
-    };
+    const tryUseFldFile = useCallback(
+        async (file: File) => {
+            const result = await FldUtils.parseFldFile(file);
+            dispatch({ type: "SET_FLD", fldFile: result });
+        },
+        [dispatch],
+    );
 
-    const contextValue = { fldFile, dispatch, tryUseFldFile, resourceLayer };
+    const contextValue = useMemo(
+        () => ({ fldFile, dispatch, tryUseFldFile, resourceLayer }),
+        [fldFile, dispatch, tryUseFldFile, resourceLayer],
+    );
 
     return <FldMapContext.Provider value={contextValue}>{children}</FldMapContext.Provider>;
 };
