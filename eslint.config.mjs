@@ -1,5 +1,4 @@
 import globals from "globals";
-import react from "eslint-plugin-react";
 import reactRefresh from "eslint-plugin-react-refresh";
 import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
@@ -14,7 +13,6 @@ export default defineConfig(
         // https://github.com/prettier/eslint-config-prettier
         extends: [
             js.configs.recommended,
-            react.configs.flat["jsx-runtime"],
             reactHooks.configs.flat.recommended,
             ...tseslint.configs.recommended,
             eslintConfigPrettier,
@@ -30,7 +28,6 @@ export default defineConfig(
             },
         },
         plugins: {
-            react,
             "react-refresh": reactRefresh,
         },
         rules: {
