@@ -17,6 +17,10 @@ export const LandscapeMesh = () => {
         return <></>;
     }
 
+    const landscape = fldFile.layers[Layer.Landscape];
+    const mountains1 = fldFile.layers[Layer.Mountains1];
+    const textures1 = fldFile.layers[Layer.Textures1];
+
     return <LandscapeLayerMesh landscape={landscape} mountains1={mountains1} textures1={textures1} width={fldFile.width} height={fldFile.height} primaryAction={primaryAction} showWireframe={showWireframe} />;
 };
 
