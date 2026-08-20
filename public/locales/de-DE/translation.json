@@ -119,5 +119,19 @@
     "select-file": "Level-Datei",
     "short-description": "3D-Editor für Level-Dateien. \nWähle vorhandene Levels aus, um sie anzuzeigen und zu ändern! \n(Der Editor ist in Bearbeitung und die Funktionen sind eingeschränkt)",
     "title": "Level-Editor"
+  },
+  "str-parser": {
+    "title": "STR-Parser",
+    "short-description": "Analysiert und zeigt Thandor .str Textressourcen-Dateien mit lokalisierten Strings an.",
+    "select-file": ".str Datei auswählen",
+    "start": "Parser starten",
+    "error": {
+      "parse-failed": "Die .str-Datei konnte nicht analysiert werden."
+    },
+    "locale-count": "Anzahl Sprachen",
+    "locales": "Sprachen",
+    "strings": "Strings",
+    "string-index": "Index",
+    "string-content": "String"
   }
 }
