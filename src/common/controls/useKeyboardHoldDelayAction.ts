@@ -6,29 +6,39 @@ export const useKeyboardHoldDelayAction = (
     cooldownMs: number,
     deps: DependencyList,
 ) => {
-    const isKeyHeldRef = useRef(false);
     const isCooldownRef = useRef(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const effectRef = useRef(effect);
 
     useEffect(() => {
+        effectRef.current = effect;
+    });
+
+    useEffect(() => {
+        const clearCooldown = () => {
+            if (timeoutRef.current != null) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+            isCooldownRef.current = false;
+        };
+
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === key) { isKeyHeldRef.current = true; }
+            if (e.key === key && !isCooldownRef.current) {
+                effectRef.current();
+                isCooldownRef.current = true;
+                timeoutRef.current = setTimeout(() => {
+                    isCooldownRef.current = false;
+                    timeoutRef.current = null;
+                }, cooldownMs);
+            }
         };
-        const handleKeyUp = (e: KeyboardEvent) => {
-            if (e.key === key) { isKeyHeldRef.current = false; }
-        };
+
         window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("keyup", handleKeyUp);
+
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("keyup", handleKeyUp);
+            clearCooldown();
         };
-    }, [key]);
-
-    useEffect(() => {
-        if (isKeyHeldRef.current && !isCooldownRef.current) {
-            effect();
-            isCooldownRef.current = true;
-            setTimeout(() => { isCooldownRef.current = false; }, cooldownMs);
-        }
-    }, [effect, deps, cooldownMs]);
+    }, [key, cooldownMs, ...deps]);
 };

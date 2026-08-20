@@ -1,36 +1,39 @@
 import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
 export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: number, deps: DependencyList) => {
-    const isMouseHeldRef = useRef(false);
     const isCooldownRef = useRef(false);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const effectRef = useRef(effect);
 
     useEffect(() => {
-        const handleMouseDown = (e: MouseEvent) => {
-            if (e.button === 0) {
-                isMouseHeldRef.current = true;
+        effectRef.current = effect;
+    });
+
+    useEffect(() => {
+        const clearCooldown = () => {
+            if (timeoutRef.current != null) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
             }
+            isCooldownRef.current = false;
         };
 
-        const handleMouseUp = (e: MouseEvent) => {
-            if (e.button === 0) {
-                isMouseHeldRef.current = false;
+        const handleMouseDown = (e: MouseEvent) => {
+            if (e.button === 0 && !isCooldownRef.current) {
+                effectRef.current();
+                isCooldownRef.current = true;
+                timeoutRef.current = setTimeout(() => {
+                    isCooldownRef.current = false;
+                    timeoutRef.current = null;
+                }, cooldownMs);
             }
         };
 
         window.addEventListener("mousedown", handleMouseDown);
-        window.addEventListener("mouseup", handleMouseUp);
 
         return () => {
             window.removeEventListener("mousedown", handleMouseDown);
-            window.removeEventListener("mouseup", handleMouseUp);
+            clearCooldown();
         };
-    }, []);
-
-    useEffect(() => {
-        if (isMouseHeldRef.current && !isCooldownRef.current) {
-            effect();
-            isCooldownRef.current = true;
-            setTimeout(() => { isCooldownRef.current = false; }, cooldownMs);
-        }
-    }, [effect, deps, cooldownMs]);
+    }, [cooldownMs, ...deps]);
 };

@@ -1,12 +1,16 @@
 import { EffectCallback, useEffect, useRef } from "react";
 
 export const useLeftClickAction = (effect: EffectCallback) => {
-    const clickRef = useRef(false);
+    const effectRef = useRef(effect);
+
+    useEffect(() => {
+        effectRef.current = effect;
+    });
 
     useEffect(() => {
         const handleMouseDown = (e: MouseEvent) => {
             if (e.button === 0) {
-                clickRef.current = true;
+                effectRef.current();
             }
         };
 
@@ -16,11 +20,4 @@ export const useLeftClickAction = (effect: EffectCallback) => {
             window.removeEventListener("mousedown", handleMouseDown);
         };
     }, []);
-
-    useEffect(() => {
-        if (clickRef.current) {
-            effect();
-            clickRef.current = false;
-        }
-    }, [effect]);
 };
