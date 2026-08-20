@@ -14,7 +14,7 @@ export const StrSelectFileCard = (props: StrSelectFileCardProps) => {
         <Card>
             <CardContent>
                 <p>{t("str-parser.short-description")}</p>
-                <Stack direction="row" justifyContent="end">
+                <Stack direction="row" sx={{ justifyContent: "end" }}>
                     <SelectFileButton onFileChanged={onFileChanged} accept=".str" disabled={disableSelection}>
                         {t("str-parser.select-file")}
                     </SelectFileButton>

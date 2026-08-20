@@ -1,4 +1,4 @@
-import { Card, CardContent, Stack, Typography } from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { StrFile } from "../../../domain/str/StrFile";
 
@@ -8,6 +8,9 @@ interface StrHeaderInfoProps {
 }
 
 const COUNTRY_NAMES: Record<number, string> = {
+    39: "Italian",
+    34: "Spanish",
+    33: "French",
     44: "English",
     49: "German",
     1: "Japanese",
@@ -36,14 +39,14 @@ export const StrHeaderInfo = (props: StrHeaderInfoProps) => {
                             </li>
                             <li>
                                 {t("str-parser.locales")}:
-                                <Stack component="ul" direction="row" spacing={1}>
+                                <ul>
                                     {strFile.blocks.map((block) => (
                                         <li key={block.countryCode}>
-                                            {COUNTRY_NAMES[block.countryCode] || `Code ${block.countryCode}`} ({block.strings.length}{" "}
-                                            {t("str-parser.strings")})
+                                            {COUNTRY_NAMES[block.countryCode] || `Code ${block.countryCode}`} (
+                                            {block.strings.length} {t("str-parser.strings")})
                                         </li>
                                     ))}
-                                </Stack>
+                                </ul>
                             </li>
                         </>
                     )}

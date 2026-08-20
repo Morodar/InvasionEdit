@@ -39,10 +39,10 @@ const PageStrParser = () => {
 
     return (
         <MainLayout mainMaxWidth={900}>
-            <Typography variant="h3" component="h2" display="block" gutterBottom>
+            <Typography variant="h3" component="h2" sx={{ display: "block" }} gutterBottom>
                 {strParser}
             </Typography>
-            <Stack gap="16px">
+            <Stack sx={{ gap: "16px" }}>
                 <ParseFailedError failed={parseFailed} />
                 <StrSelectFileCard onFileChanged={handleFileChanged} disableSelection={isParsing} />
                 <StrHeaderInfo strFile={strFile} selectedFile={selectedFile} />
