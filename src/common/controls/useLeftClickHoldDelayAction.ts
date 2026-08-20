@@ -35,5 +35,7 @@ export const useLeftClickHoldDelayAction = (effect: EffectCallback, cooldownMs: 
             window.removeEventListener("mousedown", handleMouseDown);
             clearCooldown();
         };
+        // user needs control of deps. Ignoring the rule is okay here.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cooldownMs, ...deps]);
 };

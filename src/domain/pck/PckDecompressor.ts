@@ -32,7 +32,7 @@ export class PckDecompressor {
         let d: number;
         let pT = pTab3;
         let pP: number;
-        let c: number = 0;
+        let c: number;
         const pByteOut = 0;
         let pByteO = 0;
         const pByteInl = compressed.byteLength;

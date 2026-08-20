@@ -40,5 +40,7 @@ export const useKeyboardHoldDelayAction = (
             window.removeEventListener("keydown", handleKeyDown);
             clearCooldown();
         };
+        // user needs control of deps. Ignoring the rule is okay here.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, cooldownMs, ...deps]);
 };
