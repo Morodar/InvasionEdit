@@ -36,7 +36,7 @@ describe("PckParser", () => {
             expect(file.name).toBe(fileName);
 
             const expected = expectedFile();
-            const view = new DataView(expected.buffer);
+            const view = new DataView(expected.buffer.slice(expected.byteOffset, expected.byteOffset + expected.byteLength));
 
             expect(file.dataBytes).toEqualDataView(view);
         });
