@@ -13,7 +13,29 @@ export default defineConfig({
 
     // React rules
     "react/jsx-no-target-blank": "warn",
-    "react/no-unknown-property": "warn",
+    "react/no-unknown-property": [
+      "warn",
+      {
+        // Ignore properties used by react-three-fiber (Three.js) that are not in the DOM spec
+        ignore: [
+          "args",
+          "castShadow",
+          "receiveShadow",
+          "visible",
+          "transparent",
+          "roughness",
+          "opacity",
+          "side",
+          "wireframe",
+          "position",
+          "object",
+          "intensity",
+          "target",
+          "color",
+          "map",
+        ],
+      },
+    ],
     "react/react-in-jsx-scope": "off",
 
     // React hooks rules (from eslint-plugin-react-hooks)
