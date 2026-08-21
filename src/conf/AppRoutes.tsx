@@ -9,6 +9,7 @@ const PageEditLevel = lazy(() => import("../pages/edit/level/PageEditLevel"));
 const PagePckExtractor = lazy(() => import("../pages/extract-pck/PagePckExtractor"));
 const PageSamDecoder = lazy(() => import("../pages/sam-decoder/PageSamDecoder"));
 const PageFlmDecoder = lazy(() => import("../pages/flm-decoder/PageFlmDecoder"));
+const PageModels = lazy(() => import("../pages/models/PageModels"));
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 export const PROJECT_URL = "https://github.com/Morodar/InvasionEdit";
@@ -18,6 +19,7 @@ export const EDIT_LVL = "/edit/level";
 export const EXTRACT_PCK = "/extract/pck";
 export const SAM_DECODER = "/patch/sam";
 export const FLM_DECODER = "/patch/flm";
+export const MODELS = "/models";
 
 export const AppRoutes = () => {
   return (
@@ -30,6 +32,7 @@ export const AppRoutes = () => {
             <Route path={EDIT_LVL} element={<PageEditLevel />} />
             <Route path={SAM_DECODER} element={<PageSamDecoder />} />
             <Route path={FLM_DECODER} element={<PageFlmDecoder />} />
+            <Route path={MODELS} element={<PageModels />} />
             <Route path={HOME} element={<PageHome />} />
             <Route path="/*" element={<Navigate to={HOME} />} />
           </Routes>

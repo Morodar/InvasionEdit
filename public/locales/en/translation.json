@@ -119,5 +119,16 @@
   },
   "LAYER_SETTINGS": {
     "HEADER": "Layers"
+  },
+  "models": {
+    "title": "3D Models",
+    "short-description": "Standalone viewer for 3D models. Load a PCK file and inspect its ARM/MDL/SPR model hierarchy as textured or untextured triangle meshes.",
+    "start": "Open Viewer",
+    "select-pck": "Select .pck file",
+    "untextured": "Untextured",
+    "textured": "Textured",
+    "wireframe": "Wireframe",
+    "parse-failed": "Failed to parse the PCK file.",
+    "texture-archive": "Texture archive"
   }
 }

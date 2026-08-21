@@ -8,6 +8,7 @@ import { usePageTitle } from "../../common/utils/usePageTitle";
 import { LevelEditorCard } from "./components/LevelEditorCard";
 import { SamDecoderCard } from "./components/SamDecoderCard";
 import { FlmDecoderCard } from "./components/FlmDecoderCard";
+import { ModelsCard } from "./components/ModelsCard";
 
 const PageHome = () => {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ const PageHome = () => {
         >
           <LevelEditorCard />
           <FldEditorCard />
+          <ModelsCard />
         </Stack>
         <Typography variant="h3" component="h2" gutterBottom>
           {t("common.extractors")}

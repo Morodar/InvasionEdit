@@ -119,5 +119,16 @@
     "select-file": "Level-Datei",
     "short-description": "3D-Editor für Level-Dateien. \nWähle vorhandene Levels aus, um sie anzuzeigen und zu ändern! \n(Der Editor ist in Bearbeitung und die Funktionen sind eingeschränkt)",
     "title": "Level-Editor"
+  },
+  "models": {
+    "title": "3D-Modelle",
+    "short-description": "Eigenständiger Betrachter für 3D-Modelle. Lade eine PCK-Datei und untersuche die ARM/MDL/SPR-Modellhierarchie als texturierte oder untexturierte Dreiecksnetze.",
+    "start": "Betrachter öffnen",
+    "select-pck": ".pck-Datei auswählen",
+    "untextured": "Unstrukturiert",
+    "textured": "Texturiert",
+    "wireframe": "Drahtgitter",
+    "parse-failed": "Die PCK-Datei konnte nicht gelesen werden.",
+    "texture-archive": "Texturarchiv"
   }
 }
