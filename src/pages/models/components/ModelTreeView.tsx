@@ -60,24 +60,31 @@ const ModelTreeItem = ({ model, index, selected, onSelect }: ModelTreeItemProps)
         </ListItemButton>
       </ListItem>
       {selected &&
-        model.nodes.map((node, nodeIndex) => (
-          <ListItem key={nodeIndex} sx={{ pl: 4 }} disableGutters>
-            <ListItemText
-              primary={
-                node.sprPath !== "" ? node.sprPath : `node ${nodeIndex} (no SPR path)`
-              }
-              secondary={
-                node.sprFile
-                  ? `${node.sprFile.lodGroups[0]?.mesh.vertices.length ?? 0} vertices`
-                  : "SPR not found"
-              }
-              slotProps={{
-                primary: { variant: "body2" },
-                secondary: { variant: "caption" },
-              }}
-            />
-          </ListItem>
-        ))}
+        model.nodes.map((node, nodeIndex) => {
+          const vertexCount =
+            node.sprFile?.lodGroups.reduce((sum, group) => sum + group.mesh.vertices.length, 0) ??
+            0;
+          return (
+            <ListItem key={nodeIndex} sx={{ pl: 4 }} disableGutters>
+              <ListItemText
+                primary={node.sprPath !== "" ? node.sprPath : `node ${nodeIndex} (attachment)`}
+                secondary={
+                  node.sprPath === ""
+                    ? "transform-only node"
+                    : node.sprFile
+                      ? vertexCount > 0
+                        ? `${vertexCount} vertices`
+                        : "empty mesh (no geometry)"
+                      : "SPR not found"
+                }
+                slotProps={{
+                  primary: { variant: "body2" },
+                  secondary: { variant: "caption" },
+                }}
+              />
+            </ListItem>
+          );
+        })}
     </>
   );
 };
