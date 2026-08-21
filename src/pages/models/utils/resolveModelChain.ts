@@ -1,5 +1,6 @@
 import { MdlNode } from "../../../domain/mdl/MdlFile";
 import { SprFile, SprVec3 } from "../../../domain/spr/SprFile";
+import { normalizeAssetDisplayName, strString } from "../../../domain/str/StrUtils";
 import { ParsedModelFiles } from "./parseModelPckEntries";
 import { findChildAttachment } from "./modelHierarchy";
 
@@ -19,8 +20,13 @@ export interface ResolvedModel {
   armFilePath: string;
   armRegistryId: number;
   mdlDefinitionId: number | null;
+  /** localized display name from texte/help.str, when resolvable */
+  name: string | null;
   nodes: ModelChainNode[];
 }
+
+/** texte/help.str text page 0x18: model names start at resource index 0x4F. */
+const NAME_TEXT_BASE_INDEX = 0x4f;
 
 /**
  * Resolves the ARM→MDL→SPR chain for every ARM record.
@@ -46,11 +52,25 @@ export function resolveModelChain(parsed: ParsedModelFiles): ResolvedModel[] {
         armFilePath: armFile.path,
         armRegistryId: record.registryId,
         mdlDefinitionId: mdlRecord?.definitionId ?? null,
+        name: mdlRecord ? resolveModelName(parsed, mdlRecord.nameTextOffset) : null,
         nodes,
       });
     }
   }
   return models;
+}
+
+function resolveModelName(parsed: ParsedModelFiles, nameTextOffset: number): string | null {
+  if (!parsed.helpText) {
+    return null;
+  }
+  try {
+    const raw = strString(parsed.helpText, NAME_TEXT_BASE_INDEX + nameTextOffset);
+    const normalized = normalizeAssetDisplayName(raw);
+    return normalized === "" ? null : normalized;
+  } catch {
+    return null;
+  }
 }
 
 function appendHierarchyNodes(

@@ -129,6 +129,7 @@
     "textured": "Texturiert",
     "wireframe": "Drahtgitter",
     "parse-failed": "Die PCK-Datei konnte nicht gelesen werden.",
-    "texture-archive": "Texturarchiv"
+    "texture-archive": "Texturarchiv",
+    "name-hint": "ENGINE.PCK oder PATCH00.PCK zusätzlich laden, um Modellnamen anzuzeigen."
   }
 }

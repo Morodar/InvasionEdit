@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PckFile } from "../../../../src/domain/pck/PckFile";
 import {
+  HELP_TEXT_PATH,
   parseModelPckEntries,
 } from "../../../../src/pages/models/utils/parseModelPckEntries";
 
@@ -62,5 +63,42 @@ describe("parseModelPckEntries", () => {
 
     const parsed = parseModelPckEntries(pck);
     expect(parsed.gfxFiles.map((gfx) => gfx.path)).toEqual(["ok.gfx"]);
+  });
+
+  it("keeps texte/help.str with later archives overriding earlier ones", () => {
+    const helpStr = (text: string): DataView => {
+      const dataStart = 0x10 + 4;
+      const blockSize = (dataStart + text.length * 2 + 2 + 3) & ~3;
+      const view = new DataView(new ArrayBuffer(HEADER_SIZE + blockSize));
+      view.setUint32(0x00, 0x00727473, true);
+      view.setUint32(0x04, HEADER_SIZE + blockSize, true);
+      view.setUint32(0xb0, 1, true);
+      view.setUint32(HEADER_SIZE + 0x00, blockSize, true);
+      view.setUint32(HEADER_SIZE + 0x04, 1, true);
+      view.setUint32(HEADER_SIZE + 0x08, 44, true);
+      view.setUint32(HEADER_SIZE + 0x10, dataStart, true);
+      for (let i = 0; i < text.length; i++) {
+        view.setUint16(HEADER_SIZE + dataStart + i * 2, text.charCodeAt(i), true);
+      }
+      return view;
+    };
+
+    const merged = parseModelPckEntries(
+      fakePck([{ name: "texte\\help.str", data: helpStr("base") }]),
+    );
+    expect(merged.helpText?.blocks[0].strings[0]).toBe("base");
+
+    const patched = parseModelPckEntries(
+      fakePck([
+        { name: HELP_TEXT_PATH, data: helpStr("base") },
+        { name: HELP_TEXT_PATH, data: helpStr("patched") },
+      ]),
+    );
+    expect(patched.helpText?.blocks[0].strings[0]).toBe("patched");
+
+    const unrelated = parseModelPckEntries(
+      fakePck([{ name: "texte/menue.str", data: helpStr("menu") }]),
+    );
+    expect(unrelated.helpText).toBeNull();
   });
 });

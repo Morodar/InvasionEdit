@@ -104,6 +104,7 @@ const PageModels = () => {
           sprFiles: new Map(),
           gfxFiles: [],
           palFiles: [],
+          helpText: null,
         };
       }
       for (const file of files) {
@@ -190,6 +191,11 @@ const PageModels = () => {
             {loadedPcks.map((name) => (
               <Chip key={name} label={name} size="small" />
             ))}
+            {modelsState && !modelsState.parsed.helpText && modelsState.models.length > 0 && (
+              <Typography variant="body2" sx={{ alignSelf: "center" }}>
+                {t("models.name-hint")}
+              </Typography>
+            )}
           </Box>
         )}
         <Box sx={{ display: "flex", flexGrow: 1, minHeight: 0 }}>

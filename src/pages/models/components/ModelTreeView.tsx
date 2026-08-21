@@ -44,12 +44,13 @@ interface ModelTreeItemProps {
 
 const ModelTreeItem = ({ model, index, selected, onSelect }: ModelTreeItemProps) => {
   const rootSprPath = model.nodes[0]?.sprPath ?? "-";
+  const primary = model.name ?? `Registry ${model.armRegistryId}`;
   return (
     <>
       <ListItem disablePadding>
         <ListItemButton selected={selected} onClick={() => onSelect(index)}>
           <ListItemText
-            primary={`Registry ${model.armRegistryId}`}
+            primary={primary}
             secondary={
               model.mdlDefinitionId !== null
                 ? `MDL ${model.mdlDefinitionId} · ${rootSprPath}`

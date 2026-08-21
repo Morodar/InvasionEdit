@@ -3,10 +3,12 @@ import { MdlUtils } from "../../../domain/mdl/MdlUtils";
 import { SprUtils } from "../../../domain/spr/SprUtils";
 import { GfxUtils } from "../../../domain/gfx/GfxUtils";
 import { PalUtils } from "../../../domain/pal/PalUtils";
+import { StrUtils } from "../../../domain/str/StrUtils";
 import { MdlRecord } from "../../../domain/mdl/MdlFile";
 import { SprFile } from "../../../domain/spr/SprFile";
 import { ArmFile } from "../../../domain/arm/ArmFile";
 import { PalFile } from "../../../domain/pal/PalFile";
+import { StrFile } from "../../../domain/str/StrFile";
 import { PckFile } from "../../../domain/pck/PckFile";
 
 export interface NamedArmFile {
@@ -24,6 +26,9 @@ export interface NamedPalFile {
   file: PalFile;
 }
 
+/** Path of the text page holding model/building display names. */
+export const HELP_TEXT_PATH = "texte/help.str";
+
 export interface ParsedModelFiles {
   armFiles: NamedArmFile[];
   /** model definition id → record (first definition wins) */
@@ -32,6 +37,8 @@ export interface ParsedModelFiles {
   sprFiles: Map<string, SprFile>;
   gfxFiles: NamedGfxUtils[];
   palFiles: NamedPalFile[];
+  /** texte/help.str when present - source of model/building names */
+  helpText: StrFile | null;
 }
 
 export function normalizeAssetPath(path: string): string {
@@ -56,6 +63,7 @@ export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
     sprFiles: new Map(),
     gfxFiles: [],
     palFiles: [],
+    helpText: null,
   };
   mergeModelPckEntries(result, pck);
   return result;
@@ -113,6 +121,14 @@ export function mergeModelPckEntries(target: ParsedModelFiles, pck: PckFile): vo
             path,
             file: PalUtils.parse(entry.dataBytes),
           });
+          break;
+        }
+        case "str": {
+          if (path === HELP_TEXT_PATH) {
+            // later archives override earlier ones so patch archives
+            // (PATCH00.PCK) replace their base version (ENGINE.PCK)
+            target.helpText = StrUtils.parse(entry.dataBytes);
+          }
           break;
         }
         default:

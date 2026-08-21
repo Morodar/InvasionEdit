@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { ArmUtils } from "../../../../src/domain/arm/ArmUtils";
 import { MdlUtils } from "../../../../src/domain/mdl/MdlUtils";
 import { SprUtils } from "../../../../src/domain/spr/SprUtils";
+import { StrUtils } from "../../../../src/domain/str/StrUtils";
 import { ParsedModelFiles } from "../../../../src/pages/models/utils/parseModelPckEntries";
 import { resolveModelChain } from "../../../../src/pages/models/utils/resolveModelChain";
 
@@ -25,7 +26,7 @@ function buildSprImage(): DataView {
 }
 
 /** MDL image with one record whose root node has two children. */
-function buildMdlImage(): DataView {
+function buildMdlImage(nameTextOffset = 0x1234): DataView {
   const recordOffset = HEADER_SIZE;
   const recordSize = 0xd0;
   const rootOffset = recordOffset + recordSize;
@@ -38,6 +39,7 @@ function buildMdlImage(): DataView {
   view.setUint32(0x04, totalSize, true);
   view.setUint32(0xb0, 1, true);
   view.setUint32(recordOffset, recordSize, true);
+  view.setUint32(recordOffset + 0x04, nameTextOffset, true);
   view.setUint32(recordOffset + 0x08, 42, true); // definition id
   view.setUint32(recordOffset + 0x64, rootOffset, true);
 
@@ -69,6 +71,35 @@ function buildArmImage(): DataView {
   return view;
 }
 
+/** Minimal help.str with one German locale; string 0x4F holds the model name. */
+function buildHelpStrImage(): DataView {
+  const stringCount = 0x50; // names start at index 0x4F
+  const nameText = "\u8001\u8002Kaserne";
+
+  // lay strings out sequentially: filler strings are bare null terminators
+  const offsets: number[] = [];
+  let dataCursor = 0x10 + stringCount * 4;
+  for (let index = 0; index < stringCount; index++) {
+    offsets.push(dataCursor);
+    dataCursor += index === 0x4f ? nameText.length * 2 + 2 : 2;
+  }
+  const blockSize = (dataCursor + 3) & ~3;
+
+  const blockStart = HEADER_SIZE;
+  const view = new DataView(new ArrayBuffer(blockStart + blockSize));
+  view.setUint32(0x00, 0x00727473, true); // "str\0"
+  view.setUint32(0x04, blockStart + blockSize, true);
+  view.setUint32(0xb0, 1, true); // locale count
+  view.setUint32(blockStart + 0x00, blockSize, true);
+  view.setUint32(blockStart + 0x04, stringCount, true);
+  view.setUint32(blockStart + 0x08, 44, true); // country code
+  offsets.forEach((offset, index) => {
+    view.setUint32(blockStart + 0x10 + index * 4, offset, true);
+  });
+  writeUtf16(view, blockStart + offsets[0x4f], nameText, nameText.length + 1);
+  return view;
+}
+
 describe("resolveModelChain", () => {
   it("resolves the ARM to MDL to SPR chain with hierarchy metadata", () => {
     const parsed: ParsedModelFiles = {
@@ -81,6 +112,7 @@ describe("resolveModelChain", () => {
         ["spr/test/b.spr", SprUtils.parse(buildSprImage())],
       ]),
       gfxFiles: [],
+      helpText: null,
       palFiles: [],
     };
 
@@ -122,6 +154,7 @@ describe("resolveModelChain", () => {
       mdlRecords: new Map(),
       sprFiles: new Map(),
       gfxFiles: [],
+      helpText: null,
       palFiles: [],
     };
 
@@ -129,5 +162,38 @@ describe("resolveModelChain", () => {
     expect(models).toHaveLength(1);
     expect(models[0].mdlDefinitionId).toBeNull();
     expect(models[0].nodes).toHaveLength(0);
+  });
+
+  it("resolves localized names from texte/help.str", () => {
+    const mdlRecord = MdlUtils.parse(buildMdlImage(0)).records[0];
+    const parsed: ParsedModelFiles = {
+      armFiles: [{ path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) }],
+      mdlRecords: new Map([[mdlRecord.definitionId, mdlRecord]]),
+      sprFiles: new Map(),
+      gfxFiles: [],
+      palFiles: [],
+      helpText: StrUtils.parse(buildHelpStrImage()),
+    };
+
+    const models = resolveModelChain(parsed);
+    // rich-text command words are stripped and whitespace collapsed
+    expect(models[0].name).toBe("Kaserne");
+  });
+
+  it("keeps the name null when help.str is missing or the index is out of range", () => {
+    const mdlRecord = MdlUtils.parse(buildMdlImage(0x1234)).records[0];
+    const parsed: ParsedModelFiles = {
+      armFiles: [{ path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) }],
+      mdlRecords: new Map([[mdlRecord.definitionId, mdlRecord]]),
+      sprFiles: new Map(),
+      gfxFiles: [],
+      palFiles: [],
+      helpText: StrUtils.parse(buildHelpStrImage()),
+    };
+
+    expect(resolveModelChain(parsed)[0].name).toBeNull();
+
+    const withoutHelp: ParsedModelFiles = { ...parsed, helpText: null };
+    expect(resolveModelChain(withoutHelp)[0].name).toBeNull();
   });
 });

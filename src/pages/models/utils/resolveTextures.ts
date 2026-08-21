@@ -77,6 +77,10 @@ export class ModelTextureProvider {
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.magFilter = THREE.LinearFilter;
       texture.minFilter = THREE.LinearFilter;
+      // SPR UVs routinely exceed the [0,1] range to tile detail textures -
+      // the stock sampler wraps them instead of clamping to the edge
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
       texture.generateMipmaps = false;
       texture.needsUpdate = true;
       return texture;
