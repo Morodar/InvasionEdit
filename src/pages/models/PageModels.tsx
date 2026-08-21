@@ -103,6 +103,7 @@ const PageModels = () => {
           mdlRecords: new Map(),
           sprFiles: new Map(),
           gfxFiles: [],
+          palFiles: [],
         };
       }
       for (const file of files) {
