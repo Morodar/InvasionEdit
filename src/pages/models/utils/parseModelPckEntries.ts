@@ -63,6 +63,11 @@ export function mergeModelPckEntries(target: ParsedModelFiles, pck: PckFile): vo
     try {
       switch (fileExtension(path)) {
         case "arm": {
+          // archives may list the same asset path twice (e.g. GRAPHIK.PCK
+          // ships engine/font.gfx multiple times) - first occurrence wins
+          if (target.armFiles.some((arm) => arm.path === path)) {
+            break;
+          }
           const file: ArmFile = ArmUtils.parse(entry.dataBytes);
           target.armFiles.push({ path, file });
           break;
@@ -82,7 +87,13 @@ export function mergeModelPckEntries(target: ParsedModelFiles, pck: PckFile): vo
           break;
         }
         case "gfx": {
-          target.gfxFiles.push({ path, utils: new GfxUtils(entry.dataBytes) });
+          if (target.gfxFiles.some((gfx) => gfx.path === path)) {
+            break;
+          }
+          const utils = new GfxUtils(entry.dataBytes);
+          // GfxUtils parses lazily - force it here so damaged archives are skipped
+          utils.parseGfxFile();
+          target.gfxFiles.push({ path, utils });
           break;
         }
         default:
