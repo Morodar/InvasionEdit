@@ -10,11 +10,20 @@ import { SPR_UNTEXTURED_SUBRESOURCE } from "../../../domain/spr/SprUtils";
  * the faction archives gfx/mdl/armyN.gfx (subresources 0..113), effect textures in
  * gfx/texturen/effect.gfx and friends. Archives are searched in priority order -
  * the user-selected faction archive should come first.
+ *
+ * Textures are sampled on a square canvas: the decoded image is padded with
+ * transparent texels up to max(width, height), matching the stock renderer's
+ * make_sprite_texture_square_canvas. The normalized SPR UVs only line up with
+ * this padded basis.
  */
 export class ModelTextureProvider {
   private readonly textureCache = new Map<number, THREE.Texture | null>();
 
-  constructor(private readonly gfxFiles: NamedGfxUtils[]) {}
+  constructor(
+    private readonly gfxFiles: NamedGfxUtils[],
+    /** ARGB palette paired with the selected faction archive (may be empty). */
+    private readonly paletteArgb: number[] = [],
+  ) {}
 
   get hasTextures(): boolean {
     return this.gfxFiles.length > 0;
@@ -23,6 +32,15 @@ export class ModelTextureProvider {
   getDimensions(subresource: number): { width: number; height: number } | undefined {
     const source = this.findUtils(subresource)?.utils.getSubresource(subresource);
     return source ? { width: source.pixelWidth, height: source.pixelHeight } : undefined;
+  }
+
+  /**
+   * Flat color for untextured triangles: the low 9 bits of the render flags
+   * select a palette entry from the faction palette archive.
+   */
+  getPaletteColor(renderFlags: number): number | null {
+    const index = renderFlags & 0x1ff;
+    return this.paletteArgb[index] ?? null;
   }
 
   getTexture(subresource: number): THREE.Texture | null {
@@ -46,12 +64,16 @@ export class ModelTextureProvider {
     }
     try {
       const decoded = utils.utils.decodeSubresourceRgba(subresource);
-      const texture = new THREE.DataTexture(
-        decoded.rgba,
-        decoded.width,
-        decoded.height,
-        THREE.RGBAFormat,
-      );
+      // pad to the square sampling canvas (top-left placement, transparent fill)
+      const extent = Math.max(decoded.width, decoded.height);
+      const canvas = new Uint8Array(extent * extent * 4);
+      for (let y = 0; y < decoded.height; y++) {
+        canvas.set(
+          decoded.rgba.subarray(y * decoded.width * 4, (y + 1) * decoded.width * 4),
+          y * extent * 4,
+        );
+      }
+      const texture = new THREE.DataTexture(canvas, extent, extent, THREE.RGBAFormat);
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.magFilter = THREE.LinearFilter;
       texture.minFilter = THREE.LinearFilter;

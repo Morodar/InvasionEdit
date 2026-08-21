@@ -81,6 +81,7 @@ describe("resolveModelChain", () => {
         ["spr/test/b.spr", SprUtils.parse(buildSprImage())],
       ]),
       gfxFiles: [],
+      palFiles: [],
     };
 
     const models = resolveModelChain(parsed);
@@ -121,6 +122,7 @@ describe("resolveModelChain", () => {
       mdlRecords: new Map(),
       sprFiles: new Map(),
       gfxFiles: [],
+      palFiles: [],
     };
 
     const models = resolveModelChain(parsed);

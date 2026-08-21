@@ -75,13 +75,24 @@ describe("GfxUtils", () => {
 
   it("decodes palettized pixels through the selected bank", () => {
     const utils = new GfxUtils(buildGfxImage());
-    const decoded = utils.decodeSubresourceRgba(0);
+    const decoded = utils.decodeSubresourceRgba(0, true);
     expect(decoded.width).toBe(2);
     expect(decoded.height).toBe(2);
     expect([...decoded.rgba]).toEqual([
       0, 0, 255, 255, // blue, opaque
       255, 0, 0, 128, // red, semi-transparent
       0x12, 0x34, 0x56, 255, // zero alpha promoted to opaque
+      255, 0, 0, 128,
+    ]);
+  });
+
+  it("keeps zero alpha transparent by default (model texture path)", () => {
+    const utils = new GfxUtils(buildGfxImage());
+    const decoded = utils.decodeSubresourceRgba(0);
+    expect([...decoded.rgba]).toEqual([
+      0, 0, 255, 255,
+      255, 0, 0, 128,
+      0x12, 0x34, 0x56, 0, // zero alpha preserved
       255, 0, 0, 128,
     ]);
   });

@@ -116,10 +116,12 @@ export class GfxUtils extends HeaderUtils {
 
   /**
    * Decodes a subresource into RGBA bytes (4 per pixel).
-   * Zero alpha is treated as fully opaque, matching the stock renderer.
+   * By default zero alpha stays transparent, matching the model/effect texture
+   * path of the stock renderer; pass true for the opaque terrain variant.
    */
   decodeSubresourceRgba(
     subresourceIndex: number,
+    zeroAlphaIsOpaque = false,
   ): { width: number; height: number; rgba: Uint8Array } {
     if (subresourceIndex < 0 || subresourceIndex >= this.subresourceCount) {
       throw new Error("GFX subresource index out of range");
@@ -135,7 +137,7 @@ export class GfxUtils extends HeaderUtils {
             ]
           : this.getUint32(source.dataOffset + i * 4);
       let alpha = (argb >>> 24) & 0xff;
-      if (alpha === 0) alpha = 0xff;
+      if (alpha === 0 && zeroAlphaIsOpaque) alpha = 0xff;
       rgba[i * 4] = (argb >>> 16) & 0xff;
       rgba[i * 4 + 1] = (argb >>> 8) & 0xff;
       rgba[i * 4 + 2] = argb & 0xff;

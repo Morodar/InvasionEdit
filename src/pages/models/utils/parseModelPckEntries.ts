@@ -2,9 +2,11 @@ import { ArmUtils } from "../../../domain/arm/ArmUtils";
 import { MdlUtils } from "../../../domain/mdl/MdlUtils";
 import { SprUtils } from "../../../domain/spr/SprUtils";
 import { GfxUtils } from "../../../domain/gfx/GfxUtils";
+import { PalUtils } from "../../../domain/pal/PalUtils";
 import { MdlRecord } from "../../../domain/mdl/MdlFile";
 import { SprFile } from "../../../domain/spr/SprFile";
 import { ArmFile } from "../../../domain/arm/ArmFile";
+import { PalFile } from "../../../domain/pal/PalFile";
 import { PckFile } from "../../../domain/pck/PckFile";
 
 export interface NamedArmFile {
@@ -17,6 +19,11 @@ export interface NamedGfxUtils {
   utils: GfxUtils;
 }
 
+export interface NamedPalFile {
+  path: string;
+  file: PalFile;
+}
+
 export interface ParsedModelFiles {
   armFiles: NamedArmFile[];
   /** model definition id → record (first definition wins) */
@@ -24,6 +31,7 @@ export interface ParsedModelFiles {
   /** normalized SPR path → parsed file */
   sprFiles: Map<string, SprFile>;
   gfxFiles: NamedGfxUtils[];
+  palFiles: NamedPalFile[];
 }
 
 export function normalizeAssetPath(path: string): string {
@@ -47,6 +55,7 @@ export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
     mdlRecords: new Map(),
     sprFiles: new Map(),
     gfxFiles: [],
+    palFiles: [],
   };
   mergeModelPckEntries(result, pck);
   return result;
@@ -94,6 +103,16 @@ export function mergeModelPckEntries(target: ParsedModelFiles, pck: PckFile): vo
           // GfxUtils parses lazily - force it here so damaged archives are skipped
           utils.parseGfxFile();
           target.gfxFiles.push({ path, utils });
+          break;
+        }
+        case "pal": {
+          if (target.palFiles.some((pal) => pal.path === path)) {
+            break;
+          }
+          target.palFiles.push({
+            path,
+            file: PalUtils.parse(entry.dataBytes),
+          });
           break;
         }
         default:

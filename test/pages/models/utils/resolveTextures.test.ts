@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import * as THREE from "three";
 import { GfxUtils } from "../../../../src/domain/gfx/GfxUtils";
 import { ModelTextureProvider } from "../../../../src/pages/models/utils/resolveTextures";
 
@@ -20,6 +21,9 @@ function buildGfxImage(): DataView {
   view.setUint32(TABLE_OFFSET + 0x0c, PIXEL_DATA_OFFSET, true);
   view.setUint32(TABLE_OFFSET + 0x18, 4, true); // pixel width
   view.setUint32(TABLE_OFFSET + 0x1c, 2, true); // pixel height
+  for (let i = 0; i < 8; i++) {
+    view.setUint8(PIXEL_DATA_OFFSET + i, i < 4 ? 0 : 1);
+  }
   return view;
 }
 
@@ -52,5 +56,30 @@ describe("ModelTextureProvider", () => {
       { path: "gfx/mdl/army1.gfx", utils: new GfxUtils(buildGfxImage()) },
     ]);
     expect(provider.getTexture(0xffffffff)).toBeNull();
+  });
+
+  it("pads non-square textures onto the square sampling canvas", () => {
+    const provider = new ModelTextureProvider([
+      { path: "gfx/mdl/army1.gfx", utils: new GfxUtils(buildGfxImage()) },
+    ]);
+    const texture = provider.getTexture(0) as THREE.DataTexture;
+    expect(texture.image.width).toBe(4);
+    expect(texture.image.height).toBe(4); // padded from 4x2
+    const data = texture.image.data as Uint8Array;
+    // row 0 holds the source's first row (palette entry 0 -> opaque blue)
+    expect([...data.subarray(0, 8)]).toEqual([0, 0, 255, 255, 0, 0, 255, 255]);
+    // rows 2-3 are transparent padding
+    expect([...data.subarray(2 * 4 * 4, 2 * 4 * 4 + 4)]).toEqual([0, 0, 0, 0]);
+  });
+
+  it("resolves palette colors through the low 9 render flag bits", () => {
+    const provider = new ModelTextureProvider(
+      [{ path: "gfx/mdl/army1.gfx", utils: new GfxUtils(buildGfxImage()) }],
+      [0xff0000ff, 0x80ff0000],
+    );
+    expect(provider.getPaletteColor(0)).toBe(0xff0000ff);
+    expect(provider.getPaletteColor(1)).toBe(0x80ff0000);
+    expect(provider.getPaletteColor(0x201)).toBe(0x80ff0000); // masked to 9 bits -> index 1
+    expect(provider.getPaletteColor(500)).toBeNull(); // out of range
   });
 });

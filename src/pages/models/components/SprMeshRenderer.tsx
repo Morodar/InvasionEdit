@@ -8,7 +8,8 @@ import {
 import { ModelTextureProvider } from "../utils/resolveTextures";
 
 const DEFAULT_TEXTURE_DIMENSIONS = { width: 256, height: 256 };
-const UNTEXTURED_COLOR = "#9ecbff";
+/** Fallback for untextured triangles when no faction palette is loaded (0xFFB8BEC6). */
+const UNTEXTURED_COLOR = "#b8bec6";
 
 export interface SprMeshRendererProps {
   mesh: SprMesh;
@@ -17,14 +18,18 @@ export interface SprMeshRendererProps {
   wireframe?: boolean;
 }
 
-interface SubresourceGeometry {
+interface TriangleGroup {
+  /** texture subresource, or SPR_UNTEXTURED_SUBRESOURCE for flat-colored triangles */
   subresource: number;
+  /** render flags of untextured triangles; their low 9 bits select a palette color */
+  renderFlags: number;
   geometry: THREE.BufferGeometry;
 }
 
 /**
- * Renders a single SPR mesh. Triangles are grouped by their texture subresource
- * so that every group can carry its own material in textured mode.
+ * Renders a single SPR mesh. Triangles are grouped by texture subresource
+ * (untextured triangles additionally by their render flags) so that every
+ * group can carry its own material.
  */
 export const SprMeshRenderer = ({
   mesh,
@@ -32,23 +37,22 @@ export const SprMeshRenderer = ({
   textured = false,
   wireframe = false,
 }: SprMeshRendererProps) => {
-  const geometries = useMemo(
-    () => buildSubresourceGeometries(mesh, textureProvider),
+  const groups = useMemo(
+    () => buildTriangleGroups(mesh, textureProvider),
     [mesh, textureProvider],
   );
 
   useEffect(
-    () => () => geometries.forEach(({ geometry }) => geometry.dispose()),
-    [geometries],
+    () => () => groups.forEach(({ geometry }) => geometry.dispose()),
+    [groups],
   );
 
   return (
     <>
-      {geometries.map(({ subresource, geometry }) => (
-        <SprSubresourceMesh
-          key={subresource}
-          subresource={subresource}
-          geometry={geometry}
+      {groups.map((group, index) => (
+        <SprGroupMesh
+          key={index}
+          group={group}
           textureProvider={textureProvider}
           textured={textured}
           wireframe={wireframe}
@@ -58,45 +62,49 @@ export const SprMeshRenderer = ({
   );
 };
 
-interface SprSubresourceMeshProps {
-  subresource: number;
-  geometry: THREE.BufferGeometry;
+interface SprGroupMeshProps {
+  group: TriangleGroup;
   textureProvider: ModelTextureProvider | null;
   textured: boolean;
   wireframe: boolean;
 }
 
-const SprSubresourceMesh = ({
-  subresource,
-  geometry,
-  textureProvider,
-  textured,
-  wireframe,
-}: SprSubresourceMeshProps) => {
+const SprGroupMesh = ({ group, textureProvider, textured, wireframe }: SprGroupMeshProps) => {
   const material = useMemo(() => {
+    const untextured = group.subresource === SPR_UNTEXTURED_SUBRESOURCE;
     const map =
-      textured && subresource !== SPR_UNTEXTURED_SUBRESOURCE
-        ? (textureProvider?.getTexture(subresource) ?? null)
-        : null;
+      textured && !untextured ? (textureProvider?.getTexture(group.subresource) ?? null) : null;
+
+    if (untextured) {
+      // the low 9 bits of the render flags select a faction palette entry
+      const argb = textureProvider?.getPaletteColor(group.renderFlags) ?? null;
+      return new THREE.MeshStandardMaterial({
+        color: argb === null ? UNTEXTURED_COLOR : new THREE.Color(argb),
+        side: THREE.DoubleSide,
+        wireframe,
+        flatShading: true,
+      });
+    }
+
     return new THREE.MeshStandardMaterial({
-      color: map ? "#ffffff" : UNTEXTURED_COLOR,
+      color: "#ffffff",
       map: map ?? null,
       side: THREE.DoubleSide,
       wireframe,
-      flatShading: !map,
+      alphaTest: 0.5,
     });
-  }, [textured, textureProvider, subresource, wireframe]);
+  }, [textured, textureProvider, group, wireframe]);
 
   useEffect(() => () => material.dispose(), [material]);
 
-  return <mesh geometry={geometry} material={material} />;
+  return <mesh geometry={group.geometry} material={material} />;
 };
 
-function buildSubresourceGeometries(
+function buildTriangleGroups(
   mesh: SprMesh,
   textureProvider: ModelTextureProvider | null,
-): SubresourceGeometry[] {
-  const cornersBySubresource = new Map<number, SprVertex[]>();
+): TriangleGroup[] {
+  const cornersByGroup = new Map<string, { group: Omit<TriangleGroup, "geometry">; corners: SprVertex[] }>();
   const vertexCount = mesh.indices.length;
   if (vertexCount % 3 !== 0) {
     throw new Error("SPR mesh index stream is not triangle aligned");
@@ -104,19 +112,27 @@ function buildSubresourceGeometries(
 
   for (let index = 0; index < vertexCount; index++) {
     const vertex = mesh.vertices[mesh.indices[index]];
-    let corners = cornersBySubresource.get(vertex.textureSubresource);
-    if (!corners) {
-      corners = [];
-      cornersBySubresource.set(vertex.textureSubresource, corners);
+    const untextured = vertex.textureSubresource === SPR_UNTEXTURED_SUBRESOURCE;
+    const key = untextured ? `u-${vertex.renderFlags & 0x1ff}` : `t-${vertex.textureSubresource}`;
+    let entry = cornersByGroup.get(key);
+    if (!entry) {
+      entry = {
+        group: {
+          subresource: vertex.textureSubresource,
+          renderFlags: untextured ? vertex.renderFlags : 0,
+        },
+        corners: [],
+      };
+      cornersByGroup.set(key, entry);
     }
-    corners.push(vertex);
+    entry.corners.push(vertex);
   }
 
-  const result: SubresourceGeometry[] = [];
-  for (const [subresource, corners] of cornersBySubresource) {
+  const result: TriangleGroup[] = [];
+  for (const { group, corners } of cornersByGroup.values()) {
     result.push({
-      subresource,
-      geometry: buildGeometry(corners, subresource, textureProvider),
+      ...group,
+      geometry: buildGeometry(corners, group.subresource, textureProvider),
     });
   }
   return result;

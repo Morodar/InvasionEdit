@@ -77,7 +77,12 @@ const PageModels = () => {
       const [selected] = files.splice(selectedIndex, 1);
       files.unshift(selected);
     }
-    return new ModelTextureProvider(files);
+    // faction palettes pair with their gfx archive (armyN.pal ↔ armyN.gfx)
+    const palettePath = selectedGfxPath.replace(/\.gfx$/, ".pal");
+    const palette =
+      modelsState.parsed.palFiles.find((pal) => pal.path === palettePath)?.file.colorsArgb ??
+      [];
+    return new ModelTextureProvider(files, palette);
   }, [modelsState, selectedGfxPath]);
 
   const handleFilesChanged = async (files: File[]) => {
