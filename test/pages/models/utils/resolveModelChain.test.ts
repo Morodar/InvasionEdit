@@ -71,6 +71,73 @@ function buildArmImage(): DataView {
   return view;
 }
 
+/**
+ * ARM image whose root carries one attached child group (slot 0 -> MDL 43)
+ * next to the base variant (slot 0 -> MDL 42).
+ */
+function buildArmImageWithAttachment(): DataView {
+  const recordOffset = HEADER_SIZE;
+  const rootOffset = recordOffset + 0x50;
+  const childOffset = rootOffset + 0x60;
+  const view = new DataView(new ArrayBuffer(childOffset + 0x60));
+  view.setUint32(0x00, 0x006d7261, true);
+  view.setUint32(0x04, childOffset + 0x60, true);
+  view.setUint32(0xb0, 1, true);
+  view.setUint32(recordOffset, 0x50, true);
+  view.setUint32(recordOffset + 0x08, 300, true);
+  view.setUint32(recordOffset + 0x0c, rootOffset, true);
+
+  view.setUint32(rootOffset + 0x08, 1, true); // one child slot
+  view.setUint32(rootOffset + 0x0c, childOffset, true); // slot 0
+  view.setUint32(rootOffset + 0x20, 42, true);
+
+  view.setUint32(childOffset + 0x20, 43, true); // attached weapon definition
+  return view;
+}
+
+/**
+ * MDL file with two definitions: 42 = chassis whose root has an attachment
+ * socket (flags low nibble set, no SPR path) plus a mesh child, 43 = the
+ * attached weapon (single SPR node).
+ */
+function buildChassisAndWeaponMdlImage(): DataView {
+  const recordSize = 0xd0;
+  const rec0 = HEADER_SIZE;
+  const rec1 = rec0 + recordSize;
+  const chassisRoot = rec1 + recordSize;
+  const socket = chassisRoot + 0x70;
+  const chassisChild = socket + 0x70;
+  const weaponRoot = chassisChild + 0x70;
+  const totalSize = weaponRoot + 0x70;
+
+  const view = new DataView(new ArrayBuffer(totalSize));
+  view.setUint32(0x00, 0x006c646d, true);
+  view.setUint32(0x04, totalSize, true);
+  view.setUint32(0xb0, 2, true);
+
+  // record 0: chassis definition 42
+  view.setUint32(rec0, recordSize, true);
+  view.setUint32(rec0 + 0x08, 42, true);
+  view.setUint32(rec0 + 0x64, chassisRoot, true);
+  view.setUint32(chassisRoot + 0x14, 2, true); // socket + mesh child
+  view.setUint32(chassisRoot + 0x18, socket, true);
+  view.setUint32(chassisRoot + 0x1c, chassisChild, true);
+  writeUtf16(view, chassisRoot + 0x38, "spr/test/a", 20);
+
+  view.setUint32(socket + 0x04, 1, true); // flags: attachment socket, no runtime node
+  writeUtf16(view, socket + 0x38, "", 20);
+
+  writeUtf16(view, chassisChild + 0x38, "spr/test/c.spr", 20);
+
+  // record 1: weapon definition 43
+  view.setUint32(rec1, recordSize, true);
+  view.setUint32(rec1 + 0x08, 43, true);
+  view.setUint32(rec1 + 0x64, weaponRoot, true);
+  writeUtf16(view, weaponRoot + 0x38, "spr/test/w.spr", 20);
+
+  return view;
+}
+
 /** Minimal help.str with one German locale; string 0x4F holds the model name. */
 function buildHelpStrImage(): DataView {
   const stringCount = 0x50; // names start at index 0x4F
@@ -148,7 +215,7 @@ describe("resolveModelChain", () => {
     expect(childB.sprFile).toBeNull();
   });
 
-  it("emits an empty model when the ARM variant slot is unresolved", () => {
+  it("emits an empty model when the baseline MDL is not loaded", () => {
     const parsed: ParsedModelFiles = {
       armFiles: [{ path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) }],
       mdlRecords: new Map(),
@@ -160,8 +227,67 @@ describe("resolveModelChain", () => {
 
     const models = resolveModelChain(parsed);
     expect(models).toHaveLength(1);
-    expect(models[0].mdlDefinitionId).toBeNull();
+    // the serialized baseline slot still reports its definition id
+    expect(models[0].mdlDefinitionId).toBe(42);
     expect(models[0].nodes).toHaveLength(0);
+  });
+
+  it("attaches ARM child groups at MDL socket nodes", () => {
+    const mdlFile = MdlUtils.parse(buildChassisAndWeaponMdlImage());
+    const parsed: ParsedModelFiles = {
+      armFiles: [
+        { path: "arm/vehicle.arm", file: ArmUtils.parse(buildArmImageWithAttachment()) },
+      ],
+      mdlRecords: new Map(mdlFile.records.map((record) => [record.definitionId, record])),
+      sprFiles: new Map([
+        ["spr/test/a.spr", SprUtils.parse(buildSprImage())],
+        ["spr/test/c.spr", SprUtils.parse(buildSprImage())],
+        ["spr/test/w.spr", SprUtils.parse(buildSprImage())],
+      ]),
+      gfxFiles: [],
+      helpText: null,
+      palFiles: [],
+    };
+
+    const models = resolveModelChain(parsed);
+    expect(models[0].mdlDefinitionId).toBe(42);
+
+    const paths = models[0].nodes.map((node) => node.sprPath);
+    // chassis mesh, chassis child, then the weapon attached at the socket
+    expect(paths).toEqual(["spr/test/a.spr", "spr/test/c.spr", "spr/test/w.spr"]);
+
+    const [chassis, chassisChild, weapon] = models[0].nodes;
+    expect(chassis.parentIndex).toBe(-1);
+    expect(chassisChild.parentIndex).toBe(0);
+    expect(chassisChild.childSlot).toBe(1);
+    // the weapon root plugs into the socket: parent is the chassis root
+    expect(weapon.parentIndex).toBe(0);
+    expect(weapon.childSlot).toBe(0);
+  });
+
+  it("skips ARM child groups without a matching socket", () => {
+    const mdlFile = MdlUtils.parse(buildMdlImage());
+    const parsed: ParsedModelFiles = {
+      armFiles: [
+        { path: "arm/vehicle.arm", file: ArmUtils.parse(buildArmImageWithAttachment()) },
+      ],
+      mdlRecords: new Map(mdlFile.records.map((record) => [record.definitionId, record])),
+      sprFiles: new Map([
+        ["spr/test/a.spr", SprUtils.parse(buildSprImage())],
+        ["spr/test/b.spr", SprUtils.parse(buildSprImage())],
+      ]),
+      gfxFiles: [],
+      helpText: null,
+      palFiles: [],
+    };
+
+    const models = resolveModelChain(parsed);
+    // no socket in the hierarchy -> the weapon group never renders
+    expect(models[0].nodes.map((node) => node.sprPath)).toEqual([
+      "spr/test/a.spr",
+      "spr/test/b.spr",
+      "spr/test/missing.spr",
+    ]);
   });
 
   it("resolves localized names from texte/help.str", () => {

@@ -1,11 +1,12 @@
 import { MdlNode } from "../../../domain/mdl/MdlFile";
 import { SprFile, SprVec3 } from "../../../domain/spr/SprFile";
 import { normalizeAssetDisplayName, strString } from "../../../domain/str/StrUtils";
+import { ArmNode } from "../../../domain/arm/ArmFile";
 import { ParsedModelFiles } from "./parseModelPckEntries";
 import { findChildAttachment } from "./modelHierarchy";
 
 export interface ModelChainNode {
-  /** index into the owning ResolvedModel.nodes, -1 for the root */
+  /** index into the owning ResolvedModel.nodes, -1 for the model root */
   parentIndex: number;
   childSlot: number;
   depth: number;
@@ -28,36 +29,182 @@ export interface ResolvedModel {
 /** texte/help.str text page 0x18: model names start at resource index 0x4F. */
 const NAME_TEXT_BASE_INDEX = 0x4f;
 
+const ZERO_TRANSLATION: SprVec3 = { x: 0, y: 0, z: 0 };
+
+/**
+ * One ARM tree node: a technology-variant group whose children are attached
+ * sub-models (turrets, weapons). Each slot of modelDefinitionIds holds the MDL
+ * definition of one technology variant; slot 0 is the serialized baseline.
+ */
+interface ArmVariantGroup {
+  parentGroupIndex: number;
+  childSlot: number;
+  depth: number;
+  modelDefinitionIds: number[];
+}
+
+/**
+ * MDL nodes whose low flag nibble is nonzero create no runtime node - they are
+ * attachment sockets. ARM child groups plug into the socket at their slot.
+ */
+interface DeferredAttachment {
+  parentIndex: number;
+  childSlot: number;
+}
+
 /**
  * Resolves the ARM→MDL→SPR chain for every ARM record.
  *
- * Only the base technology variant (the first nonzero model definition slot of
- * the ARM root node) is resolved - technology variant selection is out of scope.
+ * The ARM tree is walked as variant groups; each group contributes its baseline
+ * (slot 0) MDL hierarchy and its child groups attach at the flattened MDL
+ * socket positions - that is how turrets and weapons become part of a vehicle.
+ * Technology variants above slot 0 are out of scope.
  */
 export function resolveModelChain(parsed: ParsedModelFiles): ResolvedModel[] {
   const models: ResolvedModel[] = [];
 
   for (const armFile of parsed.armFiles) {
     for (const record of armFile.file.records) {
-      const rootNode = record.rootNode;
-      const definitionId = rootNode ? firstNonZero(rootNode.modelDefinitionIds) : 0;
-      const mdlRecord = definitionId !== 0 ? parsed.mdlRecords.get(definitionId) : undefined;
-
-      const nodes: ModelChainNode[] = [];
-      if (mdlRecord && mdlRecord.hierarchyNodes.length > 0) {
-        appendHierarchyNodes(mdlRecord.hierarchyNodes, parsed, nodes);
+      const groups: ArmVariantGroup[] = [];
+      if (record.rootNode) {
+        collectVariantGroups(record.rootNode, -1, 0, 0, groups);
       }
 
+      const nodes: ModelChainNode[] = [];
+      const rootDefinitionId =
+        groups.length > 0 ? appendVariantGroup(parsed, groups, 0, null, nodes) : 0;
+
+      const mdlRecord = rootDefinitionId !== 0 ? parsed.mdlRecords.get(rootDefinitionId) : undefined;
       models.push({
         armFilePath: armFile.path,
         armRegistryId: record.registryId,
-        mdlDefinitionId: mdlRecord?.definitionId ?? null,
+        mdlDefinitionId: rootDefinitionId !== 0 ? rootDefinitionId : null,
         name: mdlRecord ? resolveModelName(parsed, mdlRecord.nameTextOffset) : null,
         nodes,
       });
     }
   }
   return models;
+}
+
+function collectVariantGroups(
+  node: ArmNode,
+  parentGroupIndex: number,
+  childSlot: number,
+  depth: number,
+  output: ArmVariantGroup[],
+): void {
+  const index = output.length;
+  output.push({
+    parentGroupIndex,
+    childSlot,
+    depth,
+    modelDefinitionIds: node.modelDefinitionIds,
+  });
+  node.children.forEach((child, slot) => {
+    collectVariantGroups(child, index, slot, depth + 1, output);
+  });
+}
+
+/**
+ * Appends one variant group's flattened MDL hierarchy to the output and
+ * recurses into its attached child groups. Returns the selected MDL
+ * definition id, or 0 when the group has no baseline variant.
+ */
+function appendVariantGroup(
+  parsed: ParsedModelFiles,
+  groups: ArmVariantGroup[],
+  groupIndex: number,
+  attachment: DeferredAttachment | null,
+  output: ModelChainNode[],
+): number {
+  const group = groups[groupIndex];
+  // The executable initializes the selected definition from serialized ARM
+  // slot zero; later slots replace it only when their technology is unlocked.
+  const definitionId = group.modelDefinitionIds[0] ?? 0;
+  if (definitionId === 0) {
+    return 0;
+  }
+  const hierarchy = parsed.mdlRecords.get(definitionId)?.hierarchyNodes ?? [];
+
+  const externalParent = attachment ? attachment.parentIndex : -1;
+  const externalSlot = attachment ? attachment.childSlot : 0;
+  const deferred: DeferredAttachment[] = [];
+  const remap = hierarchy.map(() => -1);
+  const lineage = hierarchyLineage(hierarchy);
+
+  hierarchy.forEach((node, localIndex) => {
+    const isRoot = localIndex === 0;
+    let mappedParent = externalParent;
+    if (!isRoot) {
+      if (lineage[localIndex].parent === -1) {
+        return;
+      }
+      mappedParent = remap[lineage[localIndex].parent];
+      if (mappedParent === -1) {
+        return;
+      }
+    }
+    const childSlot = lineage[localIndex].childSlot;
+    if ((node.flags & 0xf) !== 0) {
+      deferred.push({ parentIndex: mappedParent, childSlot });
+      return;
+    }
+    if (node.spritePath === "") {
+      return;
+    }
+    const outParent = isRoot ? externalParent : mappedParent;
+    const outSlot = isRoot ? externalSlot : childSlot;
+    const sprPath = node.spritePath;
+    const sprFile: SprFile | null = parsed.sprFiles.get(sprPath) ?? null;
+    const parentSprFile = outParent === -1 ? null : output[outParent].sprFile;
+    remap[localIndex] = output.length;
+    output.push({
+      parentIndex: outParent,
+      childSlot: outSlot,
+      depth: outParent === -1 ? 0 : output[outParent].depth + 1,
+      mdlNode: node,
+      sprPath,
+      sprFile,
+      attachmentTranslation:
+        outParent === -1
+          ? ZERO_TRANSLATION
+          : (findChildAttachment(parentSprFile, outSlot) ?? ZERO_TRANSLATION),
+    });
+  });
+
+  // Child groups attach at the deferred socket whose push position equals the
+  // group's ARM child slot (mirrors the stock editor's deferred vector).
+  groups.forEach((childGroup, childIndex) => {
+    if (childGroup.parentGroupIndex !== groupIndex) {
+      return;
+    }
+    if (childGroup.childSlot >= deferred.length) {
+      return;
+    }
+    appendVariantGroup(parsed, groups, childIndex, deferred[childGroup.childSlot], output);
+  });
+  return definitionId;
+}
+
+/**
+ * Parent local index and child slot per hierarchy node; the pre-order root has
+ * parent -1 and slot 0.
+ */
+function hierarchyLineage(
+  hierarchy: MdlNode[],
+): { parent: number; childSlot: number }[] {
+  const result = hierarchy.map(() => ({ parent: -1, childSlot: 0 }));
+  for (let index = 1; index < hierarchy.length; index++) {
+    for (let candidate = index - 1; candidate >= 0; candidate--) {
+      const slot = hierarchy[candidate].childOffsets.indexOf(hierarchy[index].serializedOffset);
+      if (slot !== -1) {
+        result[index] = { parent: candidate, childSlot: slot };
+        break;
+      }
+    }
+  }
+  return result;
 }
 
 function resolveModelName(parsed: ParsedModelFiles, nameTextOffset: number): string | null {
@@ -71,46 +218,4 @@ function resolveModelName(parsed: ParsedModelFiles, nameTextOffset: number): str
   } catch {
     return null;
   }
-}
-
-function appendHierarchyNodes(
-  hierarchyNodes: MdlNode[],
-  parsed: ParsedModelFiles,
-  output: ModelChainNode[],
-): void {
-  hierarchyNodes.forEach((node, index) => {
-    // The parser emits a depth-first pre-order list; the parent is the closest
-    // preceding node whose child offsets contain this node's offset.
-    let parentIndex = -1;
-    let childSlot = 0;
-    for (let candidate = index - 1; candidate >= 0; candidate--) {
-      const slot = hierarchyNodes[candidate].childOffsets.indexOf(node.serializedOffset);
-      if (slot !== -1) {
-        parentIndex = candidate;
-        childSlot = slot;
-        break;
-      }
-    }
-    const depth = parentIndex === -1 ? 0 : output[parentIndex].depth + 1;
-    const sprPath = node.spritePath;
-    const sprFile: SprFile | null =
-      sprPath !== "" ? (parsed.sprFiles.get(sprPath) ?? null) : null;
-    const parentSprFile = parentIndex === -1 ? null : output[parentIndex].sprFile;
-    output.push({
-      parentIndex,
-      childSlot,
-      depth,
-      mdlNode: node,
-      sprPath,
-      sprFile,
-      attachmentTranslation:
-        parentIndex === -1
-          ? { x: 0, y: 0, z: 0 }
-          : (findChildAttachment(parentSprFile, childSlot) ?? { x: 0, y: 0, z: 0 }),
-    });
-  });
-}
-
-function firstNonZero(values: number[]): number {
-  return values.find((value) => value !== 0) ?? 0;
 }
