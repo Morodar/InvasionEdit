@@ -21,7 +21,7 @@ export class ModelTextureProvider {
   }
 
   getDimensions(subresource: number): { width: number; height: number } | undefined {
-    const source = this.findUtils(subresource)?.utils.subresources[subresource];
+    const source = this.findUtils(subresource)?.utils.getSubresource(subresource);
     return source ? { width: source.pixelWidth, height: source.pixelHeight } : undefined;
   }
 

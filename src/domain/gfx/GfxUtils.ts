@@ -31,6 +31,14 @@ export class GfxUtils extends HeaderUtils {
     );
   }
 
+  /** Subresource metadata, or undefined when the index is out of range. */
+  getSubresource(subresourceIndex: number): GfxSubresource | undefined {
+    if (!this.hasSubresource(subresourceIndex)) {
+      return undefined;
+    }
+    return this.parseGfxFile().subresources[subresourceIndex];
+  }
+
   parseGfxFile(): GfxFile {
     if (this.cachedFile !== null) {
       return this.cachedFile;

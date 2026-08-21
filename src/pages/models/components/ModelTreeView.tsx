@@ -70,8 +70,10 @@ const ModelTreeItem = ({ model, index, selected, onSelect }: ModelTreeItemProps)
                   ? `${node.sprFile.lodGroups[0]?.mesh.vertices.length ?? 0} vertices`
                   : "SPR not found"
               }
-              primaryTypographyProps={{ variant: "body2" }}
-              secondaryTypographyProps={{ variant: "caption" }}
+              slotProps={{
+                primary: { variant: "body2" },
+                secondary: { variant: "caption" },
+              }}
             />
           </ListItem>
         ))}
