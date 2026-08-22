@@ -2,11 +2,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Box3, Vector3 } from "three";
 import { useEffect, useMemo } from "react";
-import {
-  ModelChainNode,
-  ResolvedModel,
-  isUnitOrBuildingAsset,
-} from "../utils/resolveModelChain";
+import { ModelChainNode, ResolvedModel } from "../utils/resolveModelChain";
 import { fixedModelRotationMatrix } from "../utils/modelHierarchy";
 import { ModelTextureProvider } from "../utils/resolveTextures";
 import { SprMeshRenderer } from "./SprMeshRenderer";
@@ -14,7 +10,7 @@ import { SprMeshRenderer } from "./SprMeshRenderer";
 export interface ModelViewportProps {
   model: ResolvedModel | null;
   textureProvider: ModelTextureProvider | null;
-  /** factionless army0 family for neutral scenery; falls back to textureProvider */
+  /** factionless army0 family for spr/extras nodes; falls back to textureProvider */
   neutralTextureProvider?: ModelTextureProvider | null;
   textured: boolean;
   wireframe: boolean;
@@ -32,13 +28,6 @@ export const ModelViewport = ({
   textured,
   wireframe,
 }: ModelViewportProps) => {
-  // The stock editor textures whole presets: units/buildings use the selected
-  // faction family while neutral scenery uses the factionless army0 family.
-  const effectiveTextureProvider =
-    model && !isUnitOrBuildingAsset(model.armFilePath) && neutralTextureProvider
-      ? neutralTextureProvider
-      : textureProvider;
-
   const gridSize = useMemo(() => {
     if (!model || model.nodes.length === 0) {
       return 64;
@@ -67,7 +56,8 @@ export const ModelViewport = ({
                 nodeIndex={nodeIndex}
                 node={node}
                 nodes={model.nodes}
-                textureProvider={effectiveTextureProvider}
+                textureProvider={textureProvider}
+                neutralTextureProvider={neutralTextureProvider}
                 textured={textured}
                 wireframe={wireframe}
               />
@@ -85,6 +75,7 @@ interface HierarchyNodeGroupProps {
   node: ModelChainNode;
   nodes: ModelChainNode[];
   textureProvider: ModelTextureProvider | null;
+  neutralTextureProvider?: ModelTextureProvider | null;
   textured: boolean;
   wireframe: boolean;
 }
@@ -94,6 +85,7 @@ const HierarchyNodeGroup = ({
   node,
   nodes,
   textureProvider,
+  neutralTextureProvider,
   textured,
   wireframe,
 }: HierarchyNodeGroupProps) => {
@@ -108,12 +100,19 @@ const HierarchyNodeGroup = ({
     [node],
   );
 
+  // Neutral scenery sprites (trees, stones, ruins under spr/extras) use the
+  // factionless army0 family; everything else uses the selected faction.
+  const nodeTextureProvider =
+    node.sprPath.startsWith("spr/extras/") && neutralTextureProvider
+      ? neutralTextureProvider
+      : textureProvider;
+
   return (
     <group matrix={matrix} matrixAutoUpdate={false}>
       {node.sprFile && node.sprFile.lodGroups.length > 0 && (
         <SprMeshRenderer
           mesh={node.sprFile.lodGroups[0].mesh}
-          textureProvider={textureProvider}
+          textureProvider={nodeTextureProvider}
           textured={textured}
           wireframe={wireframe}
         />
@@ -126,6 +125,7 @@ const HierarchyNodeGroup = ({
             node={child}
             nodes={nodes}
             textureProvider={textureProvider}
+            neutralTextureProvider={neutralTextureProvider}
             textured={textured}
             wireframe={wireframe}
           />
