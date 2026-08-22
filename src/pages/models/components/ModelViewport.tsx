@@ -1,11 +1,21 @@
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Box3, Vector3 } from "three";
-import { useEffect, useMemo } from "react";
+import { Box3, Group, Vector3 } from "three";
+import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { ModelChainNode, ResolvedModel } from "../utils/resolveModelChain";
 import { fixedModelRotationMatrix } from "../utils/modelHierarchy";
+import {
+  animatedChild2TranslationQ12,
+  childUsesBoundedVerticalChannel,
+  modelRuntimeChildYawStep,
+  SUBNODE_ANIMATION_TICKS_PER_SECOND,
+  wrapTurn16,
+} from "../utils/modelAnimation";
 import { ModelTextureProvider } from "../utils/resolveTextures";
 import { SprMeshRenderer } from "./SprMeshRenderer";
+
+/** Serialized child-slot translations are Q12 fixed point. */
+const Q12_ONE = 4096;
 
 export interface ModelViewportProps {
   model: ResolvedModel | null;
@@ -37,11 +47,15 @@ export const ModelViewport = ({
     return Math.max(8, Math.ceil(size / 8) * 8);
   }, [model]);
 
+  // Shared presentation-tick clock; one driver advances it, animated groups read it.
+  const animationTickRef = useRef(0);
+
   return (
     <Canvas
       camera={{ fov: 50, position: [40, 30, 40], near: 0.1, far: 10000 }}
       style={{ width: "100%", height: "100%" }}
     >
+      <AnimationTickDriver tickRef={animationTickRef} />
       <color attach="background" args={["#1a1f26"]} />
       <ambientLight intensity={0.7} />
       <directionalLight position={[60, 80, 40]} intensity={1.2} />
@@ -56,6 +70,7 @@ export const ModelViewport = ({
                 nodeIndex={nodeIndex}
                 node={node}
                 nodes={model.nodes}
+                animationTickRef={animationTickRef}
                 textureProvider={textureProvider}
                 neutralTextureProvider={neutralTextureProvider}
                 textured={textured}
@@ -70,35 +85,84 @@ export const ModelViewport = ({
   );
 };
 
+const AnimationTickDriver = ({
+  tickRef,
+}: {
+  tickRef: MutableRefObject<number>;
+}) => {
+  useFrame((_, delta) => {
+    tickRef.current += delta * SUBNODE_ANIMATION_TICKS_PER_SECOND;
+  });
+  return null;
+};
+
 interface HierarchyNodeGroupProps {
   nodeIndex: number;
   node: ModelChainNode;
   nodes: ModelChainNode[];
+  animationTickRef: MutableRefObject<number>;
   textureProvider: ModelTextureProvider | null;
   neutralTextureProvider?: ModelTextureProvider | null;
   textured: boolean;
   wireframe: boolean;
 }
 
+/**
+ * Renders one hierarchy node and its subtree.
+ *
+ * Ports the authored subnode animation of ArmyRuntime_UpdateAnimatedModelSubnodes
+ * (editor_app.cpp): a live child slot 0/1 spins with its parent's yaw velocity or
+ * acceleration (continuous radar class 10 included), and slot 2 oscillates
+ * vertically between the parent's serialized q12 bounds. The yaw delta applies to
+ * the child's local_rotation_angle2 field, exactly as the stock renderer does
+ * before FixedTransform_BuildRotationBasis.
+ */
 const HierarchyNodeGroup = ({
   nodeIndex,
   node,
   nodes,
+  animationTickRef,
   textureProvider,
   neutralTextureProvider,
   textured,
   wireframe,
 }: HierarchyNodeGroupProps) => {
-  const matrix = useMemo(
-    () =>
+  const parentSimulation =
+    node.parentIndex === -1 ? null : nodes[node.parentIndex].simulation;
+  const yawStep = parentSimulation
+    ? modelRuntimeChildYawStep(parentSimulation, node.childSlot)
+    : 0;
+  const bobbing =
+    parentSimulation !== null &&
+    childUsesBoundedVerticalChannel(parentSimulation, node.childSlot);
+  const animated = yawStep !== 0 || bobbing;
+
+  const groupRef = useRef<Group>(null);
+
+  useFrame(() => {
+    if (!animated || !groupRef.current) {
+      return;
+    }
+    const tick = Math.floor(animationTickRef.current);
+    const angles = node.mdlNode.localRotationAngles;
+    const translation = node.attachmentTranslation;
+    const bobQ12 =
+      parentSimulation !== null && bobbing
+        ? animatedChild2TranslationQ12(parentSimulation, tick)
+        : null;
+    const yawAngle =
+      yawStep !== 0 ? wrapTurn16(angles[2] + yawStep * tick) : angles[2];
+    groupRef.current.matrix.copy(
       fixedModelRotationMatrix(
-        node.mdlNode.localRotationAngles[0],
-        node.mdlNode.localRotationAngles[1],
-        node.mdlNode.localRotationAngles[2],
-        node.attachmentTranslation,
+        angles[0],
+        angles[1],
+        yawAngle,
+        bobQ12 === null
+          ? translation
+          : { x: translation.x, y: translation.y, z: bobQ12 / Q12_ONE },
       ),
-    [node],
-  );
+    );
+  });
 
   // Neutral scenery sprites (trees, stones, ruins under spr/extras) use the
   // factionless army0 family; everything else uses the selected faction.
@@ -108,7 +172,20 @@ const HierarchyNodeGroup = ({
       : textureProvider;
 
   return (
-    <group matrix={matrix} matrixAutoUpdate={false}>
+    <group
+      ref={groupRef}
+      matrix={useMemo(
+        () =>
+          fixedModelRotationMatrix(
+            node.mdlNode.localRotationAngles[0],
+            node.mdlNode.localRotationAngles[1],
+            node.mdlNode.localRotationAngles[2],
+            node.attachmentTranslation,
+          ),
+        [node],
+      )}
+      matrixAutoUpdate={false}
+    >
       {node.sprFile && node.sprFile.lodGroups.length > 0 && (
         <SprMeshRenderer
           mesh={node.sprFile.lodGroups[0].mesh}
@@ -124,6 +201,7 @@ const HierarchyNodeGroup = ({
             nodeIndex={childIndex}
             node={child}
             nodes={nodes}
+            animationTickRef={animationTickRef}
             textureProvider={textureProvider}
             neutralTextureProvider={neutralTextureProvider}
             textured={textured}

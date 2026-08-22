@@ -5,6 +5,20 @@ import { ArmNode } from "../../../domain/arm/ArmFile";
 import { ParsedModelFiles } from "./parseModelPckEntries";
 import { findChildAttachment } from "./modelHierarchy";
 
+/**
+ * Animation-driving fields of the MDL record a node belongs to; the stock
+ * runtime copies the record-level profile into every hierarchy node, and a
+ * child's animation is driven by its parent's copy.
+ */
+export interface ModelNodeSimulation {
+  runtimeClassId: number;
+  yawMaxVelocityTurn16: number;
+  pitchMaxVelocityTurn16: number;
+  yawAccelerationTurn16: number;
+  pitchMinTurn16: number;
+  pitchMaxTurn16: number;
+}
+
 export interface ModelChainNode {
   /** index into the owning ResolvedModel.nodes, -1 for the model root */
   parentIndex: number;
@@ -15,6 +29,8 @@ export interface ModelChainNode {
   sprFile: SprFile | null;
   /** attachment point of this node inside its parent's SPR (zero for the root) */
   attachmentTranslation: SprVec3;
+  /** record-level animation profile shared by all nodes of one MDL definition */
+  simulation: ModelNodeSimulation;
 }
 
 export interface ResolvedModel {
@@ -216,6 +232,14 @@ function appendVariantGroup(
         outParent === -1
           ? ZERO_TRANSLATION
           : (findChildAttachment(parentSprFile, outSlot) ?? ZERO_TRANSLATION),
+      simulation: {
+        runtimeClassId: record.runtimeClassId,
+        yawMaxVelocityTurn16: record.yawMaxVelocity,
+        pitchMaxVelocityTurn16: record.pitchMaxVelocity,
+        yawAccelerationTurn16: record.yawAcceleration,
+        pitchMinTurn16: record.pitchMin,
+        pitchMaxTurn16: record.pitchMax,
+      },
     });
   });
 

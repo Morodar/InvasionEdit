@@ -22,6 +22,9 @@ export interface MdlRecord {
   classStepQ12: number;
   yawMaxVelocity: number;
   pitchMaxVelocity: number;
+  yawAcceleration: number;
+  pitchMin: number;
+  pitchMax: number;
   shotDefinitionId: number;
   reloadTicks: number;
   maximumIntegrity: number;
