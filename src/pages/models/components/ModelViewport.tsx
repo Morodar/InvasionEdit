@@ -2,7 +2,11 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Box3, Vector3 } from "three";
 import { useEffect, useMemo } from "react";
-import { ModelChainNode, ResolvedModel } from "../utils/resolveModelChain";
+import {
+  ModelChainNode,
+  ResolvedModel,
+  isUnitOrBuildingAsset,
+} from "../utils/resolveModelChain";
 import { fixedModelRotationMatrix } from "../utils/modelHierarchy";
 import { ModelTextureProvider } from "../utils/resolveTextures";
 import { SprMeshRenderer } from "./SprMeshRenderer";
@@ -10,6 +14,8 @@ import { SprMeshRenderer } from "./SprMeshRenderer";
 export interface ModelViewportProps {
   model: ResolvedModel | null;
   textureProvider: ModelTextureProvider | null;
+  /** factionless army0 family for neutral scenery; falls back to textureProvider */
+  neutralTextureProvider?: ModelTextureProvider | null;
   textured: boolean;
   wireframe: boolean;
 }
@@ -22,9 +28,17 @@ export interface ModelViewportProps {
 export const ModelViewport = ({
   model,
   textureProvider,
+  neutralTextureProvider,
   textured,
   wireframe,
 }: ModelViewportProps) => {
+  // The stock editor textures whole presets: units/buildings use the selected
+  // faction family while neutral scenery uses the factionless army0 family.
+  const effectiveTextureProvider =
+    model && !isUnitOrBuildingAsset(model.armFilePath) && neutralTextureProvider
+      ? neutralTextureProvider
+      : textureProvider;
+
   const gridSize = useMemo(() => {
     if (!model || model.nodes.length === 0) {
       return 64;
@@ -53,7 +67,7 @@ export const ModelViewport = ({
                 nodeIndex={nodeIndex}
                 node={node}
                 nodes={model.nodes}
-                textureProvider={textureProvider}
+                textureProvider={effectiveTextureProvider}
                 textured={textured}
                 wireframe={wireframe}
               />

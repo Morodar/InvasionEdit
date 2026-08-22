@@ -38,6 +38,15 @@ const NAME_TEXT_BASE_INDEX = 0x4f;
  */
 const NAMED_ARM_FILE = /(^|\/)arm\/(building\d*|unit\d*)\.arm$/;
 
+/**
+ * Unit and building presets are faction assets (armyN texture family);
+ * everything else is neutral scenery rendered with the factionless army0
+ * family (editor_app.cpp routes Element/resource presets to faction 0).
+ */
+export function isUnitOrBuildingAsset(armFilePath: string): boolean {
+  return NAMED_ARM_FILE.test(armFilePath);
+}
+
 const ZERO_TRANSLATION: SprVec3 = { x: 0, y: 0, z: 0 };
 
 /**
@@ -101,7 +110,7 @@ export function resolveModelChain(parsed: ParsedModelFiles): ResolvedModel[] {
         armRegistryId: record.registryId,
         mdlDefinitionId: rootDefinitionId !== 0 ? rootDefinitionId : null,
         name:
-          mdlRecord && NAMED_ARM_FILE.test(armFile.path)
+          mdlRecord && isUnitOrBuildingAsset(armFile.path)
             ? resolveModelName(parsed, mdlRecord.nameTextOffset)
             : null,
         nodes,

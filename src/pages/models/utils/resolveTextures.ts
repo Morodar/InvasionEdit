@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { NamedGfxUtils } from "./parseModelPckEntries";
+import { NamedGfxUtils, ParsedModelFiles } from "./parseModelPckEntries";
 import { SprFile } from "../../../domain/spr/SprFile";
 import { SPR_UNTEXTURED_SUBRESOURCE } from "../../../domain/spr/SprUtils";
 
@@ -106,4 +106,26 @@ export function maxTextureSubresource(sprFiles: SprFile[]): number {
     }
   }
   return maximum;
+}
+
+/**
+ * Builds a texture provider whose archive priority starts at the given GFX
+ * archive, paired with its faction palette (armyN.gfx ↔ armyN.pal). The
+ * remaining archives stay available as fallbacks for their subresource ranges.
+ */
+export function createModelTextureProvider(
+  parsed: ParsedModelFiles,
+  preferredGfxPath: string,
+): ModelTextureProvider {
+  const files = [...parsed.gfxFiles];
+  const index = files.findIndex((gfx) => gfx.path === preferredGfxPath);
+  if (index > 0) {
+    const [selected] = files.splice(index, 1);
+    files.unshift(selected);
+  }
+  // faction palettes pair with their gfx archive (armyN.pal ↔ armyN.gfx)
+  const palettePath = preferredGfxPath.replace(/\.gfx$/, ".pal");
+  const palette =
+    parsed.palFiles.find((pal) => pal.path === palettePath)?.file.colorsArgb ?? [];
+  return new ModelTextureProvider(files, palette);
 }

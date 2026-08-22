@@ -23,11 +23,14 @@ import {
   mergeModelPckEntries,
 } from "./utils/parseModelPckEntries";
 import { ResolvedModel, resolveModelChain } from "./utils/resolveModelChain";
-import { ModelTextureProvider } from "./utils/resolveTextures";
+import { createModelTextureProvider } from "./utils/resolveTextures";
 import { ModelTreeView } from "./components/ModelTreeView";
 import { ModelViewport } from "./components/ModelViewport";
 
 type RenderingMode = "untextured" | "textured";
+
+/** Factionless texture family for neutral scenery (trees, stones, ruins). */
+const NEUTRAL_GFX_PATH = "gfx/mdl/army0.gfx";
 
 interface ModelsState {
   parsed: ParsedModelFiles;
@@ -72,19 +75,17 @@ const PageModels = () => {
     }
     // The user-selected faction archive gets priority; remaining archives
     // (effect.gfx etc.) serve as fallback for their subresource ranges.
-    const files = [...modelsState.parsed.gfxFiles];
-    const selectedIndex = files.findIndex((gfx) => gfx.path === selectedGfxPath);
-    if (selectedIndex > 0) {
-      const [selected] = files.splice(selectedIndex, 1);
-      files.unshift(selected);
-    }
-    // faction palettes pair with their gfx archive (armyN.pal ↔ armyN.gfx)
-    const palettePath = selectedGfxPath.replace(/\.gfx$/, ".pal");
-    const palette =
-      modelsState.parsed.palFiles.find((pal) => pal.path === palettePath)?.file.colorsArgb ??
-      [];
-    return new ModelTextureProvider(files, palette);
+    return createModelTextureProvider(modelsState.parsed, selectedGfxPath);
   }, [modelsState, selectedGfxPath]);
+
+  // Neutral scenery (trees, stones, ruins - everything outside unit/building
+  // arms) renders with the factionless army0 family, matching the stock editor.
+  const neutralTextureProvider = useMemo(() => {
+    if (!modelsState || modelsState.parsed.gfxFiles.length === 0) {
+      return null;
+    }
+    return createModelTextureProvider(modelsState.parsed, NEUTRAL_GFX_PATH);
+  }, [modelsState]);
 
   const handleFilesChanged = async (files: File[]) => {
     if (files.length === 0 || isParsing) {
@@ -94,7 +95,8 @@ const PageModels = () => {
     setParseFailed(false);
     try {
       await delay(250); // wait for ui to update because parsing is resource intensive
-      let parsed: ParsedModelFiles;      const pckNames: string[] = [];
+      let parsed: ParsedModelFiles;
+      const pckNames: string[] = [];
       if (modelsState) {
         parsed = modelsState.parsed;
       } else {
@@ -237,6 +239,7 @@ const PageModels = () => {
             <ModelViewport
               model={selectedModel}
               textureProvider={textureProvider}
+              neutralTextureProvider={neutralTextureProvider}
               textured={renderingMode === "textured"}
               wireframe={wireframe}
             />
