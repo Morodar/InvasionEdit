@@ -299,6 +299,59 @@ describe("resolveModelChain", () => {
       "spr/test/b.spr",
       "spr/test/missing.spr",
     ]);
+    // the dangling attachment is reported instead of dropped silently
+    expect(models[0].warnings).toEqual([
+      "attachment slot 0 of MDL 42 has no matching socket",
+    ]);
+  });
+
+  it("warns when an attached child group definition is not loaded", () => {
+    const mdlFile = MdlUtils.parse(buildChassisAndWeaponMdlImage());
+    const parsed: ParsedModelFiles = {
+      armFiles: [
+        { path: "arm/vehicle.arm", file: ArmUtils.parse(buildArmImageWithAttachment()) },
+      ],
+      // register only the chassis - MDL 43 (the weapon) is missing
+      mdlRecords: new Map(mdlFile.records.filter((r) => r.definitionId === 42).map((record) => [record.definitionId, record])),
+      sprFiles: new Map(),
+      gfxFiles: [],
+      helpText: null,
+      palFiles: [],
+    };
+
+    const models = resolveModelChain(parsed);
+    expect(models[0].nodes.map((node) => node.sprPath)).toEqual([
+      "spr/test/a.spr",
+      "spr/test/c.spr",
+    ]);
+    expect(models[0].warnings).toEqual(["MDL 43 not found in loaded archives"]);
+  });
+
+  it("keeps scenery arm records unnamed even when help.str resolves", () => {
+    const mdlRecord = MdlUtils.parse(buildMdlImage(0)).records[0];
+    const mkArm = (registryId: number) => {
+      const file = ArmUtils.parse(buildArmImage());
+      file.records[0].registryId = registryId;
+      return { path: "", file };
+    };
+    const scenery = { ...mkArm(660), path: "arm/busch.arm" };
+    const unit = { ...mkArm(100), path: "arm/unit.arm" };
+    const buildingCopy = { ...mkArm(300), path: "arm/building07.arm" };
+    const parsed: ParsedModelFiles = {
+      armFiles: [scenery, unit, buildingCopy],
+      mdlRecords: new Map([[mdlRecord.definitionId, mdlRecord]]),
+      sprFiles: new Map(),
+      gfxFiles: [],
+      palFiles: [],
+      helpText: StrUtils.parse(buildHelpStrImage()),
+    };
+
+    // only building*/unit arms consume help.str names
+    expect(resolveModelChain(parsed).map((model) => model.name)).toEqual([
+      null,
+      "Kaserne",
+      "Kaserne",
+    ]);
   });
 
   it("resolves localized names from texte/help.str", () => {
@@ -332,5 +385,24 @@ describe("resolveModelChain", () => {
 
     const withoutHelp: ParsedModelFiles = { ...parsed, helpText: null };
     expect(resolveModelChain(withoutHelp)[0].name).toBeNull();
+  });
+
+  it("deduplicates identical registries repeated across mission arm copies", () => {
+    const parsed: ParsedModelFiles = {
+      armFiles: [
+        { path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) },
+        { path: "arm/building01.arm", file: ArmUtils.parse(buildArmImage()) },
+      ],
+      mdlRecords: new Map(),
+      sprFiles: new Map(),
+      gfxFiles: [],
+      palFiles: [],
+      helpText: null,
+    };
+
+    const models = resolveModelChain(parsed);
+    expect(models).toHaveLength(1);
+    // the first occurrence supplies the reported source path
+    expect(models[0].armFilePath).toBe("arm/building.arm");
   });
 });

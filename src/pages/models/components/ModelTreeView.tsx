@@ -60,6 +60,17 @@ const ModelTreeItem = ({ model, index, selected, onSelect }: ModelTreeItemProps)
         </ListItemButton>
       </ListItem>
       {selected &&
+        model.warnings.map((warning, warningIndex) => (
+          <ListItem key={`warning-${warningIndex}`} sx={{ pl: 4 }} disableGutters>
+            <ListItemText
+              primary={warning}
+              slotProps={{
+                primary: { variant: "caption", sx: { color: "warning.main" } },
+              }}
+            />
+          </ListItem>
+        ))}
+      {selected &&
         model.nodes.map((node, nodeIndex) => {
           const vertexCount =
             node.sprFile?.lodGroups.reduce((sum, group) => sum + group.mesh.vertices.length, 0) ??

@@ -24,10 +24,19 @@ export interface ResolvedModel {
   /** localized display name from texte/help.str, when resolvable */
   name: string | null;
   nodes: ModelChainNode[];
+  /** diagnostics for chain parts that could not be resolved from loaded archives */
+  warnings: string[];
 }
 
 /** texte/help.str text page 0x18: model names start at resource index 0x4F. */
 const NAME_TEXT_BASE_INDEX = 0x4f;
+
+/**
+ * Only unit and building presets consume help.str names in the stock editor
+ * (the reference gates naming on Unit/Building browser kinds); scenery
+ * archives - trees, rocks, ruins - keep their registry fallback labels.
+ */
+const NAMED_ARM_FILE = /(^|\/)arm\/(building\d*|unit\d*)\.arm$/;
 
 const ZERO_TRANSLATION: SprVec3 = { x: 0, y: 0, z: 0 };
 
@@ -64,25 +73,39 @@ interface DeferredAttachment {
  */
 export function resolveModelChain(parsed: ParsedModelFiles): ResolvedModel[] {
   const models: ResolvedModel[] = [];
+  // Mission/installation copies of an .arm file (building.arm, building01.arm, ...)
+  // repeat identical registries; the stock catalog keeps one preset per registry id.
+  const seenRegistries = new Set<number>();
 
   for (const armFile of parsed.armFiles) {
     for (const record of armFile.file.records) {
+      if (seenRegistries.has(record.registryId)) {
+        continue;
+      }
+      seenRegistries.add(record.registryId);
       const groups: ArmVariantGroup[] = [];
       if (record.rootNode) {
         collectVariantGroups(record.rootNode, -1, 0, 0, groups);
       }
 
       const nodes: ModelChainNode[] = [];
+      const warnings: string[] = [];
       const rootDefinitionId =
-        groups.length > 0 ? appendVariantGroup(parsed, groups, 0, null, nodes) : 0;
+        groups.length > 0
+          ? appendVariantGroup(parsed, groups, 0, null, nodes, warnings)
+          : 0;
 
       const mdlRecord = rootDefinitionId !== 0 ? parsed.mdlRecords.get(rootDefinitionId) : undefined;
       models.push({
         armFilePath: armFile.path,
         armRegistryId: record.registryId,
         mdlDefinitionId: rootDefinitionId !== 0 ? rootDefinitionId : null,
-        name: mdlRecord ? resolveModelName(parsed, mdlRecord.nameTextOffset) : null,
+        name:
+          mdlRecord && NAMED_ARM_FILE.test(armFile.path)
+            ? resolveModelName(parsed, mdlRecord.nameTextOffset)
+            : null,
         nodes,
+        warnings,
       });
     }
   }
@@ -119,6 +142,7 @@ function appendVariantGroup(
   groupIndex: number,
   attachment: DeferredAttachment | null,
   output: ModelChainNode[],
+  warnings: string[],
 ): number {
   const group = groups[groupIndex];
   // The executable initializes the selected definition from serialized ARM
@@ -127,7 +151,12 @@ function appendVariantGroup(
   if (definitionId === 0) {
     return 0;
   }
-  const hierarchy = parsed.mdlRecords.get(definitionId)?.hierarchyNodes ?? [];
+  const record = parsed.mdlRecords.get(definitionId);
+  if (!record) {
+    warnings.push(`MDL ${definitionId} not found in loaded archives`);
+    return definitionId;
+  }
+  const hierarchy = record.hierarchyNodes;
 
   const externalParent = attachment ? attachment.parentIndex : -1;
   const externalSlot = attachment ? attachment.childSlot : 0;
@@ -192,10 +221,14 @@ function appendVariantGroup(
     if (childGroup.parentGroupIndex !== groupIndex) {
       return;
     }
-    if (childGroup.childSlot >= deferred.length) {
+    const socket = deferred[childGroup.childSlot];
+    if (!socket) {
+      warnings.push(
+        `attachment slot ${childGroup.childSlot} of MDL ${definitionId} has no matching socket`,
+      );
       return;
     }
-    appendVariantGroup(parsed, groups, childIndex, deferred[childGroup.childSlot], output);
+    appendVariantGroup(parsed, groups, childIndex, socket, output, warnings);
   });
   return definitionId;
 }
