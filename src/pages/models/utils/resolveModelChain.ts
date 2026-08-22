@@ -1,8 +1,8 @@
-import { MdlNode } from "../../../domain/mdl/MdlFile";
+import { MdlNode, MdlRecord } from "../../../domain/mdl/MdlFile";
 import { SprFile, SprVec3 } from "../../../domain/spr/SprFile";
 import { normalizeAssetDisplayName, strString } from "../../../domain/str/StrUtils";
 import { ArmNode } from "../../../domain/arm/ArmFile";
-import { ParsedModelFiles } from "./parseModelPckEntries";
+import { levelNamespace, ParsedModelFiles } from "./parseModelPckEntries";
 import { findChildAttachment } from "./modelHierarchy";
 
 /**
@@ -35,6 +35,8 @@ export interface ModelChainNode {
 
 export interface ResolvedModel {
   armFilePath: string;
+  /** map-set namespace the ARM came from ("" for the base archives) */
+  sourceNamespace: string;
   armRegistryId: number;
   mdlDefinitionId: number | null;
   /** localized display name from texte/help.str, when resolvable */
@@ -51,11 +53,27 @@ const NAME_TEXT_BASE_INDEX = 0x4f;
  * Only unit and building presets consume help.str names in the stock editor
  * (the reference gates naming on Unit/Building browser kinds); scenery
  * archives - trees, rocks, ruins - keep their registry fallback labels.
+ * Level map sets repeat the base naming scheme (armbuildNN.arm, armunitNN.arm).
  */
-const NAMED_ARM_FILE = /(^|\/)arm\/(building\d*|unit\d*)\.arm$/;
+const NAMED_ARM_FILE = /(^|\/)(arm\/)?(building|unit|armbuild|armunit)\d*\.arm$/;
 
 function isUnitOrBuildingAsset(armFilePath: string): boolean {
   return NAMED_ARM_FILE.test(armFilePath);
+}
+
+/**
+ * Resolves an MDL definition inside the ARM's map-set namespace, falling back
+ * to the base archives when a level arm references a shared definition.
+ */
+function lookupMdlRecord(
+  parsed: ParsedModelFiles,
+  namespace: string,
+  definitionId: number,
+): MdlRecord | undefined {
+  return (
+    parsed.levelMdlRecords.get(namespace)?.get(definitionId) ??
+    parsed.mdlRecords.get(definitionId)
+  );
 }
 
 const ZERO_TRANSLATION: SprVec3 = { x: 0, y: 0, z: 0 };
@@ -94,15 +112,18 @@ interface DeferredAttachment {
 export function resolveModelChain(parsed: ParsedModelFiles): ResolvedModel[] {
   const models: ResolvedModel[] = [];
   // Mission/installation copies of an .arm file (building.arm, building01.arm, ...)
-  // repeat identical registries; the stock catalog keeps one preset per registry id.
-  const seenRegistries = new Set<number>();
+  // repeat identical registries; the stock catalog keeps one preset per registry
+  // id and namespace - level map sets redefine the same ids with other models.
+  const seenRegistries = new Set<string>();
 
   for (const armFile of parsed.armFiles) {
+    const namespace = levelNamespace(armFile.path);
     for (const record of armFile.file.records) {
-      if (seenRegistries.has(record.registryId)) {
+      const dedupeKey = `${namespace}#${record.registryId}`;
+      if (seenRegistries.has(dedupeKey)) {
         continue;
       }
-      seenRegistries.add(record.registryId);
+      seenRegistries.add(dedupeKey);
       const groups: ArmVariantGroup[] = [];
       if (record.rootNode) {
         collectVariantGroups(record.rootNode, -1, 0, 0, groups);
@@ -112,12 +133,14 @@ export function resolveModelChain(parsed: ParsedModelFiles): ResolvedModel[] {
       const warnings: string[] = [];
       const rootDefinitionId =
         groups.length > 0
-          ? appendVariantGroup(parsed, groups, 0, null, nodes, warnings)
+          ? appendVariantGroup(parsed, namespace, groups, 0, null, nodes, warnings)
           : 0;
 
-      const mdlRecord = rootDefinitionId !== 0 ? parsed.mdlRecords.get(rootDefinitionId) : undefined;
+      const mdlRecord =
+        rootDefinitionId !== 0 ? lookupMdlRecord(parsed, namespace, rootDefinitionId) : undefined;
       models.push({
         armFilePath: armFile.path,
+        sourceNamespace: namespace,
         armRegistryId: record.registryId,
         mdlDefinitionId: rootDefinitionId !== 0 ? rootDefinitionId : null,
         name:
@@ -158,6 +181,7 @@ function collectVariantGroups(
  */
 function appendVariantGroup(
   parsed: ParsedModelFiles,
+  namespace: string,
   groups: ArmVariantGroup[],
   groupIndex: number,
   attachment: DeferredAttachment | null,
@@ -171,7 +195,7 @@ function appendVariantGroup(
   if (definitionId === 0) {
     return 0;
   }
-  const record = parsed.mdlRecords.get(definitionId);
+  const record = lookupMdlRecord(parsed, namespace, definitionId);
   if (!record) {
     warnings.push(`MDL ${definitionId} not found in loaded archives`);
     return definitionId;
@@ -256,7 +280,7 @@ function appendVariantGroup(
       );
       return;
     }
-    appendVariantGroup(parsed, groups, childIndex, socket, output, warnings);
+    appendVariantGroup(parsed, namespace, groups, childIndex, socket, output, warnings);
   });
   return definitionId;
 }

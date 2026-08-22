@@ -33,12 +33,26 @@ export interface ParsedModelFiles {
   armFiles: NamedArmFile[];
   /** model definition id → record (first definition wins) */
   mdlRecords: Map<number, MdlRecord>;
+  /** per-level model definitions from level/<map-set>/ archives; they shadow
+   *  nothing - the game mounts them alongside (not instead of) the base set */
+  levelMdlRecords: Map<string, Map<number, MdlRecord>>;
   /** normalized SPR path → parsed file */
   sprFiles: Map<string, SprFile>;
   gfxFiles: NamedGfxUtils[];
   palFiles: NamedPalFile[];
   /** texte/help.str when present - source of model/building names */
   helpText: StrFile | null;
+}
+
+/**
+ * LEVEL.PCK ships map-set specific ARM/MDL archives below level/<name>/
+ * (e.g. level/tutorial/) that redefine the same registry and definition ids
+ * as the base archives with different hierarchies. Assets of one map set are
+ * kept separate so both variants stay resolvable.
+ */
+export function levelNamespace(path: string): string {
+  const match = /^level\/([^/]+)\//.exec(path);
+  return match ? `level/${match[1]}` : "";
 }
 
 export function normalizeAssetPath(path: string): string {
@@ -60,6 +74,7 @@ export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
   const result: ParsedModelFiles = {
     armFiles: [],
     mdlRecords: new Map(),
+    levelMdlRecords: new Map(),
     sprFiles: new Map(),
     gfxFiles: [],
     palFiles: [],
@@ -91,9 +106,21 @@ export function mergeModelPckEntries(target: ParsedModelFiles, pck: PckFile): vo
         }
         case "mdl": {
           const file = MdlUtils.parse(entry.dataBytes);
+          const namespace = levelNamespace(path);
+          const records =
+            namespace === ""
+              ? target.mdlRecords
+              : (() => {
+                  let map = target.levelMdlRecords.get(namespace);
+                  if (!map) {
+                    map = new Map();
+                    target.levelMdlRecords.set(namespace, map);
+                  }
+                  return map;
+                })();
           for (const record of file.records) {
-            if (!target.mdlRecords.has(record.definitionId)) {
-              target.mdlRecords.set(record.definitionId, record);
+            if (!records.has(record.definitionId)) {
+              records.set(record.definitionId, record);
             }
           }
           break;

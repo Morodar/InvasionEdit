@@ -186,6 +186,7 @@ describe("resolveModelChain", () => {
         ["spr/test/b.spr", SprUtils.parse(buildSprImage())],
       ]),
       gfxFiles: [],
+      levelMdlRecords: new Map(),
       helpText: null,
       palFiles: [],
     };
@@ -226,6 +227,7 @@ describe("resolveModelChain", () => {
     const parsed: ParsedModelFiles = {
       armFiles: [{ path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) }],
       mdlRecords: new Map(),
+      levelMdlRecords: new Map(),
       sprFiles: new Map(),
       gfxFiles: [],
       helpText: null,
@@ -252,6 +254,7 @@ describe("resolveModelChain", () => {
         ["spr/test/w.spr", SprUtils.parse(buildSprImage())],
       ]),
       gfxFiles: [],
+      levelMdlRecords: new Map(),
       helpText: null,
       palFiles: [],
     };
@@ -288,6 +291,7 @@ describe("resolveModelChain", () => {
         ["spr/test/b.spr", SprUtils.parse(buildSprImage())],
       ]),
       gfxFiles: [],
+      levelMdlRecords: new Map(),
       helpText: null,
       palFiles: [],
     };
@@ -315,6 +319,7 @@ describe("resolveModelChain", () => {
       mdlRecords: new Map(mdlFile.records.filter((r) => r.definitionId === 42).map((record) => [record.definitionId, record])),
       sprFiles: new Map(),
       gfxFiles: [],
+      levelMdlRecords: new Map(),
       helpText: null,
       palFiles: [],
     };
@@ -340,6 +345,7 @@ describe("resolveModelChain", () => {
     const parsed: ParsedModelFiles = {
       armFiles: [scenery, unit, buildingCopy],
       mdlRecords: new Map([[mdlRecord.definitionId, mdlRecord]]),
+      levelMdlRecords: new Map(),
       sprFiles: new Map(),
       gfxFiles: [],
       palFiles: [],
@@ -359,6 +365,7 @@ describe("resolveModelChain", () => {
     const parsed: ParsedModelFiles = {
       armFiles: [{ path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) }],
       mdlRecords: new Map([[mdlRecord.definitionId, mdlRecord]]),
+      levelMdlRecords: new Map(),
       sprFiles: new Map(),
       gfxFiles: [],
       palFiles: [],
@@ -375,6 +382,7 @@ describe("resolveModelChain", () => {
     const parsed: ParsedModelFiles = {
       armFiles: [{ path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) }],
       mdlRecords: new Map([[mdlRecord.definitionId, mdlRecord]]),
+      levelMdlRecords: new Map(),
       sprFiles: new Map(),
       gfxFiles: [],
       palFiles: [],
@@ -397,6 +405,7 @@ describe("resolveModelChain", () => {
       sprFiles: new Map(),
       gfxFiles: [],
       palFiles: [],
+      levelMdlRecords: new Map(),
       helpText: null,
     };
 
@@ -404,5 +413,37 @@ describe("resolveModelChain", () => {
     expect(models).toHaveLength(1);
     // the first occurrence supplies the reported source path
     expect(models[0].armFilePath).toBe("arm/building.arm");
+  });
+
+  it("keeps level map-set redefinitions of the same registry as separate models", () => {
+    // LEVEL.PCK's tutorial set redefines registry 300 / definition 42 with a
+    // different hierarchy; both variants must stay resolvable side by side.
+    const baseRecord = MdlUtils.parse(buildMdlImage(0)).records[0];
+    const levelRecord = MdlUtils.parse(buildMdlImage(0)).records[0];
+
+    const parsed: ParsedModelFiles = {
+      armFiles: [
+        { path: "arm/building.arm", file: ArmUtils.parse(buildArmImage()) },
+        { path: "level/tutorial/armbuild00.arm", file: ArmUtils.parse(buildArmImage()) },
+      ],
+      mdlRecords: new Map([[baseRecord.definitionId, baseRecord]]),
+      levelMdlRecords: new Map([["level/tutorial", new Map([[levelRecord.definitionId, levelRecord]])]]),
+      sprFiles: new Map(),
+      gfxFiles: [],
+      palFiles: [],
+      helpText: StrUtils.parse(buildHelpStrImage()),
+    };
+
+    const models = resolveModelChain(parsed);
+    expect(models).toHaveLength(2);
+
+    expect(models[0].sourceNamespace).toBe("");
+    expect(models[0].armFilePath).toBe("arm/building.arm");
+    expect(models[0].mdlDefinitionId).toBe(baseRecord.definitionId);
+    expect(models[0].name).toBe("Kaserne");
+
+    expect(models[1].sourceNamespace).toBe("level/tutorial");
+    expect(models[1].mdlDefinitionId).toBe(levelRecord.definitionId);
+    expect(models[1].name).toBe("Kaserne");
   });
 });

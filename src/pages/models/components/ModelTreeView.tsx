@@ -53,7 +53,9 @@ const ModelTreeItem = ({ model, index, selected, onSelect }: ModelTreeItemProps)
             primary={primary}
             secondary={
               model.mdlDefinitionId !== null
-                ? `MDL ${model.mdlDefinitionId} · ${rootSprPath}`
+                ? `MDL ${model.mdlDefinitionId} · ${rootSprPath}${
+                    model.sourceNamespace !== "" ? ` · ${model.sourceNamespace}` : ""
+                  }`
                 : "no base model"
             }
           />

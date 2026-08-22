@@ -106,7 +106,8 @@ const PageModels = () => {
           sprFiles: new Map(),
           gfxFiles: [],
           palFiles: [],
-          helpText: null,
+          levelMdlRecords: new Map(),
+      helpText: null,
         };
       }
       for (const file of files) {
