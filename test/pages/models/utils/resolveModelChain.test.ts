@@ -125,6 +125,10 @@ function buildChassisAndWeaponMdlImage(): DataView {
   writeUtf16(view, chassisRoot + 0x38, "spr/test/a", 20);
 
   view.setUint32(socket + 0x04, 1, true); // flags: attachment socket, no runtime node
+  // the socket's authored rotation must become the attached weapon's root rotation
+  view.setUint32(socket + 0x08, 16384, true);
+  view.setUint32(socket + 0x0c, 45056, true);
+  view.setUint32(socket + 0x10, 8192, true);
   writeUtf16(view, socket + 0x38, "", 20);
 
   writeUtf16(view, chassisChild + 0x38, "spr/test/c.spr", 20);
@@ -133,6 +137,9 @@ function buildChassisAndWeaponMdlImage(): DataView {
   view.setUint32(rec1, recordSize, true);
   view.setUint32(rec1 + 0x08, 43, true);
   view.setUint32(rec1 + 0x64, weaponRoot, true);
+  view.setUint32(weaponRoot + 0x08, 1234, true); // own angles get overridden
+  view.setUint32(weaponRoot + 0x0c, 2345, true);
+  view.setUint32(weaponRoot + 0x10, 3456, true);
   writeUtf16(view, weaponRoot + 0x38, "spr/test/w.spr", 20);
 
   return view;
@@ -263,6 +270,10 @@ describe("resolveModelChain", () => {
     // the weapon root plugs into the socket: parent is the chassis root
     expect(weapon.parentIndex).toBe(0);
     expect(weapon.childSlot).toBe(0);
+    // the socket's authored rotation overrides the weapon root rotation
+    expect(weapon.mdlNode.localRotationAngles).toEqual([16384, 45056, 8192]);
+    // non-root nodes keep their own angles
+    expect(chassisChild.mdlNode.localRotationAngles).not.toEqual([16384, 45056, 8192]);
   });
 
   it("skips ARM child groups without a matching socket", () => {

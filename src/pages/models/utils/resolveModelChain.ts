@@ -45,11 +45,13 @@ interface ArmVariantGroup {
 
 /**
  * MDL nodes whose low flag nibble is nonzero create no runtime node - they are
- * attachment sockets. ARM child groups plug into the socket at their slot.
+ * attachment sockets. ARM child groups plug into the socket at their slot; the
+ * socket's rotation becomes the attached sub-model root rotation.
  */
 interface DeferredAttachment {
   parentIndex: number;
   childSlot: number;
+  rotationAngles: [number, number, number];
 }
 
 /**
@@ -147,12 +149,23 @@ function appendVariantGroup(
     }
     const childSlot = lineage[localIndex].childSlot;
     if ((node.flags & 0xf) !== 0) {
-      deferred.push({ parentIndex: mappedParent, childSlot });
+      deferred.push({
+        parentIndex: mappedParent,
+        childSlot,
+        rotationAngles: [...node.localRotationAngles],
+      });
       return;
     }
     if (node.spritePath === "") {
       return;
     }
+    // An attached sub-model root inherits the socket's orientation (the stock
+    // editor's root_override); otherwise shoulder weapons would ignore the
+    // yaw/pitch their socket was authored with.
+    const mdlNode =
+      isRoot && attachment
+        ? { ...node, localRotationAngles: [...attachment.rotationAngles] }
+        : node;
     const outParent = isRoot ? externalParent : mappedParent;
     const outSlot = isRoot ? externalSlot : childSlot;
     const sprPath = node.spritePath;
@@ -163,7 +176,7 @@ function appendVariantGroup(
       parentIndex: outParent,
       childSlot: outSlot,
       depth: outParent === -1 ? 0 : output[outParent].depth + 1,
-      mdlNode: node,
+      mdlNode,
       sprPath,
       sprFile,
       attachmentTranslation:
