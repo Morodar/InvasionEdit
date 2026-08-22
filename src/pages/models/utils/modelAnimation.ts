@@ -84,3 +84,19 @@ export function animatedChild2TranslationQ12(
 export function wrapTurn16(value: number): number {
   return ((value % 65536) + 65536) % 65536;
 }
+
+/**
+ * Building runtime class 13 animates its selected root texture subresource by
+ * varying the model-node V offset over the stock 0..0x80000 Q12 range. The
+ * preview reproduces it as a deterministic triangle wave (model.vert:97-101):
+ * amplitude 0.5 of the normalized UV period, one full cycle every 80 ticks.
+ */
+export const BUILDING_TEXTURE_WAVE_AMPLITUDE = 0.5;
+export const BUILDING_TEXTURE_WAVE_CYCLE_TICKS = 80;
+
+/** Normalized V offset (UV units) of the animated subresource at the given tick. */
+export function buildingTextureWaveOffset(tick: number): number {
+  const cycle = BUILDING_TEXTURE_WAVE_CYCLE_TICKS;
+  const phase = (((Math.floor(tick) % cycle) + cycle) % cycle) / cycle;
+  return BUILDING_TEXTURE_WAVE_AMPLITUDE * (1 - Math.abs(phase * 2 - 1));
+}

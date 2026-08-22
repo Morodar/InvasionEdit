@@ -51,6 +51,20 @@ export class MdlUtils extends HeaderUtils {
     const nameTextOffset = this.getUint32(offset + 0x04);
     const runtimeClassId = size >= 0x50 ? this.getUint32(offset + 0x4c) : 0;
     const shotImpactClassIndex = size >= 0x60 ? this.getUint32(offset + 0x5c) : 0;
+    const placementOccupancyClass = size >= 0xc4 ? this.getUint32(offset + 0xc0) : 0;
+
+    // The class-initialization callback for runtime class 13 copies +0xC0 into
+    // the primary animated texture selector; class 2 reads both track channels
+    // from +0x1B8/+0x1BC (ModelRuntimeSlotClassInit_ApplyDefinitionTextureAnimationIndices).
+    let primaryAnimatedSubresource = 0;
+    if (runtimeClassId === 13 && placementOccupancyClass !== 0) {
+      primaryAnimatedSubresource = placementOccupancyClass;
+    }
+    let secondaryAnimatedSubresource = 0;
+    if (size >= 0x1c0 && runtimeClassId === 2) {
+      primaryAnimatedSubresource = this.getUint32(offset + 0x1b8);
+      secondaryAnimatedSubresource = this.getUint32(offset + 0x1bc);
+    }
 
     const hierarchyNodes: MdlNode[] = [];
     let rootNodeOffset = 0;
@@ -78,7 +92,7 @@ export class MdlUtils extends HeaderUtils {
       shotImpactClassIndex,
       rootNodeOffset,
       runtimeRenderFlags: size >= 0x6c ? this.getUint32(offset + 0x68) : 0,
-      placementOccupancyClass: size >= 0xc4 ? this.getUint32(offset + 0xc0) : 0,
+      placementOccupancyClass,
       hierarchyNodes,
       spritePath,
       classStepQ12: size >= 0x10 ? this.getInt32(offset + 0x0c) : 0,
@@ -90,6 +104,11 @@ export class MdlUtils extends HeaderUtils {
       shotDefinitionId: size >= 0x30 ? this.getUint32(offset + 0x2c) : 0,
       reloadTicks: size >= 0x34 ? this.getUint32(offset + 0x30) : 0,
       maximumIntegrity: size >= 0x64 ? this.getInt32(offset + 0x60) : 0,
+      primaryAnimatedSubresource,
+      secondaryAnimatedSubresource,
+      timedEffectId: size >= 0x180 ? this.getUint32(offset + 0x174) : 0,
+      timedEffectIntervalTicks: size >= 0x180 ? this.getUint32(offset + 0x178) : 0,
+      timedEffectRandomTicks: size >= 0x180 ? this.getUint32(offset + 0x17c) : 0,
     };
   }
 

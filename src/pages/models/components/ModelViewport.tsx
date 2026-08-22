@@ -193,6 +193,10 @@ const HierarchyNodeGroup = ({
           textureProvider={nodeTextureProvider}
           textured={textured}
           wireframe={wireframe}
+          animatedSubresource={
+            node.parentIndex === -1 ? node.textureAnimation?.primarySubresource ?? null : null
+          }
+          animationTickRef={animationTickRef}
         />
       )}
       {nodes.map((child, childIndex) =>

@@ -74,6 +74,39 @@ const ModelTreeItem = ({ model, index, selected, onSelect }: ModelTreeItemProps)
         ))}
       {selected &&
         model.nodes.map((node, nodeIndex) => {
+          if (node.textureAnimation === null && node.timedEffect === null) {
+            return null;
+          }
+          const details: string[] = [];
+          if (node.textureAnimation !== null) {
+            const channels = [node.textureAnimation.primarySubresource];
+            if (node.textureAnimation.secondarySubresource !== 0) {
+              channels.push(node.textureAnimation.secondarySubresource);
+            }
+            details.push(`texture animation · subresource ${channels.join(" / ")}`);
+          }
+          if (node.timedEffect !== null) {
+            const jitter =
+              node.timedEffect.randomTicks > 0 ? ` ±${node.timedEffect.randomTicks}` : "";
+            details.push(
+              `timed effect ${node.timedEffect.id} · every ${node.timedEffect.intervalTicks} ticks${jitter}`,
+            );
+          }
+          return (
+            <ListItem key={`anim-${nodeIndex}`} sx={{ pl: 4 }} disableGutters>
+              <ListItemText
+                primary={details.join(" · ")}
+                secondary={node.sprPath}
+                slotProps={{
+                  primary: { variant: "caption" },
+                  secondary: { variant: "caption" },
+                }}
+              />
+            </ListItem>
+          );
+        })}
+      {selected &&
+        model.nodes.map((node, nodeIndex) => {
           const vertexCount =
             node.sprFile?.lodGroups.reduce((sum, group) => sum + group.mesh.vertices.length, 0) ??
             0;

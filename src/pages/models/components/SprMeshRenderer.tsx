@@ -1,10 +1,13 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
+import { useFrame } from "@react-three/fiber";
+import { MutableRefObject } from "react";
 import { SprMesh, SprVertex } from "../../../domain/spr/SprFile";
 import {
   normalizeSpriteTextureUV,
   SPR_UNTEXTURED_SUBRESOURCE,
 } from "../../../domain/spr/SprUtils";
+import { buildingTextureWaveOffset } from "../utils/modelAnimation";
 import { ModelTextureProvider } from "../utils/resolveTextures";
 
 const DEFAULT_TEXTURE_DIMENSIONS = { width: 256, height: 256 };
@@ -16,6 +19,9 @@ export interface SprMeshRendererProps {
   textureProvider?: ModelTextureProvider | null;
   textured?: boolean;
   wireframe?: boolean;
+  /** class-13 root overlay: this subresource's V coordinates follow the wave */
+  animatedSubresource?: number | null;
+  animationTickRef?: MutableRefObject<number> | null;
 }
 
 interface TriangleGroup {
@@ -36,6 +42,8 @@ export const SprMeshRenderer = ({
   textureProvider = null,
   textured = false,
   wireframe = false,
+  animatedSubresource = null,
+  animationTickRef = null,
 }: SprMeshRendererProps) => {
   const groups = useMemo(
     () => buildTriangleGroups(mesh, textureProvider),
@@ -56,6 +64,10 @@ export const SprMeshRenderer = ({
           textureProvider={textureProvider}
           textured={textured}
           wireframe={wireframe}
+          animated={
+            textured && animatedSubresource !== null && group.subresource === animatedSubresource
+          }
+          animationTickRef={animationTickRef}
         />
       ))}
     </>
@@ -67,9 +79,11 @@ interface SprGroupMeshProps {
   textureProvider: ModelTextureProvider | null;
   textured: boolean;
   wireframe: boolean;
+  animated: boolean;
+  animationTickRef: MutableRefObject<number> | null;
 }
 
-const SprGroupMesh = ({ group, textureProvider, textured, wireframe }: SprGroupMeshProps) => {
+const SprGroupMesh = ({ group, textureProvider, textured, wireframe, animated, animationTickRef }: SprGroupMeshProps) => {
   const material = useMemo(() => {
     const untextured = group.subresource === SPR_UNTEXTURED_SUBRESOURCE;
     const map =
@@ -96,6 +110,30 @@ const SprGroupMesh = ({ group, textureProvider, textured, wireframe }: SprGroupM
   }, [textured, textureProvider, group, wireframe]);
 
   useEffect(() => () => material.dispose(), [material]);
+
+  // Class-13 building overlay (model.vert): the animated subresource's V
+  // coordinates ride a deterministic triangle wave; all other groups stay put.
+  const baseV = useRef<Float32Array | null>(null);
+  useFrame(() => {
+    if (!animated || !animationTickRef) {
+      return;
+    }
+    const uv = group.geometry.getAttribute("uv") as THREE.BufferAttribute | undefined;
+    if (!uv) {
+      return;
+    }
+    if (baseV.current === null || baseV.current.length !== uv.count) {
+      baseV.current = new Float32Array(uv.count);
+      for (let index = 0; index < uv.count; index++) {
+        baseV.current[index] = uv.getY(index);
+      }
+    }
+    const offset = buildingTextureWaveOffset(animationTickRef.current);
+    for (let index = 0; index < uv.count; index++) {
+      uv.setY(index, baseV.current[index] + offset);
+    }
+    uv.needsUpdate = true;
+  });
 
   return <mesh geometry={group.geometry} material={material} />;
 };

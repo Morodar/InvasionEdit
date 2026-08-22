@@ -31,6 +31,21 @@ export interface ModelChainNode {
   attachmentTranslation: SprVec3;
   /** record-level animation profile shared by all nodes of one MDL definition */
   simulation: ModelNodeSimulation;
+  /** class 2/13 animated texture selectors of the owning MDL definition */
+  textureAnimation: TextureAnimation | null;
+  /** periodic effect metadata of the owning MDL definition */
+  timedEffect: TimedEffect | null;
+}
+
+export interface TextureAnimation {
+  primarySubresource: number;
+  secondarySubresource: number;
+}
+
+export interface TimedEffect {
+  id: number;
+  intervalTicks: number;
+  randomTicks: number;
 }
 
 export interface ResolvedModel {
@@ -264,6 +279,21 @@ function appendVariantGroup(
         pitchMinTurn16: record.pitchMin,
         pitchMaxTurn16: record.pitchMax,
       },
+      textureAnimation:
+        record.primaryAnimatedSubresource !== 0
+          ? {
+              primarySubresource: record.primaryAnimatedSubresource,
+              secondarySubresource: record.secondaryAnimatedSubresource,
+            }
+          : null,
+      timedEffect:
+        record.timedEffectId !== 0
+          ? {
+              id: record.timedEffectId,
+              intervalTicks: record.timedEffectIntervalTicks,
+              randomTicks: record.timedEffectRandomTicks,
+            }
+          : null,
     });
   });
 

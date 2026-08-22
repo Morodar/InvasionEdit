@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   animatedChild2TranslationQ12,
+  buildingTextureWaveOffset,
   childUsesBoundedVerticalChannel,
   modelRuntimeChildYawStep,
   usesContinuousRadarSubnodeAnimation,
@@ -141,5 +142,27 @@ describe("wrapTurn16", () => {
     expect(wrapTurn16(-1)).toBe(65535);
     expect(wrapTurn16(-65536)).toBe(0);
     expect(wrapTurn16(-98304)).toBe(32768);
+  });
+});
+
+describe("buildingTextureWaveOffset", () => {
+
+  it("oscillates between 0 and the amplitude with a deterministic triangle cycle", () => {
+    expect(buildingTextureWaveOffset(0)).toBe(0);
+    // quarter cycle: 20/80 -> phase 0.25 -> triangle 0.5
+    expect(buildingTextureWaveOffset(20)).toBeCloseTo(0.25, 10);
+    // half cycle peak
+    expect(buildingTextureWaveOffset(40)).toBeCloseTo(0.5, 10);
+    // symmetric descent
+    expect(buildingTextureWaveOffset(60)).toBeCloseTo(0.25, 10);
+    // full cycle wraps back to rest
+    expect(buildingTextureWaveOffset(80)).toBe(0);
+    expect(buildingTextureWaveOffset(160)).toBe(0);
+  });
+
+  it("holds each whole tick (floor sampling like the shader)", () => {
+    expect(buildingTextureWaveOffset(39.9)).toBeCloseTo(0.4875, 10);
+    expect(buildingTextureWaveOffset(40.6)).toBeCloseTo(0.5, 10);
+    expect(buildingTextureWaveOffset(40.9)).toBeCloseTo(0.5, 10);
   });
 });

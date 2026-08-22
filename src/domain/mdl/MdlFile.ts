@@ -28,6 +28,14 @@ export interface MdlRecord {
   shotDefinitionId: number;
   reloadTicks: number;
   maximumIntegrity: number;
+  /** class 2: +0x1B8 track U channel; class 13: +0xC0 root texture overlay */
+  primaryAnimatedSubresource: number;
+  /** class 2 only: +0x1BC second track U channel */
+  secondaryAnimatedSubresource: number;
+  /** periodic effect (smoke, fire, ...) from the game's effect table */
+  timedEffectId: number;
+  timedEffectIntervalTicks: number;
+  timedEffectRandomTicks: number;
 }
 
 export interface MdlFile {
