@@ -1,6 +1,7 @@
 import { MainLayout } from "../../layout/MainLayout";
 import {
   Box,
+  Button,
   Chip,
   MenuItem,
   Stack,
@@ -93,8 +94,7 @@ const PageModels = () => {
     setParseFailed(false);
     try {
       await delay(250); // wait for ui to update because parsing is resource intensive
-      let parsed: ParsedModelFiles;
-      const pckNames: string[] = [];
+      let parsed: ParsedModelFiles;      const pckNames: string[] = [];
       if (modelsState) {
         parsed = modelsState.parsed;
       } else {
@@ -123,6 +123,20 @@ const PageModels = () => {
     } finally {
       setIsParsing(false);
     }
+  };
+
+  // Merged state persists across selections (models are spread over several
+  // archives), so stale entries from earlier picks would keep winning the
+  // first-wins merges. Discarding resets to a clean corpus.
+  const handleClearLoaded = () => {
+    if (isParsing) {
+      return;
+    }
+    setLoadedPcks([]);
+    setModelsState(null);
+    setSelectedModelIndex(null);
+    setSelectedGfxPath("");
+    setParseFailed(false);
   };
 
   return (
@@ -191,6 +205,9 @@ const PageModels = () => {
             {loadedPcks.map((name) => (
               <Chip key={name} label={name} size="small" />
             ))}
+            <Button size="small" onClick={handleClearLoaded} disabled={isParsing}>
+              {t("models.clear-loaded")}
+            </Button>
             {modelsState && !modelsState.parsed.helpText && modelsState.models.length > 0 && (
               <Typography variant="body2" sx={{ alignSelf: "center" }}>
                 {t("models.name-hint")}

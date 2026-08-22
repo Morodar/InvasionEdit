@@ -130,6 +130,7 @@
     "wireframe": "Wireframe",
     "parse-failed": "Failed to parse the PCK file.",
     "texture-archive": "Texture archive",
-    "name-hint": "Load ENGINE.PCK or PATCH00.PCK as well to show model names."
+    "name-hint": "Load ENGINE.PCK or PATCH00.PCK as well to show model names.",
+    "clear-loaded": "Discard loaded files"
   }
 }
