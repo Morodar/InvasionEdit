@@ -162,6 +162,7 @@ const HierarchyNodeGroup = ({
           : { x: translation.x, y: translation.y, z: bobQ12 / Q12_ONE },
       ),
     );
+    groupRef.current.matrixWorldNeedsUpdate = true;
   });
 
   // Neutral scenery sprites (trees, stones, ruins under spr/extras) use the
