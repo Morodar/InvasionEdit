@@ -1,5 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { PckFile } from "../../../../src/domain/pck/PckFile";
+
+const EFF_HEADER_SIZE = 0x200;
+const EFF_RECORD_SIZE = 0xc0;
+
+/** Minimal valid .eff archive with one smoke-style definition. */
+function buildEffImage(definitionId: number, spriteText: string): DataView {
+  const view = new DataView(new ArrayBuffer(EFF_HEADER_SIZE + EFF_RECORD_SIZE));
+  view.setUint32(0x00, 0x00666665, true); // "eff\0"
+  view.setUint32(0x04, view.byteLength, true);
+  view.setUint32(0x0c, 0x00040007, true); // converter version
+  view.setUint32(0xb0, 1, true); // definition count
+  const offset = EFF_HEADER_SIZE;
+  view.setUint32(offset + 0x00, 2, true); // transition kind: drifting
+  view.setUint32(offset + 0x08, definitionId, true);
+  view.setUint32(offset + 0x28, 160, true); // frame advance threshold q4
+  for (let index = 0; index < spriteText.length; index++) {
+    view.setUint16(offset + 0x7c + index * 2, spriteText.charCodeAt(index), true);
+  }
+  return view;
+}
 import {
   HELP_TEXT_PATH,
   parseModelPckEntries,
@@ -100,5 +120,33 @@ describe("parseModelPckEntries", () => {
       fakePck([{ name: "texte/menue.str", data: helpStr("menu") }]),
     );
     expect(unrelated.helpText).toBeNull();
+  });
+
+  it("collects effect definitions first-wins per id and normalizes sprite paths", () => {
+    const parsed = parseModelPckEntries(
+      fakePck([
+        { name: "eff\\arbeit.eff", data: buildEffImage(130, "spr\\effekte\\ekkwk0") },
+        { name: "eff\\rauch.eff", data: buildEffImage(131, "spr\\effekte\\erarc0") },
+      ]),
+    );
+    expect([...parsed.effectRecords.keys()].sort((a, b) => a - b)).toEqual([
+      130,
+      131,
+    ]);
+    expect(parsed.effectRecords.get(131)?.spritePath).toBe(
+      "spr/effekte/erarc0.spr",
+    );
+    expect(parsed.effectRecords.get(131)?.transitionKind).toBe(2);
+
+    // duplicate definition ids keep the first occurrence, damaged files are skipped
+    const merged = parseModelPckEntries(
+      fakePck([
+        { name: "eff\\a.eff", data: buildEffImage(5, "first") },
+        { name: "eff\\a.eff", data: buildEffImage(5, "second") },
+        { name: "eff\\broken.eff", data: new DataView(new ArrayBuffer(16)) },
+      ]),
+    );
+    expect(merged.effectRecords.size).toBe(1);
+    expect(merged.effectRecords.get(5)?.spritePath).toBe("first.spr");
   });
 });

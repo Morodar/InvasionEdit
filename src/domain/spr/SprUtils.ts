@@ -90,6 +90,9 @@ export class SprUtils extends HeaderUtils {
       boundingRadius: this.getInt32(0xd8) / Q12_FACTOR,
       placementHeightOffset: this.getInt32(0xdc) / Q12_FACTOR,
       lookupRecords,
+      type6AttachmentPoints: lookupRecords
+        .filter((record) => (record.packedKey & 0xf) === 6)
+        .map((record) => record.localTranslation),
       lodGroups,
     };
   }

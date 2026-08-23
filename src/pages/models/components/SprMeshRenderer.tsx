@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, MutableRefObject } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { MutableRefObject } from "react";
 import { SprMesh, SprVertex } from "../../../domain/spr/SprFile";
 import {
   normalizeSpriteTextureUV,
@@ -22,6 +21,13 @@ export interface SprMeshRendererProps {
   /** class-13 root overlay: this subresource's V coordinates follow the wave */
   animatedSubresource?: number | null;
   animationTickRef?: MutableRefObject<number> | null;
+  /**
+   * Effect puffs: constant alpha 0..1 with per-pixel blending instead of the
+   * hard alphaTest cutout; disables depth writes to avoid smoke sorting gaps.
+   */
+  opacity?: number | null;
+  /** Texture subresource override for cycling effect frames (EFF shading range). */
+  frameSubresource?: number | null;
 }
 
 interface TriangleGroup {
@@ -44,6 +50,8 @@ export const SprMeshRenderer = ({
   wireframe = false,
   animatedSubresource = null,
   animationTickRef = null,
+  opacity = null,
+  frameSubresource = null,
 }: SprMeshRendererProps) => {
   const groups = useMemo(
     () => buildTriangleGroups(mesh, textureProvider),
@@ -68,6 +76,8 @@ export const SprMeshRenderer = ({
             textured && animatedSubresource !== null && group.subresource === animatedSubresource
           }
           animationTickRef={animationTickRef}
+          opacity={opacity}
+          frameSubresource={frameSubresource}
         />
       ))}
     </>
@@ -81,13 +91,32 @@ interface SprGroupMeshProps {
   wireframe: boolean;
   animated: boolean;
   animationTickRef: MutableRefObject<number> | null;
+  opacity: number | null;
+  frameSubresource: number | null;
 }
 
-const SprGroupMesh = ({ group, textureProvider, textured, wireframe, animated, animationTickRef }: SprGroupMeshProps) => {
+const SprGroupMesh = ({
+  group,
+  textureProvider,
+  textured,
+  wireframe,
+  animated,
+  animationTickRef,
+  opacity,
+  frameSubresource,
+}: SprGroupMeshProps) => {
+  const isEffect = opacity !== null;
   const material = useMemo(() => {
     const untextured = group.subresource === SPR_UNTEXTURED_SUBRESOURCE;
+    const isEffect = opacity !== null;
+    const textureSubresource =
+      textured && !untextured && frameSubresource !== null
+        ? frameSubresource
+        : group.subresource;
     const map =
-      textured && !untextured ? (textureProvider?.getTexture(group.subresource) ?? null) : null;
+      textured && !untextured
+        ? (textureProvider?.getTexture(textureSubresource) ?? null)
+        : null;
 
     if (untextured) {
       // the low 9 bits of the render flags select a faction palette entry
@@ -97,6 +126,20 @@ const SprGroupMesh = ({ group, textureProvider, textured, wireframe, animated, a
         side: THREE.DoubleSide,
         wireframe,
         flatShading: true,
+        transparent: isEffect,
+        depthWrite: !isEffect,
+      });
+    }
+
+    if (isEffect) {
+      return new THREE.MeshStandardMaterial({
+        color: "#ffffff",
+        map: map ?? null,
+        side: THREE.DoubleSide,
+        wireframe,
+        transparent: true,
+        opacity,
+        depthWrite: false,
       });
     }
 
@@ -107,9 +150,17 @@ const SprGroupMesh = ({ group, textureProvider, textured, wireframe, animated, a
       wireframe,
       alphaTest: 0.5,
     });
-  }, [textured, textureProvider, group, wireframe]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textured, textureProvider, group, wireframe, isEffect, frameSubresource]);
 
   useEffect(() => () => material.dispose(), [material]);
+
+  useEffect(() => {
+    if (opacity !== null) {
+      material.opacity = opacity;
+    }
+  }, [material, opacity]);
+
 
   // Class-13 building overlay (model.vert): the animated subresource's V
   // coordinates ride a deterministic triangle wave; all other groups stay put.

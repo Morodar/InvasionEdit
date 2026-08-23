@@ -41,6 +41,11 @@ export interface SprFile {
   registryId: number;
   lodGroups: SprLodGroup[];
   lookupRecords: SprLookupRecord[];
+  /**
+   * Translations of the lookup records with key class 6 - the timed-effect
+   * emitter points (chimneys, launch pads) of the stock renderer.
+   */
+  type6AttachmentPoints: SprVec3[];
   boundsMin: SprVec3;
   boundsMax: SprVec3;
   boundingRadius: number;

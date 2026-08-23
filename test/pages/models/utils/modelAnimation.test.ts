@@ -3,7 +3,15 @@ import {
   animatedChild2TranslationQ12,
   buildingTextureWaveOffset,
   childUsesBoundedVerticalChannel,
+  emitterIntervalTicks,
+  effectAlphaAtAge,
+  effectFrameAtAge,
+  effectLifetimeTicks,
+  effectScaleAtAge,
+  effectTickForCompletedFrames,
+  effectTransition2DisplacementAtAge,
   modelRuntimeChildYawStep,
+  resourceRandomNextPrimary,
   usesContinuousRadarSubnodeAnimation,
   usesGenericSubnodeAnimation,
   wrapTurn16,
@@ -164,5 +172,109 @@ describe("buildingTextureWaveOffset", () => {
     expect(buildingTextureWaveOffset(39.9)).toBeCloseTo(0.4875, 10);
     expect(buildingTextureWaveOffset(40.6)).toBeCloseTo(0.5, 10);
     expect(buildingTextureWaveOffset(40.9)).toBeCloseTo(0.5, 10);
+  });
+});
+
+describe("timed effect helpers", () => {
+  const smoke = {
+    transitionKind: 2,
+    runtimeValue0C: 9,
+    frameAdvanceThresholdQ4: 160,
+    alphaFadeInTicks: 8,
+    alphaFadeOutTicks: 80,
+    modelScaleXQ12: 4000,
+    modelScaleYQ12: 9000,
+    movementSpeedQ12: 48,
+    shadingStartFrame: 0,
+    shadingStopFrame: 0,
+  };
+
+  it("computes lifetimes with the Q4 threshold ceiling rule", () => {
+    // 9 frames at 160/16=10 ticks per frame
+    expect(effectLifetimeTicks(smoke)).toBe(90);
+    // thresholds below one frame still need one tick per frame
+    expect(
+      effectLifetimeTicks({ ...smoke, frameAdvanceThresholdQ4: 8, runtimeValue0C: 5 }),
+    ).toBe(5);
+    expect(effectTickForCompletedFrames(32, 4)).toBe(8);
+    expect(effectTickForCompletedFrames(32, 0)).toBe(0);
+  });
+
+  it("fades in, holds, and fades out like effect_alpha_at_age", () => {
+    expect(effectAlphaAtAge(smoke, 0)).toBe(0);
+    expect(effectAlphaAtAge(smoke, 4)).toBe(127); // half fade-in (4*255/8)
+    expect(effectAlphaAtAge(smoke, 9)).toBe(255);
+    // fade-out starts at lifetime-80=10 ticks
+    expect(effectAlphaAtAge(smoke, 11)).toBe(251);
+    expect(effectAlphaAtAge(smoke, 50)).toBe(127); // 40 remaining of 80
+    expect(effectAlphaAtAge(smoke, 89)).toBe(3);
+    expect(effectAlphaAtAge(smoke, 90)).toBe(0);
+    // lifetime zero renders nothing
+    expect(effectAlphaAtAge({ ...smoke, runtimeValue0C: 0 }, 0)).toBe(0);
+  });
+
+  it("lerps the puff scale between the authored q12 bounds", () => {
+    expect(effectScaleAtAge(smoke, 0)).toBeCloseTo(4000 / 4096, 6);
+    expect(effectScaleAtAge(smoke, 45)).toBeCloseTo((4000 + 2500) / 4096, 6);
+    expect(effectScaleAtAge(smoke, 90)).toBeCloseTo(9000 / 4096, 6);
+    expect(effectScaleAtAge(smoke, 1000)).toBeCloseTo(9000 / 4096, 6);
+  });
+
+  it("cycles frames inside the authored shading range", () => {
+    const glow = { ...smoke, shadingStartFrame: 0, shadingStopFrame: 24, frameAdvanceThresholdQ4: 15 };
+    // sub-threshold rates still advance at most one frame per tick, so the
+    // helpers clamp the effective rate at 16 q4-units (one frame per tick)
+    expect(effectFrameAtAge(glow, 0)).toBe(0);
+    expect(effectFrameAtAge(glow, 16)).toBe(16);
+    expect(effectFrameAtAge(glow, 31)).toBe(31 % 25);
+    expect(effectFrameAtAge(glow, 400)).toBe(400 % 25);
+    // two ticks per frame above the one-frame-per-tick floor
+    const slow = { ...smoke, shadingStopFrame: 24, frameAdvanceThresholdQ4: 32 };
+    expect(effectFrameAtAge(slow, 47)).toBe(23);
+    expect(effectFrameAtAge(slow, 50)).toBe(25 % 25);
+    const single = { ...smoke };
+    expect(effectFrameAtAge(single, 123)).toBe(0);
+  });
+
+  it("drifts kind-2 puffs upward along an easing azimuth", () => {
+    const stationary = { ...smoke, movementSpeedQ12: 0, transitionKind: 2 };
+    expect(effectTransition2DisplacementAtAge(stationary, 50, 0x2000, 0x4000)).toEqual({
+      x: 0,
+      y: 0,
+      z: 0,
+    });
+    // other kinds never move
+    expect(
+      effectTransition2DisplacementAtAge({ ...smoke, transitionKind: 1 }, 50, 0x2000, 0),
+    ).toEqual({ x: 0, y: 0, z: 0 });
+
+    const drift = effectTransition2DisplacementAtAge(smoke, 90, 0x0000, 0x0000);
+    // elevation 0 means pure horizontal motion; the azimuth eases toward
+    // 0x4000 (+y) but stays tilted toward +x inside a 90-tick lifetime
+    expect(drift.z).toBeCloseTo(0, 6);
+    expect(drift.x).toBeGreaterThan(0);
+    expect(drift.y).toBeGreaterThan(0);
+    // displacement is bounded by the lifetime
+    const clipped = effectTransition2DisplacementAtAge(smoke, 5000, 0, 0);
+    expect(clipped.y).toBeCloseTo(drift.y, 6);
+    // chimneys rise: elevation from the orientation's top bits below 0x4000
+    const rising = effectTransition2DisplacementAtAge(smoke, 90, 0x4000 - 0x1000, 0);
+    expect(rising.z).toBeGreaterThan(0);
+  });
+
+  it("reproduces the resource emitter rng deterministically", () => {
+    const [first, state] = resourceRandomNextPrimary(1);
+    const [second, next] = resourceRandomNextPrimary(state);
+    expect(first).not.toBe(second);
+    const [again] = resourceRandomNextPrimary(1);
+    expect(again).toBe(first);
+    expect(next).toBeGreaterThan(0);
+  });
+
+  it("adds jittered emission intervals", () => {
+    expect(emitterIntervalTicks(8, 0, 123456)).toBe(8);
+    expect(emitterIntervalTicks(8, 5, 3)).toBe(11);
+    expect(emitterIntervalTicks(8, 5, 7)).toBe(10); // 7 % 5
+    expect(emitterIntervalTicks(0, 1, 0)).toBe(1);
   });
 });

@@ -4,11 +4,13 @@ import { SprUtils } from "../../../domain/spr/SprUtils";
 import { GfxUtils } from "../../../domain/gfx/GfxUtils";
 import { PalUtils } from "../../../domain/pal/PalUtils";
 import { StrUtils } from "../../../domain/str/StrUtils";
+import { EffUtils } from "../../../domain/eff/EffUtils";
 import { MdlRecord } from "../../../domain/mdl/MdlFile";
 import { SprFile } from "../../../domain/spr/SprFile";
 import { ArmFile } from "../../../domain/arm/ArmFile";
 import { PalFile } from "../../../domain/pal/PalFile";
 import { StrFile } from "../../../domain/str/StrFile";
+import { EffRecord } from "../../../domain/eff/EffFile";
 import { PckFile } from "../../../domain/pck/PckFile";
 
 export interface NamedArmFile {
@@ -38,6 +40,8 @@ export interface ParsedModelFiles {
   levelMdlRecords: Map<string, Map<number, MdlRecord>>;
   /** normalized SPR path → parsed file */
   sprFiles: Map<string, SprFile>;
+  /** effect definition id → record (first definition wins) */
+  effectRecords: Map<number, EffRecord>;
   gfxFiles: NamedGfxUtils[];
   palFiles: NamedPalFile[];
   /** texte/help.str when present - source of model/building names */
@@ -76,6 +80,7 @@ export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
     mdlRecords: new Map(),
     levelMdlRecords: new Map(),
     sprFiles: new Map(),
+    effectRecords: new Map(),
     gfxFiles: [],
     palFiles: [],
     helpText: null,
@@ -128,6 +133,15 @@ export function mergeModelPckEntries(target: ParsedModelFiles, pck: PckFile): vo
         case "spr": {
           const file: SprFile = SprUtils.parse(entry.dataBytes);
           target.sprFiles.set(path, file);
+          break;
+        }
+        case "eff": {
+          // first definition wins, mirroring the catalog try_emplace
+          for (const record of EffUtils.parse(entry.dataBytes).records) {
+            if (!target.effectRecords.has(record.definitionId)) {
+              target.effectRecords.set(record.definitionId, record);
+            }
+          }
           break;
         }
         case "gfx": {
