@@ -74,8 +74,8 @@ export function fileExtension(path: string): string {
  * Entries that fail to parse are skipped - the viewer should still work
  * when single assets of a mixed archive are damaged.
  */
-export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
-  const result: ParsedModelFiles = {
+export function createEmptyParsedModelFiles(): ParsedModelFiles {
+  return {
     armFiles: [],
     mdlRecords: new Map(),
     levelMdlRecords: new Map(),
@@ -85,6 +85,10 @@ export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
     palFiles: [],
     helpText: null,
   };
+}
+
+export function parseModelPckEntries(pck: PckFile): ParsedModelFiles {
+  const result = createEmptyParsedModelFiles();
   mergeModelPckEntries(result, pck);
   return result;
 }

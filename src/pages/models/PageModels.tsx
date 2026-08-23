@@ -19,6 +19,7 @@ import { delay } from "../../common/utils/delay";
 import { parsePckFile } from "../../domain/pck/PckParser";
 import { PckFile } from "../../domain/pck/PckFile";
 import {
+  createEmptyParsedModelFiles,
   ParsedModelFiles,
   mergeModelPckEntries,
 } from "./utils/parseModelPckEntries";
@@ -100,15 +101,7 @@ const PageModels = () => {
       if (modelsState) {
         parsed = modelsState.parsed;
       } else {
-        parsed = {
-          armFiles: [],
-          mdlRecords: new Map(),
-          sprFiles: new Map(),
-          gfxFiles: [],
-          palFiles: [],
-          levelMdlRecords: new Map(),
-      helpText: null,
-        };
+        parsed = createEmptyParsedModelFiles();
       }
       for (const file of files) {
         const pck: PckFile = await parsePckFile(file);
