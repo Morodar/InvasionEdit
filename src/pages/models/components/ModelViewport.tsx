@@ -102,6 +102,9 @@ export const ModelViewport = ({
           )}
         {model && parsedFiles && (
           <TimedEffectEmitters
+            // remount on model switch so emitter RNG/schedule/puff state
+            // never leaks between buildings with different hierarchies
+            key={`${model.sourceNamespace}#${model.armRegistryId}#${model.mdlDefinitionId ?? -1}`}
             model={model}
             parsedFiles={parsedFiles}
             textureProvider={textureProvider}
@@ -352,6 +355,9 @@ const EffectPuffView = ({
     return null;
   }
   const point = attachmentPoints[puff.attachmentIndex];
+  if (!point) {
+    return null;
+  }
   // matches effect_transition2_displacement_at_age: azimuth from the low
   // half word, elevation derived from the top bits (chimneys rise, not sink)
   const displacement = effectTransition2DisplacementAtAge(
