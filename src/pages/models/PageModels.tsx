@@ -241,7 +241,7 @@ const PageModels = () => {
               model={selectedModel}
               textureProvider={textureProvider}
               neutralTextureProvider={neutralTextureProvider}
-              parsedFiles={modelsState.parsed}
+              parsedFiles={modelsState?.parsed ?? null}
               textured={renderingMode === "textured"}
               wireframe={wireframe}
             />
